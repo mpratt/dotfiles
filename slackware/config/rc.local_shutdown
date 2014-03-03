@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.local_shutdown:  Local commands run on shutdown
+# Michael Pratt
+#
+
+# Empty out the temp Directories
+rm -rf /tmp/*
+rm -rf /var/log/removed_packages/*
+rm -rf /var/log/removed_scripts/*
+rm -rf /var/log/sbopkg/*
+rm -rf /var/cache/sbopkg/*

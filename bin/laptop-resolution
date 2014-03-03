@@ -1,0 +1,36 @@
+#!/bin/bash
+#############################################################
+# Change the resolution of my laptop
+# Autor: Michael Pratt <pratt@hablarmierda.net>
+#############################################################
+
+ON=0
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $(basename ${0}) --on | --off"
+    exit 0
+fi
+
+while [ -n "$1" ]; do
+  case "$1" in
+    --on) 
+        ON=1 
+        shift ;;
+    --off) 
+        ON=0
+        shift ;;
+    *) 
+        echo "Unknown Parameter"
+        exit 1
+        ;;
+  esac
+  shift
+done
+
+if [ "${ON}" -eq 1 ]; then
+    xrandr --output VGA-1 --mode 1024x768
+    xrandr --output LVDS-1 --mode 1024x768
+fi
+
+if [ "${ON}" -eq 0 ]; then
+    xrandr --output LVDS-1 --mode 1366x768
+fi

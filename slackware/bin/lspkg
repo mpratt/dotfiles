@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+# Name: lspkg
+#
+# A Slackware tool which simply lists the currently installed packages.
+#
+# Originally written by CTWaley (a.k.a., thegeekster) and originally posted in
+# the Slackware forum at LinuxQuestions.org <http://www.linuxquestions.org/questions/showthread.php?postid=899459#post899459>
+# Modified by Michael Pratt <pratt@hablarmierda.net>
+#
+# This program is given to the Public Domain and is free software. You can
+# redistribute it and/or modify it without restriction of any kind.
+#
+# It distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+#################################################################
+# Default Paths
+#################################################################
+SHOW_INFORMATION=0
+PACKAGES_DIR="/var/log/packages"
+SCRIPT_DIR="/var/log/scripts"
+FOUND=()
+
+#################################################################
+# Usage
+#################################################################
+function usage()
+{
+	echo "Usage: $(basename $0) [-i|--info] [-p|--path </var/log/packages>] <package_name>"
+}
+
+#################################################################
+# Show package information
+#################################################################
+function show_info()
+{
+	[ -z "${1}" ] && return 1
+	local packageName=$(basename ${1})
+
+
+	if [ -f "${PACKAGES_DIR}/${packageName}" ]; then
+		cat ${PACKAGES_DIR}/${packageName}
+	else
+		echo "No Package Information found for ${packageName}"
+	fi
+
+	if [ -f "${SCRIPT_DIR}/${packageName}" ]; then
+		echo "|------------------ Script -----------------------------|"
+		cat ${SCRIPT_DIR}/${packageName}
+	else
+		echo "No Script Information found for ${packageName}"
+	fi
+}
+
+#################################################################
+# search Packages
+#################################################################
+function search_packages()
+{
+	while [ "$#" -ne "0" ]; do
+		local pkg=$(echo $1 | sed 's/\./\\./g; s/\*/.*/; s/\?/.?/g')
+		FOUND+=( "$(ls $PACKAGES_DIR/ | egrep -i ^$pkg)" )
+        shift
+	done
+}
+
+#################################################################
+# Get Options
+#################################################################
+[ "$#" -eq 0 ] && usage && exit 0
+while [ "$#" -ne "0" ]; do
+	case "${1}" in
+		-h|--help)
+			usage
+			exit 0 ;;
+
+		-i|--info)
+			SHOW_INFORMATION=1;;
+
+		-p|--path)
+			shift
+			PACKAGES_DIR=${1};;
+
+		*)
+			ARGS+=( "${1}" ) ;;
+	esac
+	shift
+done
+
+search_packages ${ARGS[@]}
+[ -z "$(echo ${FOUND[@]})" ] && echo "No packages with ${ARGS[@]} found" && exit 0
+
+for PK in ${FOUND[@]}; do
+	echo "Package Found: ${PK}"
+	[ "${SHOW_INFORMATION}" -eq 1 ] && show_info ${PK}
+done
+exit 0

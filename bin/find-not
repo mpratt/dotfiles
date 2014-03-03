@@ -1,0 +1,7 @@
+#!/bin/bash
+#######################################################
+# Scripts that finds files not ending in ${1}
+# Autor: Michael Pratt <pratt@hablarmierda.net>
+#######################################################
+[ -z "$1" ] && echo "Usage: find-not [extension]" && exit 1
+find ! -iname \*.${1} -type f

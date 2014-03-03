@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# File: /etc/NetworkManager/dispatcher.d/99-secure-public-access
+# Stop some daemons when connecting to
+# public wifi.
+
+INTERFACE=$1
+STATUS=$2
+KNOWNNETWORKS=(comcelGSM Jupiter GothamCity)
+# View all variables with |> set > /home/pratt/nmvars
+
+for i in ${KNOWNNETWORKS[@]}; do
+  if [[ "${i}" == "${CONNECTION_ID}" ]]; then
+      echo "Nothing to be done here"
+      exit 0
+  fi
+done
+
+if [[ "${INTERFACE}" == "wlan0" ]]; then
+    case ${STATUS} in
+        up) 
+            echo "Shutting down important services"
+            /etc/rc.d/rc.httpd stop ;;
+
+        down)
+            echo "Restarting Httpd Service"
+            /etc/rc.d/rc.httpd stop
+            sleep 5
+            /etc/rc.d/rc.httpd start 
+
+            echo "Restarting NetworkManager, in order to reconnect when connection is lost"
+            /etc/rc.d/rc.networkmanager restart ;;
+    esac
+fi

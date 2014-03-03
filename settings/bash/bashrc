@@ -1,0 +1,96 @@
+#!/bin/bash
+# Michael Pratt <pratt@hablarmierda.net>
+# $HOME/.bashrc
+
+if [[ "$(uname -m)" == "x86_64" ]]; then
+    CHOST="x86_64-pc-linux-gnu"
+    CFLAGS="-march=core2 -O2 -pipe"
+elif [[ "$(uname -a | grep -i celeron)" ]]; then
+    CHOST="i686-pc-linux-gnu"
+    CFLAGS="-march=pentium-m -O2 -pipe -fomit-frame-pointer"
+fi
+CXXFLAGS="${CFLAGS}"
+
+# Prompt
+PROMPT_COMMAND='RET=$?; if [[ $RET != 0 ]]; then echo -ne "\033[0;41m:(\033[0m"; fi'
+[ "$(whoami)" = "root" ] && PS1="\u@\h:\w\$ " || PS1="[\u@\h \W]⚡ "
+
+# Setup stuff!
+shopt -s cdspell
+shopt -s extglob
+shopt -s nocaseglob
+shopt -s checkwinsize
+#set -o noclobber # prevent overwriting files with cat
+#set -o ignoreeof # stops ctrl+d from logging me out
+#set -o vi # Use vi mode :D!
+#export TERM=xterm-256color
+
+# History Settings
+export HISTSIZE=40000
+export HISTFILESIZE=40000
+export HISTTIMEFORMAT="%Y/%m/%d %H:%M "
+export HISTIGNORE="&:ls:su:cat:man:cd:cp:mv:exit:clear:history"
+export HISTCONTROL=ignoreboth # erasedups & ignorespace
+shopt -s histappend
+
+# Setup default editor
+EDITORS="vim vi pico nano"
+for ED in ${EDITORS}; do
+    if [ -x "$(which $ED 2>/dev/null)" ]; then
+		export EDITOR="$ED"
+		export VISUAL="$EDITOR"
+		break
+	fi
+done
+unset EDITORS
+unset ED
+
+# Custom Alias
+alias ls="ls -h --color=auto --group-directories-first"
+alias lsdots="ls -a | egrep '^\.'"
+alias lsoctal="ls -la | sed -e 's/--x/1/g' -e 's/-w-/2/g' -e 's/-wx/3/g' -e 's/r--/4/g' -e 's/r-x/5/g' -e 's/rw-/6/g' -e 's/rwx/7/g' -e 's/---/0/g'"
+alias cp="cp -i"
+alias mv="mv -i"
+alias grep="grep --color"
+alias manall="man -a"
+alias nocomment="grep -Ev '^\s*(#|$)'"
+alias rawcode="grep -cv ^#\|^$"
+alias sizeof="du -sh"
+alias cd..="cd .."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias clear_history="history -c; unset HISTFILE"
+alias realpath="readlink -f"
+alias dmesg_check="dmesg | grep -iIr 'error\|warn\|fail\|not\|crit'"
+alias auboost="rexima"
+alias showPath='echo -e "${PATH//:/\n}"'
+alias :q="exit"
+alias t="thunar &"
+alias screenoff="xset dpms force off"
+alias servethis="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+alias phpunit="phpunit --verbose"
+#Check PHP For Errors
+alias phpcheck="find ./ -name \*.php | xargs -n 1 php -l"
+alias makepass="openssl rand -base64 32"
+
+# Non root alias
+if [ "$(whoami)" != "root" ]; then
+   alias su="su -l"
+fi
+
+# Enable X for console apps launched by root!
+if [ "$(whoami)" = "root" ] && [ -n "$(who | awk '{print $1}' | uniq | grep pratt)" ] && [ -e "/home/pratt/.Xauthority" ]; then
+   xauth merge /home/pratt/.Xauthority
+   export DISPLAY=:0.0
+fi
+
+# Append custom PATH
+[ -e "/mnt/data/Scripts/dotfiles/bin" ] && PATH=${PATH}:/mnt/data/Scripts/dotfiles/bin
+[ -r "/mnt/data/Scripts/dotfiles/bin/functions.d/functions.sh" ] && source /mnt/data/Scripts/dotfiles/bin/functions.d/functions.sh
+
+# Load Slackware specific files
+if [ -e "/etc/slackware-version" ]; then
+    [ -r "/mnt/data/Scripts/dotfiles/bin/functions.d/slackware.sh" ] && source /mnt/data/Scripts/dotfiles/bin/functions.d/slackware.sh
+	[ -e "/mnt/data/Scripts/dotfiles/slackware/bin" ] && PATH=$PATH:/mnt/data/Scripts/dotfiles/slackware/bin
+fi

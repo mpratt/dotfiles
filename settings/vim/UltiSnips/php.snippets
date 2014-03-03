@@ -1,0 +1,86 @@
+snippet <?p "PHP start and ending tags" !b
+<?php
+$1
+?>
+endsnippet
+
+snippet docb "Simple Dockblock" !b
+/**
+ * ${1:Description}
+ *
+ * @param string $string
+ * @return string
+ */
+endsnippet
+
+snippet method "A simple class method" !b
+/**
+ * ${1:Description} 
+ *
+ * @param string $string
+ * @return void
+ */
+public function ${2:methodName}()
+{
+    $3
+}
+
+endsnippet
+
+snippet class "Basic Class File" !b
+/**
+ * ${1:File}.php
+ *
+ * @package ${2:Default}
+ * @author  Michael Pratt <pratt@hablarmierda.net>
+ * @link    http://www.michael-pratt.com/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ */
+
+namespace $2;
+
+class ${3:className}
+{
+    /**
+     * ${4:Description}
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+         $5
+    }
+
+}
+endsnippet
+
+snippet docb_inherit "Inheritance docblock" !b
+    /** inline {@inheritdoc} */
+endsnippet
+
+snippet phpunit "Php unit Test Case" !b
+/**
+ * ${1:File}.php
+ *
+ * @author  Michael Pratt <pratt@hablarmierda.net>
+ * @link    http://www.michael-pratt.com/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+class $1 extends PHPUnit_Framework_TestCase
+{
+    /**
+     * Set Up
+     */
+    public function setUp()
+    {
+        $2
+    }
+
+}
+endsnippet

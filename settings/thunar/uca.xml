@@ -1,0 +1,40 @@
+<?xml encoding="UTF-8" version="1.0"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Open Terminal Here</name>
+	<unique-id>1389798894940920-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Example for a custom action</description>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>gvim</icon>
+	<name>Open Gvim Here</name>
+	<unique-id>1389735585522872-2</unique-id>
+	<command>gvim</command>
+	<description>Opens a Gvim on this path</description>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>git</icon>
+	<name>Start Git Gui</name>
+	<unique-id>1389735585522885-3</unique-id>
+	<command>git gui</command>
+	<description></description>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+<action>
+	<icon>emblem-generic-greyorange</icon>
+	<name>Edit as Root</name>
+	<unique-id>1389735585522907-4</unique-id>
+	<command>kdesu gvim %F</command>
+	<description></description>
+	<patterns>*</patterns>
+	<text-files/>
+</action>
+</actions>

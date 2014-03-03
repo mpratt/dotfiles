@@ -1,0 +1,18 @@
+background no
+out_to_console yes
+out_to_x no
+update_interval 5
+total_run_times 0
+short_units yes
+pad_percents  3
+override_utf8_locale yes
+
+TEXT
+[
+#{"full_text": " ☻ [${exec whoami}@${exec hostname}] ", "color":"\#6F3BFF"},
+{"full_text": " [♪ ${exec sh ~/.i3/musicplayer.sh}] ", "color":"\#e4f800"},
+{"full_text": " ♣ RAM: [$membar] ", "color":"\#B58900"},
+{"full_text": " ♥ CPU: [$cpubar] ", "color":"\#00A9B5"},
+{"full_text": " ≈ [${exec sh ~/.i3/temperature.sh}°C] ","color":"\#33CC99"},
+{"full_text": " ↑ [${uptime_short}] ","color": "\#dc322f"}
+],

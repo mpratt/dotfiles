@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|' on
+# the right side marks the last column you can put a character in.  You must make
+# exactly 11 lines for the formatting to be correct.  It's also customary to
+# leave one space after the ':'.
+
+       |-----handy-ruler------------------------------------------------|
+adminer: Adminer (Database management in single PHP file)
+adminer: 
+adminer: Adminer (formerly phpMinAdmin) is a full-featured database
+adminer: management tool written in PHP. Conversely to phpMyAdmin, it
+adminer: consist of a single file ready to deploy to the target server.
+adminer: Adminer is available for MySQL, PostgreSQL, SQLite, MS SQL 
+adminer: and Oracle.
+adminer: 
+adminer: http://www.adminer.org/
+adminer: 
+adminer: Packaged By Michael Pratt <pratt@hablarmierda.net>

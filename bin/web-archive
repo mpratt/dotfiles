@@ -1,0 +1,9 @@
+#!/bin/bash
+############################################################
+# Michael Pratt <pratt@hablarmierda.net>
+# Saves a Full Website for offline viewing
+###########################################################
+[ ${#} -ne "1" ] && echo "You have tu specify a URL" && exit 0
+DOMAIN=$(echo ${1} | sed -e "s/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/")
+wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows \
+     --no-parent --domains ${DOMAIN} ${1}

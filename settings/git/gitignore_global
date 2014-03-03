@@ -1,0 +1,9 @@
+# Stupid Dummy dirs/files
+.DS_Store?
+.DS_Store
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Vim/Emacs backup/tmp files
+*~

@@ -1,0 +1,31 @@
+" .vimrc
+" Michael Pratt
+" pratt@hablarmierda.net 
+" http://www.michael-pratt.com
+
+set nocompatible " Forget compatibility with Vi. Who cares. - Required by Vundle
+filetype off     " required by Vundle
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" Install all Bundles
+source ~/.vim/plugins.vim
+
+filetype plugin indent on " required by Vundle
+syntax on
+syntax sync minlines=200
+
+" Load custom settings
+source ~/.vim/settings.vim
+source ~/.vim/commands.vim
+source ~/.vim/mappings.vim
+
+" Set the color scheme on Gvim
+if has("gui_running")
+    colorscheme aldmeris
+endif
+
+" Common abbreviations
+iabbrev lenght length

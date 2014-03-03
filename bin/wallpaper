@@ -1,0 +1,106 @@
+#!/bin/bash
+#######################################################
+# Wallpaper Management via feh
+# Michael Pratt <pratt@hablarmierda.net>
+#######################################################
+set -e
+FOLDER="/mnt/data/Imagenes/Wallpapers"
+USEPREVIOUS=0
+USERANDOM=0
+FILE=""
+ARGS=("--bg-scale")
+
+# Usage instructions
+wallpaper_usage()
+{
+    clear
+    echo "Wallpaper"
+    echo "Usage: $(basename $0) [--folder [folder]][ --file [file]][--use-previous][--use-random]"
+    echo "Requirements: feh"
+    echo "Author: Michael Pratt <pratt@hablarmierda.net>"
+    echo ""
+    echo "DESCRIPTION"
+    echo "  Wallpaper managment script, requires feh"
+    echo ""
+    echo "PARAMS"
+    echo "--folder [folder]"
+    echo "  A folder with jpg, png or gif files. Used to fetch a randome wallpaper from it"
+    echo ""
+    echo "--file [file]"
+    echo "  Path to an image file to be used as a wallpaper"
+    echo ""
+    echo "--use-previous"
+    echo "  Checks the home folder for a .fehbg file and runs it"
+    echo ""
+    echo "--use-random"
+    echo "  Fetches a random image file from the folder"
+    echo ""
+    echo "AUTHOR"
+    echo "  Michael Pratt <pratt@hablarmierda.net>"
+    echo "  http://www.michael-pratt.com"
+    echo ""
+    exit 0
+}
+
+if [ "$#" -eq "0" ]; then
+    wallpaper_usage
+    exit 0
+fi
+
+while [ -n "$1" ]; do
+    case ${1} in
+        --folder)
+            shift
+            FOLDER="${1}"
+        ;;
+        --file)
+            shift
+            FILE="${1}"
+        ;;
+        --use-previous)
+            shift
+            USEPREVIOUS="1"
+        ;;
+        --use-random)
+            shift
+            USERANDOM="1"
+        ;;
+        -h|--help)
+            usage
+            exit 0
+        ;;
+        *) ARGS+=( "${1}" );;
+    esac
+done
+
+if [ "${USEPREVIOUS}" -eq "1" ]; then
+    echo "Using latest wallpaper from ${HOME}/.fehbg"
+    if ! [ -e "${HOME}/.fehbg" ]; then
+        echo "${HOME}/.fehbg not found"
+        if [ "${USERANDOM}" -eq "0" ] && [ -z "${FILE}" ]; then
+            exit 1
+        fi
+    else
+        sh ${HOME}/.fehbg
+        exit 0
+    fi
+fi
+
+if [ "${USERANDOM}" -eq "1" ]; then
+    echo "Setting random wallpaper from ${FOLDER}"
+    if ! [ -e ${FOLDER} ]; then
+        echo "${FOLDER} does not exist, cannot set a random wallpaper"
+        exit 1
+    fi
+
+    feh ${ARGS[@]} "$(find ${FOLDER} -type f -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | shuf -n1)"
+
+elif [ -n "${FILE}" ]; then
+
+    if ! [ -e ${FILE} ]; then
+        echo "${FILE} doesnt exists!"
+        exit 1
+    fi
+
+    feh ${ARGS[@]} "${FILE}"
+fi

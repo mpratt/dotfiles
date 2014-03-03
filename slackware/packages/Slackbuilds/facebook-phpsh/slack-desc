@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|' on
+# the right side marks the last column you can put a character in.  You must make
+# exactly 11 lines for the formatting to be correct.  It's also customary to
+# leave one space after the ':'.
+#
+#             |-----handy-ruler------------------------------------------------|
+facebook-phpsh: facebook-phpsh - An interactive shell for php
+facebook-phpsh:
+facebook-phpsh: phpsh is an interactive shell for php that features
+facebook-phpsh: readline history, tab completion quick access to documentation
+facebook-phpsh:
+facebook-phpsh: It was developed at Facebook and ironically, is written mostly 
+facebook-phpsh: in python.
+facebook-phpsh:
+facebook-phpsh: http://phpsh.org/
+facebook-phpsh: Packaged By Michael Pratt <pratt@hablarmierda.net>
+facebook-phpsh: 

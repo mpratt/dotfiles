@@ -1,0 +1,138 @@
+#!/bin/bash
+##################################################################
+# Bloquea algunas paginas que puedan ser una distracción
+# Autor: Michael Pratt | http://wwww.michael-pratt.com/
+#
+# Licencia: MIT
+# Copyright (C) 2011 by Michael Pratt <pratt@hablarmierda.net>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+##################################################################
+# set -e
+HOSTFILE="/etc/hosts"
+SITES=("reddit.com"\
+       "facebook.com"\ 
+       "twitter.com"\ 
+       "vimeo.com"\
+       "flickr.com"\
+       "youtube.com"\
+       "news.ycombinator.com"\
+       "hablarmierda.net"\
+       "digg.com"\
+       "stumpleupon.com"\
+       "goear.com")
+
+#################################################################
+# Alguna pregunta?
+#################################################################
+be_efficient_usage()
+{
+	echo "usage $(basename ${0}) [--enable|--disable] [--add website] [--remove website] [--list]"
+	exit 0
+}
+
+#################################################################
+# Habilita el programa
+#################################################################
+be_efficient_enable()
+{
+	local i
+	for i in ${SITES[@]}; do
+		be_efficient_add "${i}"
+    done
+
+    echo "Work mode enabled"
+}
+
+#################################################################
+# Deshabilita el programa
+#################################################################
+be_efficient_clean()
+{
+	sed -i -e '/#beefficient$/d' ${HOSTFILE}
+	echo "Work mode disabled"
+}
+
+#################################################################
+# Agrega una pagina
+#################################################################
+be_efficient_add()
+{
+	local website="${1}"
+	echo -e "127.0.0.1\t$website\t#beefficient" >> ${HOSTFILE}
+	echo -e "127.0.0.1\twww.$website\t#beefficient" >> ${HOSTFILE}
+	echo "Added ${website}"
+}
+
+#################################################################
+# Remueve una pagina
+#################################################################
+be_efficient_remove()
+{
+	local website="${1}"
+	sed -i "/${website}/d" ${HOSTFILE}
+	sed -i "/www.${website}/d" ${HOSTFILE}
+	echo "Removed ${website}"
+}
+
+#################################################################
+# Muestra todas las páginas bloqueadas
+#################################################################
+be_efficient_list()
+{
+    grep '#be' ${HOSTFILE} | awk '{print $2}'
+}
+
+#################################################################
+# Empieza a funcionar
+#################################################################
+if [ "$#" -eq "0" ]; then
+	be_efficient_usage
+	exit 0
+fi
+
+if [ ! -w "${HOSTFILE}" ]; then
+    echo "cannot write to ${HOSTFILE} (are you root?)"
+    exit 1
+fi
+
+while [ -n "${1}" ]; do
+	case ${1} in
+		--enable)
+			be_efficient_clean
+			be_efficient_enable ;;
+
+		--add)
+			shift
+			be_efficient_add "${1}" ;;
+
+		--remove)
+			shift
+			be_efficient_remove "${1}" ;;
+
+		--disable)
+			be_efficient_clean ;;
+
+        --list)
+            be_efficient_list ;;
+
+		*) be_efficient_usage ;;
+	esac
+	shift
+done

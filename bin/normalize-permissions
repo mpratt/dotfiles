@@ -1,0 +1,76 @@
+#!/bin/bash
+##################################################################
+#  Script que arregla todos los permisos para este directorio
+#  Michael Pratt <pratt@hablarmierda.net>
+##################################################################
+CWD="/mnt/data"
+! [[ "$(whoami)" == "root" ]] && echo "Error: You need to be root to run this script" && exit 0
+
+echo "Correcting owner permissions to pratt:users for all the files in ${CWD}"
+chown pratt:users -R ${CWD}/*
+find ${CWD}/ \( -type d -or -type f \) -exec chmod 775 {} \;
+
+if [ -e "${CWD}/Archive" ]; then
+    echo "Archive"
+    chmod 777 ${CWD}/Archive/Linux/strapOn.sh
+    chmod 777 -R ${CWD}/Archive/Linux/bin/*
+    chmod 777 -R ${CWD}/Archive/Linux/openbox/*
+    chmod 777 -R ${CWD}/Archive/Linux/slackware/bin/*
+    chmod 744 -R ${CWD}/Archive/Linux/slackware/config/*
+else
+    echo "${CWD}/Archive does not exist"
+fi
+
+if [ -e "${CWD}/Proyectos" ]; then
+    echo "Proyectos"
+    chmod 777 -R ${CWD}/Proyectos/Bash/*
+    chmod 777 -R ${CWD}/Proyectos/Laboratorio/*
+    find ${CWD}/Proyectos/PHP/ -type d \( -iname "uploads" -o -iname "cache" -o -iname "bolido" \) -exec chmod 777 {} \;
+    find ${CWD}/Proyectos/Web/ -type d \( -iname "uploads" -o -iname "cache" -o -iname "bolido" \) -exec chmod 777 {} \;
+    find ${CWD}/Proyectos/Web/ -iname "*.sh" -type f -exec chmod 777 {} \;
+    chmod 777 -R ${CWD}/Proyectos/Web/MichaelPratt/Lab/clientes/*
+else
+    echo "${CWD}/Proyectos does not exist"
+fi
+
+if [ -e "${CWD}/Games" ]; then
+    echo "Games"
+    chmod +x ${CWD}/Games/PC/WorldOfGoo/WorldOfGoo*
+else
+    echo "${CWD}/Games does not exist"
+fi
+
+if [ -e "${CWD}/Documentos" ]; then
+    echo "Documentos"
+    chmod 755 -R ${CWD}/Documentos/*
+else
+    echo "${CWD}/Documentos does not exist"
+fi
+
+if [ -e "${CWD}/Imagenes" ]; then
+    echo "Imagenes"
+    chmod 755 -R ${CWD}/Imagenes/*
+else
+    echo "${CWD}/Imagenes does not exist"
+fi
+
+if [ -e "${CWD}/Mp3" ]; then
+    echo "Mp3"
+    chmod 755 -R ${CWD}/Mp3/*
+else
+    echo "${CWD}/Mp3 does not exist"
+fi
+
+if [ -e "${CWD}/Video" ]; then
+    echo "Video"
+    chmod 755 -R ${CWD}/Video/*
+else
+    echo "${CWD}/Video does not exist"
+fi
+
+if [ -e "${CWD}/Transfer" ]; then
+    echo "Transfer"
+    chmod 777 -R ${CWD}/Transfer/*
+else
+    echo "${CWD}/Transfer does not exist"
+fi

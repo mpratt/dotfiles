@@ -1,0 +1,45 @@
+[user]
+    name = Michael Pratt
+    email = pratt@hablarmierda.net
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+[core]
+    quotepath = false
+    editor = vim
+    pager = less -XRMSI
+[apply]
+    whitespace = fix
+[alias]
+    st = status -bs
+    ci = commit
+    br = branch
+    bl = blame -C
+    df = diff --word-diff
+    l1 = log --oneline --decorate
+    co = checkout
+    ci = commit
+    br = branch
+    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    type = cat-file -t
+    dump = cat-file -p
+    addremove = !git add . && git ls-files --deleted | xargs --no-run-if-empty git rm
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+[push]
+    default = current
+[github]
+    user = mpratt

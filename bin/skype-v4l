@@ -1,0 +1,13 @@
+#!/bin/bash
+##################################################################
+#  Script para lanzar el Skype con soporte de Camara
+#  Michael Pratt <pratt@hablarmierda.net>
+##################################################################
+! [ "$(which skype)" ] && echo "skype no esta instalado" && exit 1
+if [ -e "/usr/lib/libv4l/v4l1compat.so" ]; then
+    echo "Launching Skype in V4l-Mode:"
+    LD_PRELOAD=/usr/lib/libv4l/v4l1compat.so skype
+else
+    echo "Launching Skype"
+    skype
+fi

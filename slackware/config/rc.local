@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# /etc/rc.d/rc.local:  Local system initialization script.
+#
+# Put any local startup commands in here.  Also, if you have
+# anything that needs to be run at shutdown time you can
+# make an /etc/rc.d/rc.local_shutdown script and put those
+# commands in there.
+
+# Load stuff for my Celeron M Machine
+if [ "$(uname -p | grep 'Celeron')" ]; then
+    if [ "$(which setkeycodes)" ]; then 
+        echo "Enable Multimedia Key (Celeron)"
+        setkeycodes e008 136 
+    fi
+fi
+
+if [ -e "/sys/class/backlight/nv_backlight/brightness" ]; then
+    echo "Dim The Lights! o_O"
+    echo 65 > /sys/class/backlight/nv_backlight/brightness
+fi
+
+if [ -x /usr/sbin/smartd ]; then
+   echo -e "Starting Smart Daemon"
+   /usr/sbin/smartd
+fi

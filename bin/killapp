@@ -1,0 +1,18 @@
+#!/bin/bash
+##################################################################
+#  Kills multiple process.
+#  Requires pgrep
+#  Michael Pratt <pratt@hablarmierda.net>
+##################################################################
+[ -z "$1" ] && echo "Usage: $(basename $0) [appname1|appname2]" && exit 1
+
+for process in $@; do
+    id=$(pgrep $process)
+	echo "killing ${process} (${id})";
+    
+    if [ -n "${id}" ]; then
+        kill -9 ${id}
+    else
+        echo "${process} not found!"
+    fi
+done
