@@ -5,3 +5,4 @@ pychecker
 pyflakes
 netbeans
 eclipse
+squirrel-sql

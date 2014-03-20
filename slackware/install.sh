@@ -28,6 +28,11 @@ if [ -e "/etc/slackware-version" ]; then
             patch -p1 -N < bootsplash.patch
             rm -rf /etc/rc.d/bootsplash.patch
         fi
+
+        if [ ! -e "/boot/video/startup.mp4" ]; then
+            mkdir /boot/video/
+            cp -r ${LOCATION}/config/video/bwtbm-startup.mp4 /boot/video/startup.mp4
+        fi
     else
         echo "You dont have permission to write in /etc/rc.d/"
     fi

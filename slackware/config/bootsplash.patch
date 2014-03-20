@@ -26,7 +26,7 @@ diff -ruN original/rc.6 new/rc.6
 +# Bootsplash
 +if [ -f "/boot/video/shutdown.mp4" ]; then
 +    echo "Shutdown Bootsplash"
-+    mplayer -nosound -quiet -ss 5 -vo fbdev2 -vf scale=1366:768 /boot/video/shutdown.mp4 < /dev/null > /dev/null &
++    mplayer -nosound -quiet -ss 1 -vo fbdev2 -vf scale=1366:768 /boot/video/shutdown.mp4 < /dev/null > /dev/null &
 +else
 +    echo "No Shutdown Bootsplash found."
 +fi
@@ -57,7 +57,7 @@ diff -ruN original/rc.S new/rc.S
  
 +# Bootsplash
 +if [ -f "/boot/video/startup.mp4" ]; then
-+    mplayer -quiet -ss 10 -vo fbdev2 -vf scale=1366:768 -nosound /boot/video/startup.mp4 < /dev/null > /dev/null &
++    mplayer -quiet -ss 1 -vo fbdev2 -vf scale=1366:768 -nosound /boot/video/startup.mp4 < /dev/null > /dev/null &
 +else
 +    echo "No Startup Bootsplash"
 +fi

@@ -12,7 +12,17 @@ fi
 CXXFLAGS="${CFLAGS}"
 
 # Prompt
-PROMPT_COMMAND='RET=$?; if [[ $RET != 0 ]]; then echo -ne "\033[0;41m:(\033[0m"; fi'
+function __exit_prompt_status {
+    EXITSTATUS="$?"
+    BOLD="\e[\033[1m\]"
+    RED="\e[\033[0;31m\]"
+    OFF="\e[\033[m\]"
+    if [ "${EXITSTATUS}" -ne 0 ]; then
+        echo -ne "[$(tput bold && tput setaf 1):/$(tput sgr0)]"
+    fi
+}
+
+PROMPT_COMMAND=__exit_prompt_status
 [ "$(whoami)" = "root" ] && PS1="\u@\h:\w\$ " || PS1="[\u@\h \W]⚡ "
 
 # Setup stuff!

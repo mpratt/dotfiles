@@ -53,13 +53,22 @@ let g:UltiSnipsExpandTrigger="<C-e>"
 Bundle 'goldfeld/vim-seek'
 let g:seek_subst_disable = 1 " Vim Seek - Disable substitution
 
+Bundle 'tpope/vim-ragtag'
+let g:ragtag_global_maps = 1 " let a few general purpose mappings available globally
+
+" No need to configure this other plugins
 Bundle 'Raimondi/delimitMate'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'mattn/emmet-vim'
 Bundle 'Lokaltog/powerline'
 Bundle 'tpope/vim-surround'
 Bundle 'StanAngeloff/php.vim'
+Bundle 'shawncplus/phpcomplete.vim'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'terryma/vim-expand-region'
 Bundle 'paradigm/TextObjectify'
 
+" Color Schemes
+Bundle 'nanotech/jellybeans.vim'
+Bundle 'veloce/vim-aldmeris'
+Bundle 'altercation/vim-colors-solarized'

@@ -69,22 +69,23 @@ if ! hasPkg adminer; then
     echo "Building Adminer"
     cd ${CWD}/Slackbuilds/adminer/
     sh adminer.SlackBuild
+    upgradepkg --install-new /tmp/*.t?z
 fi
 
 if ! hasPkg areao; then
     echo "Building Areao Icon theme"
     cd ${CWD}/Slackbuilds/areao-icon-theme/
     sh areao-icon-theme.SlackBuild
+    upgradepkg --install-new /tmp/*.t?z
 fi
 
 if ! hasPkg facebook-phpsh; then
     echo "Building Facebook PHPSH"
     cd ${CWD}/Slackbuilds/facebook-phpsh/
     sh facebook-phpsh.SlackBuild
+    upgradepkg --install-new /tmp/*.t?z
 fi
 
-cd /tmp
-upgradepkg --install-new /tmp/*.t?z
 
 # Download Packages
 downloadPkg "vlc" "http://slackware.org.uk/people/alien/restricted_slackbuilds/vlc/$FOLDER/$VERSION/"
@@ -102,14 +103,16 @@ if [ "${IS64}" -eq "1" ]; then
 fi
 
 # Avoid conflicts with texlive files
-if [ -n "$(ls /tmp/*z | grep texlive)" ]; then
+if [ -n "$(find /tmp/ -type f | grep texlive)" ]; then
     echo "Removing tetex and tetex-doc"
     removepkg tetex
     removepkg tetex-doc
 fi
 
 # Install all files
-upgradepkg --install-new /tmp/*.t?z
+if [ -n "$(find /tmp/ -type f | egrep -i '\.t(g|x)z')" ]; then
+    upgradepkg --install-new /tmp/*.t?z
+fi
 
 cd ${LOCATION}
 echo "Installing Compiled pkgs"

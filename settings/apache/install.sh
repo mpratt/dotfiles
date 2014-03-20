@@ -32,6 +32,7 @@ else
     pear channel-discover pear.pdepend.org
     pear install --alldeps phpmd/PHP_PMD
     pear install pear.phpunit.de/phpdcd
+    pear install doc.php.net/pman
 fi
 echo ""
 
@@ -53,6 +54,8 @@ if [ -w "/etc/" ]; then
         echo -e "127.0.0.1\twww.adminer.loc\t#dotfiles-script" >> ${HOSTFILE}
         echo -e "127.0.0.1\tlab.loc\t#dotfiles-script" >> ${HOSTFILE}
         echo -e "127.0.0.1\twww.lab.loc\t#dotfiles-script" >> ${HOSTFILE}
+        echo -e "127.0.0.1\tclientes.loc\t#dotfiles-script" >> ${HOSTFILE}
+        echo -e "127.0.0.1\twww.clientes.loc\t#dotfiles-script" >> ${HOSTFILE}
     else
         echo "${HOSTFILE} was already modified"
     fi

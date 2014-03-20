@@ -76,9 +76,9 @@ set incsearch          " Set incremental searching
 set noswapfile
 set nobackup
 set nowb
-set directory^=~/.vim/tmp/ " store swap files here
-set undolevels=1000        " use many levels of undo
-set undodir=~/.vim/tmp/    " Keep undo history across sessions, by storing in file.
+set directory^=~/.vim/local/tmp/ " store swap files here
+set undodir=~/.vim/local/tmp/    " Keep undo history across sessions, by storing in file.
+set undolevels=1000              " use many levels of undo
 set fillchars+=vert:│ "vertical splits less gap between bars
 
 " fix slight delay after pressing ESC then O
@@ -105,11 +105,16 @@ set shell=bash\ --login
 if has("gui_running")
     " Display tabs and trailing spaces visually
     set list 
-    set listchars=tab:›\ 
-    set listchars+=trail:-
-    set listchars+=extends:>
-    set listchars+=precedes:<
-    set listchars+=eol:¬
+    set listchars=nbsp:¬,eol:↳,tab:└─,extends:»,precedes:«,trail:•
+
+    " Other Alternative
+    "set listchars=tab:›\ 
+    "set listchars+=trail:-
+    "set listchars+=extends:>
+    "set listchars+=precedes:<
+    "set listchars+=eol:¬
+
+    " Other Alternative
     "set listchars=tab:▶\ 
     "set listchars+=eol:★
     "set listchars+=trail:◥

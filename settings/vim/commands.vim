@@ -45,10 +45,10 @@ autocmd FileType python noremap <F11> :w!<CR>:!/usr/bin/pyflakes %<CR>
 autocmd FileType python noremap <F12> :w!<CR>:!/usr/bin/python -B %<CR>
 
 " Close Tag Plugin
-au Filetype html,xml,xsl,php source ~/.vim/scripts/closetag.vim
+au Filetype html,xml,xsl,php source ~/.vim/local/scripts/closetag.vim
 
 " JsBeautifier Plugin
-au Filetype javascript source $HOME/.vim/scripts/jsbeautify.vim
+au Filetype javascript source $HOME/.vim/local/scripts/jsbeautify.vim
 
 " Exit insert mode after 4 seconds of idle time
 " :au CursorHoldI * stopinsert 

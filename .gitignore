@@ -14,3 +14,4 @@ slackware/packages/Slackbuilds/*/*.tar.bz2
 slackware/packages/Compiled/*.t*z
 settings/vim/bundle/*
 settings/vim/.netrwhist
+*.mp4
