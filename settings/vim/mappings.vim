@@ -43,7 +43,6 @@ nmap <silent><A-Right> :wincmd l<CR>
 " Tab Navigation
 nmap <C-Tab> :tabnext<CR>
 nmap <C-S-Tab> :tabprevious<CR>
-noremap <F7> :tab ball<CR>
 
 " Allow the space key on normal mode
 noremap <Space> i<Space><Esc>
