@@ -12,7 +12,7 @@ As you can see the configuration is divided into different vim files that are la
 * mappings.vim    My custom mappings
 * vimrc           Bootstraps the whole thing and sets the colorscheme
 
-[Screenshot](http://i.imgur.com/om9ayHi.png)
+![Screenshot](http://i.imgur.com/om9ayHi.png)
 
 ### Used Plugins/Colorschemes
 
