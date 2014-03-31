@@ -1,10 +1,12 @@
 #!/bin/bash
 ##################################################################
-# Es un Wrapper para aircrack-ng
-# Autor: Michael Pratt | http://wwww.michael-pratt.com/
+# Minimal aircrack-ng wrapper
+#
+# Autor: Michael Pratt
+# Url: http://wwww.michael-pratt.com/
 #
 # Licencia: MIT
-# Copyright (C) 2012 by Michael Pratt <pratt@hablarmierda.net>
+# Copyright (C) 2014 by Michael Pratt <pratt@hablarmierda.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +28,9 @@
 ##################################################################
 # set -e
 if [ "${#}" -lt "1" ]; then
-	echo "$(basename $0) <essid|list> <bssid> <channel> <output directory>"
+    echo "$(basename $0) <essid|list> <bssid> <channel> <output directory>"
     echo "Example: $(basename $0) MyWifi 00:00:00:00:00 11 /home/name/wep/"
-	exit 0
+    exit 0
 fi
 
 WLAN="wlan0"
@@ -63,13 +65,13 @@ sudo aireplay-ng -9 -e ${ESSID} -a ${BSSID} ${MON}
 
 read -p "Is the injection greater than 50? (y/n)? " ANSWER
 if [[ "${ANSWER}" == "n" ]]; then
-	echo "Try another AP :("
-	exit 0
+    echo "Try another AP :("
+    exit 0
 fi
 
 if ! [ -e "${ESSID}" ]; then
-	echo "Creating dir ${ESSID}"
-	mkdir ${ESSID}
+    echo "Creating dir ${ESSID}"
+    mkdir ${ESSID}
 fi
 cd ${CWD}/${ESSID}
 
@@ -85,7 +87,7 @@ ${TERMINAL} -e "sudo aireplay-ng -3 -b ${BSSID} ${MON}" &
 
 QUIT="n"
 while [[ "${QUIT}" != "y" ]]; do
-	read -p "Stop now? (y/n)? " QUIT
+    read -p "Stop now? (y/n)? " QUIT
 done
 
 #sudo aircrack-ng -b ${BSSID} ${CWD}/${ESSID}/output*.cap

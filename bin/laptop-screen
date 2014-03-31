@@ -1,8 +1,7 @@
 #!/bin/bash
-##################################################################
-# Kills one or multiple process by using the name
+#############################################################
+# Enable/Disable VGA on my laptop via xrandr
 #
-# Requires: pgrep
 # Author: Michael Pratt
 # Url: http://wwww.michael-pratt.com/
 #
@@ -28,15 +27,29 @@
 # THE SOFTWARE.
 ##################################################################
 # set -e
-[ -z "$1" ] && echo "Usage: $(basename $0) [appname1|appname2]" && exit 1
-
-for process in $@; do
-    id=$(pgrep $process)
-    echo "killing ${process} (${id})";
-
-    if [ -n "${id}" ]; then
-        kill -9 ${id}
-    else
-        echo "${process} not found!"
-    fi
+ON=0
+[ "$#" -eq 0 ] && echo "Usage: $(basename ${0}) --on | --off" && exit 0
+while [ -n "$1" ]; do
+  case "$1" in
+    --on) 
+        ON=1 
+        shift ;;
+    --off) 
+        ON=0
+        shift ;;
+    *) 
+        echo "Unknown Parameter"
+        exit 1
+        ;;
+  esac
+  shift
 done
+
+if [ "${ON}" -eq 1 ]; then
+    xrandr --output VGA-1 --mode 1024x768
+    xrandr --output LVDS-1 --mode 1024x768
+fi
+
+if [ "${ON}" -eq 0 ]; then
+    xrandr --output LVDS-1 --auto
+fi

@@ -1,7 +1,6 @@
 #!/bin/bash
 # Michael Pratt <pratt@hablarmierda.net>
 # $HOME/.bashrc
-
 if [[ "$(uname -m)" == "x86_64" ]]; then
     CHOST="x86_64-pc-linux-gnu"
     CFLAGS="-march=core2 -O2 -pipe"
@@ -47,42 +46,39 @@ shopt -s histappend
 EDITORS="vim vi pico nano"
 for ED in ${EDITORS}; do
     if [ -x "$(which $ED 2>/dev/null)" ]; then
-		export EDITOR="$ED"
-		export VISUAL="$EDITOR"
-		break
-	fi
+        export EDITOR="$ED"
+        export VISUAL="$EDITOR"
+        break
+    fi
 done
 unset EDITORS
 unset ED
 
-# Custom Alias
-alias ls="ls -h --color=auto --group-directories-first"
-alias lsdots="ls -a | egrep '^\.'"
-alias lsoctal="ls -la | sed -e 's/--x/1/g' -e 's/-w-/2/g' -e 's/-wx/3/g' -e 's/r--/4/g' -e 's/r-x/5/g' -e 's/rw-/6/g' -e 's/rwx/7/g' -e 's/---/0/g'"
-alias cp="cp -i"
-alias mv="mv -i"
-alias grep="grep --color"
-alias manall="man -a"
-alias nocomment="grep -Ev '^\s*(#|$)'"
-alias rawcode="grep -cv ^#\|^$"
-alias sizeof="du -sh"
+# Easier directory change
 alias cd..="cd .."
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
-alias clear_history="history -c; unset HISTFILE"
-alias realpath="readlink -f"
-alias dmesg_check="dmesg | grep -iIr 'error\|warn\|fail\|not\|crit'"
-alias auboost="rexima"
-alias showPath='echo -e "${PATH//:/\n}"'
+
+# Other alias
 alias :q="exit"
-alias t="thunar &"
+alias ls="ls -h --color=auto --group-directories-first"
+alias lsoctal="ls -la | sed -e 's/--x/1/g' -e 's/-w-/2/g' -e 's/-wx/3/g' -e 's/r--/4/g' -e 's/r-x/5/g' -e 's/rw-/6/g' -e 's/rwx/7/g' -e 's/---/0/g'"
+alias cp="cp -i"
+alias mv="mv -i"
+alias grep="grep --color"
+alias nocomment="grep -Ev '^\s*(#|//|$)'"
 alias screenoff="xset dpms force off"
-alias servethis="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
 alias phpunit="phpunit --verbose"
-#Check PHP For Errors
-alias phpcheck="find ./ -name \*.php | xargs -n 1 php -l"
+alias phpcheck="find ./ -iname \*.php | xargs -n 1 php -l" # Check for php errors
 alias makepass="openssl rand -base64 32"
+alias servethis="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+alias regrep="egrep -R -iH -n"
+
+# Allow php ctags
+if [ -e "/mnt/data/Scripts/dotfiles/bin/ctags" ]; then
+    alias ctags-php="/mnt/data/Scripts/dotfiles/bin/ctags -R --fields=+aimS --languages=php"
+fi
 
 # Non root alias
 if [ "$(whoami)" != "root" ]; then
@@ -102,5 +98,5 @@ fi
 # Load Slackware specific files
 if [ -e "/etc/slackware-version" ]; then
     [ -r "/mnt/data/Scripts/dotfiles/bin/functions.d/slackware.sh" ] && source /mnt/data/Scripts/dotfiles/bin/functions.d/slackware.sh
-	[ -e "/mnt/data/Scripts/dotfiles/slackware/bin" ] && PATH=$PATH:/mnt/data/Scripts/dotfiles/slackware/bin
+    [ -e "/mnt/data/Scripts/dotfiles/slackware/bin" ] && PATH=$PATH:/mnt/data/Scripts/dotfiles/slackware/bin
 fi

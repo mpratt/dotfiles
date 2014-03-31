@@ -3,7 +3,7 @@
 #  This file defines useful functions
 #  Michael Pratt <pratt@hablarmierda.net>
 ##################################################################
-# Creates symlinks
+# Creates symlinks - Used in Installation files
 function symlinkIt()
 {
     local src=$(realpath "${1}")
@@ -34,11 +34,6 @@ function dec2hex() { printf "%X\n" ${1}; }
 function bin2dec() { echo "ibase=2; obase=A; $*" | bc; }
 function dec2bin() { echo "obase=2; $*" | bc; }
 function calculate() { echo "scale=2; $@" | sed 's/*/\*/' | bc -l; }
-function b64decode()
-{
-	[ "$#" -ne 1 ] && echo "uso: b64decode <file>" && return 0
-	perl -MMIME::Base64 -ne 'print decode_base64($_)' < ${1} > decoded-${1}
-}
 
 # Date functions
 function stamp2date() { awk -v date=$1 'BEGIN { print strftime("(d/m/y h:m:s): %d/%m/%Y - %H:%M:%S", date)}'; }
@@ -46,13 +41,3 @@ function date2stamp() { [ -z "$*" ] && echo "date2stamp Y-M-D h:m:s [2009-02-03 
 
 # Make gvim open files in the same instance
 function gvim() { command gvim --remote-tab-silent $@ || command gvim $@; }
-
-# Custom functions
-function euro2peso()
-{
-	local euro=$(curl -s http://www.colombia.com/includes/2007/enlaces/actualidad_indicadores.js | egrep 'IndEuro = "([0-9\.\$,\ ]+)' | sed -e 's/,.*//' -e 's/[^0-9]*//g')
-	#local euro=$(printf "%0.f\n" $raw)
-	echo "El Euro esta a $euro pesos"
-	[ -n "$1" ] && echo "Entonces tienes: ***  $(expr $euro \* $1) ***  Pesos!"
-	return 0
-}

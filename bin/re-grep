@@ -1,9 +1,0 @@
-#!/bin/bash
-##################################################################
-#  Searchs for a string inside a file recursively
-#  Michael Pratt <pratt@hablarmierda.net>
-##################################################################
-[ "$#" -lt "1" ] && echo "uso: $(basename $0) [words]" && exit 0
-egrep -R -iH -n "${1}" *
-#find $(pwd) -type f -print | xargs -0 egrep -i $1
-

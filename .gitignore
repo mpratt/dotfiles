@@ -7,6 +7,7 @@ settings/git/gitconfig
 bin/gobear
 bin/soho-downloader
 bin/spritefy
+bin/ctags
 slackware/packages/*.tgz
 slackware/packages/Slackbuilds/*/*.php
 slackware/packages/Slackbuilds/*/*.tar.gz

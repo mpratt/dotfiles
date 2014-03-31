@@ -1,8 +1,8 @@
 #!/bin/bash
 #############################################################
-# wrapper script for [un]compressing archives of all sorts
-# Modified from http://pbrisbin.com:8080/bin/archive
-# Autor: Michael Pratt <pratt@hablarmierda.net>
+# Wrapper script for [un]compressing archives of all sorts
+# Based on: http://pbrisbin.com:8080/bin/archive
+# Modifications by: Michael Pratt <pratt@hablarmierda.net>
 #############################################################
 set -e
 APPNAME="Archive"
@@ -14,28 +14,28 @@ CWD=$(pwd)
 #############################################################
 function compress_archive()
 {
-	local dst="$1"
-	shift
+    local dst="$1"
+    shift
 
-	# warn but still clobber
-	[ -e "$dst" ] && echo "warning: overwriting $dst"
+    # warn but still clobber
+    [ -e "$dst" ] && echo "warning: overwriting $dst"
 
-	# check existence
-	local src
-	for src in "$@"; do
-		[ -e "$src" ] || errorout "$src: not found."
-	done
+    # check existence
+    local src
+    for src in "$@"; do
+        [ -e "$src" ] || errorout "$src: not found."
+    done
 
-	case "$dst" in
-		*.tbz2|*.tar.bz2) tar cvpjf "$dst" "$@"       ;;
-		*.tgz|*.tar.gz)   tar cvpzf "$dst" "$@"       ;;
-		*.gz)             cat "$@" | gzip > "$dst"    ;;
-		*.bz2)            cat "$@" | bzip2 > "$dst"   ;;
-		*.zip)            zip "$dst" "$@"             ;;
-		*.7z)             7z -t7z "$dst" "$@"         ;;
-		*)                tar cvpzf "$archive.tar.gz" ;; # a default
-	esac
-	exit $?
+    case "$dst" in
+        *.tbz2|*.tar.bz2) tar cvpjf "$dst" "$@"       ;;
+        *.tgz|*.tar.gz)   tar cvpzf "$dst" "$@"       ;;
+        *.bz2) cat "$@" | bzip2 > "$dst"   ;;
+        *.zip) zip "$dst" "$@"             ;;
+        *.7z) 7z -t7z "$dst" "$@"         ;;
+        *.gz) cat "$@" | gzip > "$dst"    ;;
+        *) tar cvpzf "$archive.tar.gz" ;; # a default
+    esac
+    exit $?
 }
 
 #############################################################
@@ -43,51 +43,51 @@ function compress_archive()
 #############################################################
 function extract_archive()
 {
-	local dir="$PWD"
-	local dst="$1"
-	shift
+    local dir="$PWD"
+    local dst="$1"
+    shift
 
-	if [ "$dst" != './' ]; then
-		[ -d "$dst" ] || mkdir -p "$dst"
-		cd "$dst" || errorout 'failed to change directory'
-	fi
+    if [ "$dst" != './' ]; then
+        [ -d "$dst" ] || mkdir -p "$dst"
+        cd "$dst" || errorout 'failed to change directory'
+    fi
 
-	local archive
-	for archive in "$@"; do
-		archive="$dir/$archive"
+    local archive
+    for archive in "$@"; do
+        archive="$dir/$archive"
 
-		# check existence
-		[ -e "$archive" ] || errorout "$archive: not found."
+        # check existence
+        [ -e "$archive" ] || errorout "$archive: not found."
 
-		case "$archive" in
-			*.tbz2|*.tar.bz2) tar xvjf "$archive"   ;;
-			*.tgz|*.tar.gz)   tar xvzf "$archive"   ;;
-			*.tar)            tar xvf "$archive"    ;;
-			*.gz)             gunzip "$archive"     ;;
-			*.bz2)            bunzip2 "$archive"    ;;
-			*.zip)            unzip "$archive"      ;;
-			*.rar)            unrar x "$archive"    ;;
-			*.Z)              uncompress "$archive" ;;
-			*.7z)             7z x "$archive"       ;;
-			*)                errorout "invalid archive: $archive" ;;
-		esac
-	done
-	exit $?
+        case "$archive" in
+            *.tbz2|*.tar.bz2) tar xvjf "$archive"   ;;
+            *.tgz|*.tar.gz) tar xvzf "$archive"   ;;
+            *.tar) tar xvf "$archive"    ;;
+            *.bz2) bunzip2 "$archive"    ;;
+            *.zip) unzip "$archive"      ;;
+            *.rar) unrar x "$archive"    ;;
+            *.gz) gunzip "$archive"     ;;
+            *.7z) 7z x "$archive"       ;;
+            *.Z) uncompress "$archive" ;;
+            *) errorout "invalid archive: $archive" ;;
+    esac
+done
+exit $?
 }
 
 function message()
 {
-	echo "	usage:"
-	echo "		archive [ -d <archive[.ext]> ] [source] ..."
-	echo "  	archive -u [ -d <directory> ] [archive] ..."
-	exit 1
+    echo "usage:"
+    echo "  archive [ -d <archive[.ext]> ] [source] ..."
+    echo "  archive -u [ -d <directory> ] [archive] ..."
+    exit 1
 }
 
 function errorout()
 {
-	echo "error: $*"
-	echo
-	exit 1
+    echo "error: $*"
+    echo
+    exit 1
 }
 
 #############################################################
@@ -102,18 +102,18 @@ uncompress=0
 
 # just make it easy on myself
 while [ -n "$1" ]; do
-  case "$1" in
-    -h|--help) message         ;;
-    -u|--u*)   uncompress=1 ;;
-    -d|--d*)   shift; dst="$1" ;;
-    -n|--n*)   shift; dst="$1" ;;
-    *)         args+=( "$1" )  ;;
+    case "$1" in
+        -h|--help) message ;;
+        -u|--u*) uncompress=1 ;;
+        -d|--d*) shift; dst="$1" ;;
+        -n|--n*) shift; dst="$1" ;;
+        *) args+=( "$1" )  ;;
   esac
   shift
 done
 
 if [ "$uncompress" -eq 1 ]; then
-		extract_archive "${dst:-./}" "${args[@]}"
-	else
-		compress_archive "${dst:-./archive.tar.gz}" "${args[@]}"
+    extract_archive "${dst:-./}" "${args[@]}"
+else
+    compress_archive "${dst:-./archive.tar.gz}" "${args[@]}"
 fi
