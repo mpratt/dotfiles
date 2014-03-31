@@ -68,6 +68,7 @@ if [ -w "/etc/" ]; then
     sed -i 's:#Include /etc/httpd/extra/httpd-vhosts.conf:Include /etc/httpd/extra/httpd-vhosts.conf:' /etc/httpd/httpd.conf
     sed -i 's:#Include /etc/httpd/extra/httpd-userdir.conf:Include /etc/httpd/extra/httpd-userdir.conf:' /etc/httpd/httpd.conf
     sed -i 's:#Include /etc/httpd/mod_php.conf:Include /etc/httpd/mod_php.conf:' /etc/httpd/httpd.conf
+    sed -i 's:#LoadModule userdir_module lib64/httpd/modules/mod_userdir.so:LoadModule userdir_module lib64/httpd/modules/mod_userdir.so:' /etc/httpd/httpd.conf
 
     if [ -z "$(grep 'index.php' /etc/httpd/httpd.conf)" ]; then
         sed -i 's:DirectoryIndex index.html:DirectoryIndex index.html index.php:' /etc/httpd/httpd.conf
