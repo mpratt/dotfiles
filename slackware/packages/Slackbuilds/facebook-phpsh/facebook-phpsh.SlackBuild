@@ -3,8 +3,8 @@
 # Written by Michael Pratt <pratt@hablarmierda.net> 
 set -e
 PRGNAM=facebook-phpsh
-VERSION="1.3-2"
-COMMIT="e839d58"
+VERSION="1.3.4"
+COMMIT="e8777ececb26939170d6ce2540e816f6c287e4cf"
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mpratt}
 
@@ -26,8 +26,10 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar -xvvzf $CWD/$PRGNAM-$VERSION-g$COMMIT.tar.gz
-cd $PRGNAM-$COMMIT
+unzip $CWD/$PRGNAM-$VERSION-$COMMIT.zip
+#cd $PRGNAM-$COMMIT
+cd phpsh-$COMMIT
+patch src/__init__.py < $CWD/subprocess.patch
 chown -R root:root .
 chmod -R u+w,go+r-w,a-s .
 python setup.py install --root=$PKG
@@ -44,3 +46,4 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+rm -rf /tmp/*$COMMIT*

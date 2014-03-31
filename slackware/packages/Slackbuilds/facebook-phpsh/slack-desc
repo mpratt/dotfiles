@@ -13,7 +13,7 @@ facebook-phpsh: readline history, tab completion quick access to documentation
 facebook-phpsh:
 facebook-phpsh: It was developed at Facebook and ironically, is written mostly 
 facebook-phpsh: in python.
-facebook-phpsh:
+facebook-phpsh: Using patched version from https://github.com/atdt/phpsh
+facebook-phpsh: 
 facebook-phpsh: http://phpsh.org/
 facebook-phpsh: Packaged By Michael Pratt <pratt@hablarmierda.net>
-facebook-phpsh: 
