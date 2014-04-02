@@ -37,7 +37,8 @@ let g:ctrlp_user_command = {
 Bundle 'Valloric/YouCompleteMe' 
 let g:ycm_key_invoke_completion = '<C-Space>'
 let g:ycm_min_num_of_chars_for_completion = 2
-let g:ycm_autoclose_preview_window_after_completion = 0
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_filetype_blacklist = {
       \ 'notes' : 1,
       \ 'markdown' : 1,
@@ -56,17 +57,28 @@ let g:seek_subst_disable = 1 " Vim Seek - Disable substitution
 Bundle 'tpope/vim-ragtag'
 let g:ragtag_global_maps = 1 " let a few general purpose mappings available globally
 
+" Bundle 'Lokaltog/powerline' - Removed in favor of vim-airline
+Bundle 'bling/vim-airline'
+let g:airline_theme='powerlineish'
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:airline_section_z=''
+
+" Expand Region - Use v to expand a region
+Bundle 'terryma/vim-expand-region'
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
 " No need to configure this other plugins
 Bundle 'Raimondi/delimitMate'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'mattn/emmet-vim'
-Bundle 'Lokaltog/powerline'
 Bundle 'tpope/vim-surround'
 Bundle 'StanAngeloff/php.vim'
 Bundle 'shawncplus/phpcomplete.vim'
 Bundle 'terryma/vim-multiple-cursors'
-Bundle 'terryma/vim-expand-region'
 Bundle 'paradigm/TextObjectify'
+Bundle 'honza/vim-snippets'
 
 " Color Schemes
 Bundle 'nanotech/jellybeans.vim'

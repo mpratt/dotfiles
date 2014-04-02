@@ -55,3 +55,6 @@ au Filetype javascript source $HOME/.vim/local/scripts/jsbeautify.vim
 
 " Saves when focus lost.
 au FocusLost * silent! wa
+
+" http://superuser.com/questions/305945/gvim-omni-completion-preview-window-doesnt-go-away
+au InsertLeave * if pumvisible() == 0|pclose|endif
