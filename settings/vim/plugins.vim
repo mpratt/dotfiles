@@ -1,8 +1,8 @@
 " ~/.vim/plugins.vim
 " Michael Pratt
-" pratt@hablarmierda.net 
+" pratt@hablarmierda.net
 " http://www.michael-pratt.com
- 
+
 " let Vundle manage Vundle, required
 Bundle 'gmarik/vundle'
 
@@ -26,17 +26,17 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("e")': ['<c-t>'],
     \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
     \ }
+" Custom user command
 let g:ctrlp_user_command = {
 	\ 'types': {
 		\ 1: ['.git', 'cd %s && git ls-files'],
-		\ 2: ['.hg', 'hg --cwd %s locate -I .'],
 		\ },
-	\ 'fallback': 'find %s -type f -maxdepth 3 \! -iname "*.png" \! -iname "*.gif" \! -iname "*.jpg"'
+	\ 'fallback': 'find %s -H -type f -maxdepth 3 \! -iname "*.png" \! -iname "*.gif" \! -iname "*.jpg"'
 	\ }
 
-Bundle 'Valloric/YouCompleteMe' 
+Bundle 'Valloric/YouCompleteMe'
 let g:ycm_key_invoke_completion = '<C-Space>'
-let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_min_num_of_chars_for_completion = 3
 let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_filetype_blacklist = {
@@ -50,12 +50,10 @@ au BufRead,BufNewFile *.twig set filetype=jinja " Enable jinja Syntax file
 
 Bundle 'SirVer/ultisnips'
 let g:UltiSnipsExpandTrigger="<C-e>"
+Bundle 'honza/vim-snippets'
 
 Bundle 'goldfeld/vim-seek'
 let g:seek_subst_disable = 1 " Vim Seek - Disable substitution
-
-Bundle 'tpope/vim-ragtag'
-let g:ragtag_global_maps = 1 " let a few general purpose mappings available globally
 
 " Bundle 'Lokaltog/powerline' - Removed in favor of vim-airline
 Bundle 'bling/vim-airline'
@@ -74,11 +72,12 @@ Bundle 'Raimondi/delimitMate'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'mattn/emmet-vim'
 Bundle 'tpope/vim-surround'
+Bundle 'terryma/vim-multiple-cursors'
+
+" Enhancements to vim
+Bundle 'paradigm/TextObjectify'
 Bundle 'StanAngeloff/php.vim'
 Bundle 'shawncplus/phpcomplete.vim'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'paradigm/TextObjectify'
-Bundle 'honza/vim-snippets'
 
 " Color Schemes
 Bundle 'nanotech/jellybeans.vim'
