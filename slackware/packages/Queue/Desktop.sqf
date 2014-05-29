@@ -12,6 +12,7 @@ openbox-themes
 obconf
 obmenu
 tint2
+pypanel
 xarchiver | BEND_ME_OVER=kthxbai
 thunar-archive-plugin
 thunar-vcs-plugin
@@ -25,3 +26,4 @@ j4-dmenu-desktop
 i3
 i3status
 conky
+gparted

@@ -10,6 +10,7 @@ gpicview
 feh
 exiftool
 faad2
+eyeD3
 
 # Stuff for digikam
 libdc1394

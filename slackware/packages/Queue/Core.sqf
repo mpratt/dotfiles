@@ -48,3 +48,19 @@ libev
 confuse
 yajl
 dmenu
+
+# Needed by Gparted
+glibmm
+mm-common
+cairomm
+pangomm
+atkmm
+gtkmm
+gtkmm3
+
+# pypanel
+python-xlib
+
+# Other
+libconfig
+compton

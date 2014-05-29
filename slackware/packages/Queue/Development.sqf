@@ -6,3 +6,10 @@ pyflakes
 netbeans
 eclipse
 squirrel-sql
+pip
+virtualenv
+wireshark
+php-imagick
+cabextract
+icoutils
+fontforge

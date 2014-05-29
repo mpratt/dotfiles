@@ -10,6 +10,7 @@ function hasPkg()
 {
     local pkg=${1}
     if [ -n $(ls "/var/log/packages/" | grep "${pkg}") ]; then
+        echo "yay"
         return 0
     fi
 
@@ -27,7 +28,7 @@ function downloadPkg()
     pkg=$(echo $html | egrep -o "\"${name}-([0-9\.a-z_]+)-${ARCH}" | sed 's/"//g' | uniq)
 
     if [ -z "${pkg}" ]; then
-        echo "Invalid Package"
+        echo "Invalid Package ${name}"
         return 1
     fi
 
@@ -70,6 +71,8 @@ if ! hasPkg adminer; then
     cd ${CWD}/Slackbuilds/adminer/
     sh adminer.SlackBuild
     upgradepkg --install-new /tmp/*.t?z
+else
+    echo "Skipping Adminer"
 fi
 
 if ! hasPkg areao; then
@@ -77,6 +80,8 @@ if ! hasPkg areao; then
     cd ${CWD}/Slackbuilds/areao-icon-theme/
     sh areao-icon-theme.SlackBuild
     upgradepkg --install-new /tmp/*.t?z
+else
+    echo "Skipping Areao Icon Theme"
 fi
 
 if ! hasPkg facebook-phpsh; then
@@ -84,23 +89,23 @@ if ! hasPkg facebook-phpsh; then
     cd ${CWD}/Slackbuilds/facebook-phpsh/
     sh facebook-phpsh.SlackBuild
     upgradepkg --install-new /tmp/*.t?z
+else
+    echo "Skipping Facebook PHPSH"
 fi
-
 
 # Download Packages
 downloadPkg "vlc" "http://slackware.org.uk/people/alien/restricted_slackbuilds/vlc/$FOLDER/$VERSION/"
 downloadPkg "ffmpeg" "http://slackware.org.uk/people/alien/restricted_slackbuilds/ffmpeg/$FOLDER/$VERSION/"
 downloadPkg "openjdk" "http://www.slackware.com/~alien/slackbuilds/openjdk/$FOLDER/$VERSION/"
 downloadPkg "icedtea-web" "http://www.slackware.com/~alien/slackbuilds/icedtea-web/$FOLDER/$VERSION/"
+downloadPkg "chromium" "http://www.slackware.com/~alien/slackbuilds/chromium/$FOLDER/$VERSION/"
+downloadPkg "chromium-pepperflash-plugin" "http://www.slackware.com/~alien/slackbuilds/chromium-pepperflash-plugin/$FOLDER/$VERSION/"
 downloadPkg "wine" "http://www.slackware.com/~alien/slackbuilds/wine/$FOLDER/$VERSION/"
+#downloadPkg "wine_gecko" "http://www.slackware.com/~alien/slackbuilds/wine_gecko/$FOLDER/$VERSION/"
 downloadPkg "libreoffice" "http://www.slackware.com/~alien/slackbuilds/libreoffice/$FOLDER/$VERSION/"
 downloadPkg "libreoffice-l10n-es" "http://www.slackware.com/~alien/slackbuilds/libreoffice/$FOLDER/$VERSION/"
 downloadPkg "libreoffice-l10n-de" "http://www.slackware.com/~alien/slackbuilds/libreoffice/$FOLDER/$VERSION/"
 downloadPkg "texlive" "http://rlworkman.net/pkgs/$VERSION/${ARCH}/"
-
-if [ "${IS64}" -eq "1" ]; then
-    downloadPkg "wireshark" "http://www.slackware.com/~alien/slackbuilds/wireshark/pkg64/13.37/"
-fi
 
 # Avoid conflicts with texlive files
 if [ -n "$(find /tmp/ -type f | grep texlive)" ]; then
@@ -149,5 +154,5 @@ if [ ${SBOPKG} -gt 0 ]; then
     echo "Cleaning /var/lib/sbopkg/queues/"
     rm -rf /var/lib/sbopkg/queues/*.sqf
 else
-    echo "No need to run sbopkg"
+    echo "No need to run sbopkg queues"
 fi
