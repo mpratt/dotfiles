@@ -77,7 +77,7 @@ if [ -e "/mnt/data/" ]; then
     symlinkIt /mnt/data/Documentos ~/Documentos
     symlinkIt /mnt/data/Games ~/Games
     symlinkIt /mnt/data/Imagenes ~/Imagenes
-    symlinkIt /mnt/data/Mp3 ~/Mp3
+    symlinkIt /mnt/data/Audio ~/Audio
     symlinkIt /mnt/data/Proyectos ~/Proyectos
     symlinkIt /mnt/data/Descargas ~/Descargas
     symlinkIt /mnt/data/Scripts ~/Scripts
