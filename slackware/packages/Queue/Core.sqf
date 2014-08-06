@@ -64,3 +64,4 @@ python-xlib
 # Other
 libconfig
 compton
+ack

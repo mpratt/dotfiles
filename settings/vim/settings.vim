@@ -30,7 +30,7 @@ set hidden             "Switch between buffers without saving
 set showcmd            " Show command in bottom right portion of the screen
 set number             " Show lines numbers
 set showmatch          " Cursor shows matching ) and }
-"set showmode           " Show current mode
+set cursorline         " Show Cursor line
 set noshowmode         " I dont need this, since Im using Powerline
 set clipboard=unnamed  " yank to the system register (*) by default
 set laststatus=2       " Always show the status line
@@ -39,6 +39,8 @@ set mouse=a            " enable using the mouse if terminal emulator supports it
 set selectmode+=mouse  " Enable selections with the mouse
 set mousehide          " Hide mouse when typing
 set synmaxcol=512      " long lines syntax coloring/highlighting
+"set showmode          " Show current mode
+
 "set spell              " Turn on spell checking
 "set fileformats=unix,dos,mac
 set ffs=unix,dos,mac
@@ -46,9 +48,25 @@ set formatoptions+=1            " When wrapping paragraphs, don't end lines with
 set pastetoggle=<F11>           " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that won't be autoindented
 set wildmenu                    " Use bash-like tab completion in Vim command line
 set wildmode=longest,list:longest
-set wildignore+=.hg,.git,.svn   " Ignore Version Control 
-set wildignore+=*.pyc           " Ignore Python byte code
-set wildignore+=*.jpg,*.png,*.xpm,*.gif,*.bmp  " Ignore Image Files
+
+" Stuff to ignore when tab completing
+set wildignore+=.hg,.git,.svn
+set wildignore+=*.pyc    
+set wildignore+=*.jpg,*.png,*.xpm,*.gif,*.bmp,*.jpeg
+set wildignore+=*DS_Store*
+set wildignore+=*.gem
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=*.aux,*.out,*.toc
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest
+set wildignore+=*.spl
+set wildignore+=*.sw? 
+set wildignore+=*.luac
+set wildignore+=migrations
+set wildignore+=*.pyc
+set wildignore+=*.orig
+set wildignore+=classes
+set wildignore+=lib
 
 " keep some context when moving
 set scrolloff=15
@@ -73,22 +91,40 @@ set smartcase          " unless uppercase letters are used in the regex.
 set incsearch          " Set incremental searching
 
 " Backup and Undo Settings
-set noswapfile
-set nobackup
-set nowb
-set directory^=~/.vim/local/tmp/ " store swap files here
-set undodir=~/.vim/local/tmp/    " Keep undo history across sessions, by storing in file.
-set undolevels=1000              " use many levels of undo
-set fillchars+=vert:│ "vertical splits less gap between bars
+set backup             " enable backups
+set noswapfile         " it's 2014, Vim.
+set undolevels=1000                 " use many levels of undo
+set fillchars+=vert:│               "vertical splits less gap between bars
+
+" Undo/Backup/Swap folders. Create them when needed
+set undodir=~/.vim/local/tmp/undo//
+set backupdir=~/.vim/local/tmp/backup//
+set directory=~/.vim/local/tmp/swap//
+
+if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+endif
+if !isdirectory(expand(&backupdir))
+    call mkdir(expand(&backupdir), "p")
+endif
+if !isdirectory(expand(&directory))
+    call mkdir(expand(&directory), "p")
+endif
 
 " fix slight delay after pressing ESC then O
 " http://ksjoberg.com/vim-esckeys.html
 " set noesckeys
-set timeout timeoutlen=1000 ttimeoutlen=100
+" set timeout timeoutlen=1000 ttimeoutlen=100
 
-" Auto-complete with <Ctrl+X Ctrl+O> | Tab
+" Time out on key codes but not mappings.
+" Basically this makes terminal Vim work sanely.
+set notimeout
+set ttimeout
+set ttimeoutlen=10
+
+" Better Completion
 set completeopt=longest,menu,preview
-"set complete-=i
+set complete=.,w,b,u,t
 
 " Show end of command visually when editing text
 set cpoptions+=$
@@ -100,12 +136,12 @@ set tags=./TAGS;
 set noesckeys
 
 " Set Shell
-set shell=bash\ --login
+set shell=/bin/bash
 
 if has("gui_running")
     " Display tabs and trailing spaces visually
     set list 
-    set listchars=nbsp:¬,eol:↳,tab:└─,extends:»,precedes:«,trail:•
+    set listchars=nbsp:¬,eol:↳,tab:└─,extends:»,precedes:«
 
     " Other Alternative
     "set listchars=tab:›\ 

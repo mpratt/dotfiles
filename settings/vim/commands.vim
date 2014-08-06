@@ -15,9 +15,6 @@ set omnifunc=syntaxcomplete#Complete
 " Add $ to the keywords when running php
 " autocmd FileType php setlocal iskeyword+=$
 
-" Remove _ from the word list when running php
-" autocmd FileType php setlocal iskeyword-=_
-
 " Make sure all markdown files have the correct filetype set and setup wrapping
 au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn,txt} setf markdown
 
@@ -38,15 +35,6 @@ autocmd BufWritePre *.json :%s/\s\+$//e
 autocmd BufWritePre *.twig :%s/\s\+$//e
 autocmd BufWritePre *.html :%s/\s\+$//e
 
-" Lint and execution mappings for some filetypes
-autocmd FileType php noremap <F11> :w!<CR>:!/usr/bin/php -l %<CR>
-autocmd FileType php noremap <F12> :w!<CR>:!/usr/bin/php -f %<CR>
-autocmd FileType python noremap <F11> :w!<CR>:!/usr/bin/pyflakes %<CR>
-autocmd FileType python noremap <F12> :w!<CR>:!/usr/bin/python -B %<CR>
-
-" Close Tag Plugin
-au Filetype html,xml,xsl,php source ~/.vim/local/scripts/closetag.vim
-
 " JsBeautifier Plugin
 au Filetype javascript source $HOME/.vim/local/scripts/jsbeautify.vim
 
@@ -58,3 +46,20 @@ au FocusLost * silent! wa
 
 " http://superuser.com/questions/305945/gvim-omni-completion-preview-window-doesnt-go-away
 au InsertLeave * if pumvisible() == 0|pclose|endif
+
+" Resize splits when the window is resized
+au VimResized * :wincmd =
+
+" Only show cursorline in the current window and in normal mode.
+augroup cline
+    au!
+    au WinLeave,InsertEnter * set nocursorline
+    au WinEnter,InsertLeave * set cursorline
+augroup END
+
+" Only show trailing whitspace when not in insert mode
+augroup trailing
+    au!
+    au InsertEnter * :set listchars-=trail:•
+    au InsertLeave * :set listchars+=trail:•
+augroup END

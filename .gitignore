@@ -8,6 +8,7 @@ bin/gobear
 bin/soho-downloader
 bin/spritefy
 bin/ctags
+settings/vim/local/tmp/*
 slackware/packages/*.tgz
 slackware/packages/Slackbuilds/*/*.php
 slackware/packages/Slackbuilds/*/*.tar.gz
