@@ -1,6 +1,27 @@
 #!/bin/bash
 # Michael Pratt <pratt@hablarmierda.net>
 # $HOME/.bashrc
+
+# First of all lets use vi mode :D!
+set -o vi
+
+# Configuration vars
+export TERM=xterm-256color
+export HISTSIZE=40000
+export HISTFILESIZE=40000
+export HISTTIMEFORMAT="%Y/%m/%d %H:%M "
+export HISTIGNORE="&:ls:su:cat:man:cd:cp:mv:exit:clear:history"
+export HISTCONTROL=ignoreboth # erasedups & ignorespace
+
+# Tweak Some Bash Stuff
+shopt -s cdspell # Correct the typos in the cd command 
+shopt -s dirspell # Attempts spelling correction on directory names during word completion
+shopt -s histappend # The history list is appended when the shell exits, rather than overwriting the file
+shopt -s extglob # Allow extended globs! For example 'rm !(*.jpg|*.gif|*.png)'
+shopt -s nocaseglob # Matches filenames in a case-insensitive fashion when performing filename expansion
+shopt -s checkwinsize # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
+
+# GCC tweaks
 if [[ "$(uname -m)" == "x86_64" ]]; then
     CHOST="x86_64-pc-linux-gnu"
     CFLAGS="-march=core2 -O2 -pipe"
@@ -23,24 +44,6 @@ function __exit_prompt_status {
 
 PROMPT_COMMAND=__exit_prompt_status
 [ "$(whoami)" = "root" ] && PS1="\u@\h:\w\$ " || PS1="[\u@\h \W]⚡ "
-
-# Setup stuff!
-shopt -s cdspell
-shopt -s extglob
-shopt -s nocaseglob
-shopt -s checkwinsize
-#set -o noclobber # prevent overwriting files with cat
-#set -o ignoreeof # stops ctrl+d from logging me out
-#set -o vi # Use vi mode :D!
-#export TERM=xterm-256color
-
-# History Settings
-export HISTSIZE=40000
-export HISTFILESIZE=40000
-export HISTTIMEFORMAT="%Y/%m/%d %H:%M "
-export HISTIGNORE="&:ls:su:cat:man:cd:cp:mv:exit:clear:history"
-export HISTCONTROL=ignoreboth # erasedups & ignorespace
-shopt -s histappend
 
 # Setup default editor
 EDITORS="vim vi pico nano"
@@ -70,9 +73,10 @@ alias grep="grep --color"
 alias nocomment="grep -Ev '^\s*(#|//|$)'"
 alias screenoff="xset dpms force off"
 alias phpunit="phpunit --verbose"
-alias phpcheck="find ./ -iname \*.php | xargs -n 1 php -l" # Check for php errors
+alias phpcheck="find ./ -iname \*.php | xargs -n 1 php -l"
 alias makepass="openssl rand -base64 32"
-alias servethis="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+alias servephp="php -S localhost:8000"
+alias servepython="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
 alias regrep="egrep -R -iH -n"
 
 # Allow php ctags
