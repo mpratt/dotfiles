@@ -49,6 +49,7 @@ echo ""
 if [[ "$(whoami)" == "pratt" ]]; then
     echo "Building Pratt's Profile (openbox, opera, ~/.local, thunderbird)"
     symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
+    symlinkIt ${LOCATION}/chromium/ ~/.config/chromium
     symlinkIt ${LOCATION}/opera/ ~/.opera
     symlinkIt ${LOCATION}/thunderbird/ ~/.thunderbird
     symlinkIt ${LOCATION}/thunar/ ~/.config/Thunar
@@ -74,13 +75,16 @@ fi
 if [ -e "/mnt/data/" ]; then
     echo ""
     echo "Creating Home Shortcuts (Archive, Documentos ....)"
+    symlinkIt /mnt/data/Audio ~/Audio
+    symlinkIt /mnt/data/Clientes ~/Clientes
+    symlinkIt /mnt/data/Descargas ~/Descargas
     symlinkIt /mnt/data/Documentos ~/Documentos
     symlinkIt /mnt/data/Games ~/Games
     symlinkIt /mnt/data/Imagenes ~/Imagenes
-    symlinkIt /mnt/data/Audio ~/Audio
     symlinkIt /mnt/data/Proyectos ~/Proyectos
-    symlinkIt /mnt/data/Descargas ~/Descargas
     symlinkIt /mnt/data/Scripts ~/Scripts
     symlinkIt /mnt/data/Video ~/Video
+    symlinkIt /mnt/data/Web ~/Web
+    symlinkIt /mnt/data/Laboratorio ~/Laboratorio
 fi
 echo ""

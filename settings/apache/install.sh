@@ -54,6 +54,8 @@ if [ -w "/etc/" ]; then
         echo -e "127.0.0.1\twww.adminer.loc\t#dotfiles-script" >> ${HOSTFILE}
         echo -e "127.0.0.1\tlab.loc\t#dotfiles-script" >> ${HOSTFILE}
         echo -e "127.0.0.1\twww.lab.loc\t#dotfiles-script" >> ${HOSTFILE}
+        echo -e "127.0.0.1\tproyectos.loc\t#dotfiles-script" >> ${HOSTFILE}
+        echo -e "127.0.0.1\twww.proyectos.loc\t#dotfiles-script" >> ${HOSTFILE}
         echo -e "127.0.0.1\tclientes.loc\t#dotfiles-script" >> ${HOSTFILE}
         echo -e "127.0.0.1\twww.clientes.loc\t#dotfiles-script" >> ${HOSTFILE}
     else

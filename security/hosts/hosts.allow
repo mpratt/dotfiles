@@ -8,5 +8,5 @@
 # Author:	Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org
 #
 #
-sshd:192.168.0.,10.42.0.,10.0.0
+sshd:192.168.0.,10.42.0.,127.0.0.1
 # End of hosts.allow.

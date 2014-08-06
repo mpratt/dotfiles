@@ -73,11 +73,13 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'mattn/emmet-vim'
 Bundle 'tpope/vim-surround'
 Bundle 'terryma/vim-multiple-cursors'
+Bundle 'Hackworth/vim-ps1'
 
 " Enhancements to vim
 Bundle 'paradigm/TextObjectify'
 Bundle 'StanAngeloff/php.vim'
 Bundle 'shawncplus/phpcomplete.vim'
+Bundle 'nathanaelkane/vim-indent-guides'
 
 " Color Schemes
 Bundle 'nanotech/jellybeans.vim'

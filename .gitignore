@@ -1,5 +1,6 @@
 # Files and Patterns to ignore
 settings/opera
+settings/chromium
 settings/thunderbird
 settings/local
 settings/fonts

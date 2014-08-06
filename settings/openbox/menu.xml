@@ -1,5 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
+	<menu id="apps-net-menu" label="Internet">
+		<item label="Firefox">
+			<action name="Execute">
+				<command>
+                    firefox
+                </command>
+				<startupnotify>
+					<enabled>
+                        yes
+                    </enabled>
+					<wmclass>
+                        Firefox
+                    </wmclass>
+				</startupnotify>
+			</action>
+		</item>
+		<item label="Opera">
+			<action name="Execute">
+				<command>
+                    opera
+                </command>
+				<startupnotify>
+					<enabled>
+                       yes
+                    </enabled>
+					<wmclass>
+                       Opera
+                    </wmclass>
+				</startupnotify>
+			</action>
+		</item>
+		<item label="Chrome (Incognito)">
+			<action name="Execute">
+				<execute>chromium --incognito</execute>
+				<startupnotify>
+					<enabled>
+                        yes
+                    </enabled>
+				</startupnotify>
+			</action>
+		</item>
+		<item label="GFTP">
+			<action name="Execute">
+				<execute>
+                    gftp
+                </execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="Ktorrent">
+			<action name="Execute">
+				<execute>ktorrent</execute>
+			</action>
+		</item>
+		<item label="Xchat">
+			<action name="Execute">
+				<execute>
+                    xchat
+                </execute>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-multimedia-menu" label="Multimedia">
+		<item label="Audacious">
+			<action name="Execute">
+				<execute>
+                   audacious
+                </execute>
+			</action>
+		</item>
+		<item label="VideoLan">
+			<action name="Execute">
+				<execute>
+                   vlc
+                </execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="Gimp">
+			<action name="Execute">
+				<execute>
+                   gimp
+                </execute>
+			</action>
+		</item>
+		<item label="Picture Viewer">
+			<action name="Execute">
+				<execute>
+                   gpicview
+                </execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="Audacity">
+			<action name="Execute">
+				<execute>
+                   audacity
+                </execute>
+			</action>
+		</item>
+		<item label="Easytag">
+			<action name="Execute">
+				<execute>
+                   easytag
+                </execute>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-office-menu" label="Office">
+		<item label="Address Book">
+			<action name="Execute">
+				<execute>thunderbird --addressbook</execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="LibreOffice">
+			<action name="Execute">
+				<execute>
+                   libreoffice
+                </execute>
+			</action>
+		</item>
+		<item label="Gnumeric">
+			<action name="Execute">
+				<execute>
+                   gnumeric
+                </execute>
+			</action>
+		</item>
+		<item label="Braindump">
+			<action name="Execute">
+				<execute>braindump</execute>
+			</action>
+		</item>
+		<separator/>
+		<item label="Gummi">
+			<action name="Execute">
+				<execute>
+                    gummi
+                </execute>
+			</action>
+		</item>
+		<item label="TexMaker">
+			<action name="Execute">
+				<execute>
+                    texmaker
+                </execute>
+			</action>
+		</item>
+		<item label="Evince">
+			<action name="Execute">
+				<execute>
+                   evince
+                </execute>
+			</action>
+		</item>
+	</menu>
+	<menu id="apps-games-menu" label="Games">
+		<item label="SNES Emulator ">
+			<action name="Execute">
+				<execute>snes9x-gtk</execute>
+			</action>
+		</item>
+		<item label="NES Emulator">
+			<action name="Execute">
+				<execute>fceux</execute>
+			</action>
+		</item>
+		<item label="N64 Emulator (mupen64)">
+			<action name="Execute">
+				<execute>
+                   mupen64plus
+                </execute>
+			</action>
+		</item>
+		<item label="DosBox">
+			<action name="Execute">
+				<execute>dosbox -conf /home/pratt/.config/dosbox.conf</execute>
+			</action>
+		</item>
+	</menu>
 	<menu id="menu-apps-misc" label="Apps">
 		<item label="K3B">
 			<action name="Execute">
@@ -8,27 +189,16 @@
                 </execute>
 			</action>
 		</item>
-		<separator/>
-		<item label="FileLight">
-			<action name="Execute">
-				<execute>
-                    filelight
-                </execute>
-			</action>
-		</item>
-		<item label="Dolphin">
-			<action name="Execute">
-				<execute>
-                    dolphin
-                </execute>
-			</action>
-		</item>
-		<separator/>
 		<item label="XSane">
 			<action name="Execute">
 				<execute>
                     xsane
                 </execute>
+			</action>
+		</item>
+		<item label="Record My Desktop">
+			<action name="Execute">
+				<execute>gtk-recordMyDesktop</execute>
 			</action>
 		</item>
 		<separator/>
@@ -60,377 +230,43 @@
                 </execute>
 			</action>
 		</item>
+	</menu>
+	<menu id="development-menu-link" label="Development">
+		<item label="Squirrel SQL">
+			<action name="Execute">
+				<execute>squirrel-sql</execute>
+			</action>
+		</item>
+		<item label="Eclipse">
+			<action name="Execute">
+				<execute>eclipse</execute>
+			</action>
+		</item>
+		<item label="Netbeans">
+			<action name="Execute">
+				<execute>netbeans</execute>
+			</action>
+		</item>
 		<separator/>
+		<item label="Qt Designer">
+			<action name="Execute">
+				<execute>designer</execute>
+			</action>
+		</item>
 		<item label="Kdevelop">
 			<action name="Execute">
-				<execute>
-                    kdevelop
-                </execute>
-			</action>
-		</item>
-		<item label="QTDesigner">
-			<action name="Execute">
-				<execute>
-                    designer
-                </execute>
-			</action>
-		</item>
-	</menu>
-	<menu id="apps-net-menu" label="Internet">
-		<item label="Firefox">
-			<action name="Execute">
-				<command>
-                    firefox
-                </command>
-				<startupnotify>
-					<enabled>
-                        yes
-                    </enabled>
-					<wmclass>
-                        Firefox
-                    </wmclass>
-				</startupnotify>
-			</action>
-		</item>
-		<item label="Chrome">
-			<action name="Execute">
-				<execute>chromium --incognito</execute>
-				<startupnotify>
-					<enabled>
-                        yes
-                    </enabled>
-				</startupnotify>
-			</action>
-		</item>
-		<item label="Opera">
-			<action name="Execute">
-				<command>
-                    opera
-                </command>
-				<startupnotify>
-					<enabled>
-                       yes
-                    </enabled>
-					<wmclass>
-                       Opera
-                    </wmclass>
-				</startupnotify>
-			</action>
-		</item>
-		<item label="Opera Mobile">
-			<action name="Execute">
-				<execute>
-                    operamobile
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="Ktorrent">
-			<action name="Execute">
-				<execute>ktorrent</execute>
-			</action>
-		</item>
-		<item label="Skype-v4l">
-			<action name="Execute">
-				<command>
-                   skype-v4l
-                </command>
-				<startupnotify>
-					<enabled>
-                        yes
-                    </enabled>
-				</startupnotify>
-			</action>
-		</item>
-		<item label="GFTP">
-			<action name="Execute">
-				<execute>
-                    gftp
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="KVIrc">
-			<action name="Execute">
-				<execute>kvirc</execute>
-			</action>
-		</item>
-		<item label="Xchat">
-			<action name="Execute">
-				<execute>
-                    xchat
-                </execute>
-			</action>
-		</item>
-		<item label="Zenmap">
-			<action name="Execute">
-				<execute>
-                    kdesu zenmap
-                </execute>
-			</action>
-		</item>
-	</menu>
-	<menu id="apps-multimedia-menu" label="Multimedia">
-		<item label="VideoLan">
-			<action name="Execute">
-				<execute>
-                   vlc
-                </execute>
-			</action>
-		</item>
-		<item label="MPlayer">
-			<action name="Execute">
-				<command>
-                   gmplayer
-                </command>
-				<startupnotify>
-					<enabled>
-                        yes
-                    </enabled>
-				</startupnotify>
-			</action>
-		</item>
-		<item label="Devede">
-			<action name="Execute">
-				<execute>
-                   devede
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="Gimp">
-			<action name="Execute">
-				<execute>
-                   gimp
-                </execute>
-			</action>
-		</item>
-		<item label="Picture Viewer">
-			<action name="Execute">
-				<execute>
-                   gpicview
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="Audacious">
-			<action name="Execute">
-				<execute>
-                   audacious
-                </execute>
-			</action>
-		</item>
-		<item label="Easytag">
-			<action name="Execute">
-				<execute>
-                   easytag
-                </execute>
-			</action>
-		</item>
-		<item label="Audacity">
-			<action name="Execute">
-				<execute>
-                   audacity
-                </execute>
-			</action>
-		</item>
-	</menu>
-	<menu id="apps-menu-calligra" label="Calligra">
-		<item label="Calligra Words">
-			<action name="Execute">
-				<execute>
-                    calligrawords
-                </execute>
-			</action>
-		</item>
-		<item label="Calligra Sheets">
-			<action name="Execute">
-				<execute>
-                    calligrasheets
-                </execute>
-			</action>
-		</item>
-		<item label="Calligra Flow">
-			<action name="Execute">
-				<execute>
-                    calligraflow
-                </execute>
-			</action>
-		</item>
-		<item label="Calligra Stage">
-			<action name="Execute">
-				<execute>
-                    calligrastage
-                </execute>
-			</action>
-		</item>
-		<item label="Calligra Plan">
-			<action name="Execute">
-				<execute>
-                    calligraplan
-                </execute>
-			</action>
-		</item>
-	</menu>
-	<menu id="apps-office-menu" label="Office">
-		<item label="Vim">
-			<action name="Execute">
-				<execute>
-                    gvim --remote-tab-silent
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="AddressBook">
-			<action name="Execute">
-				<execute>
-                    thunderbird --addressbook
-                </execute>
-			</action>
-		</item>
-		<item label="LibreOffice">
-			<action name="Execute">
-				<execute>
-                   libreoffice
-                </execute>
-			</action>
-		</item>
-		<item label="Gnumeric">
-			<action name="Execute">
-				<execute>
-                   gnumeric
-                </execute>
-			</action>
-		</item>
-		<menu id="apps-menu-calligra"/>
-		<item label="Kthesaurus">
-			<action name="Execute">
-				<execute>
-                    kthesaurus
-                </execute>
+				<execute>kdevelop</execute>
 			</action>
 		</item>
 		<separator/>
 		<item label="Dia">
 			<action name="Execute">
-				<execute>
-                   dia
-                </execute>
-			</action>
-		</item>
-		<item label="BrainDump">
-			<action name="Execute">
-				<execute>
-                    braindump
-                </execute>
+				<execute>dia</execute>
 			</action>
 		</item>
 		<item label="Umbrello">
 			<action name="Execute">
-				<execute>
-                    umbrello
-                </execute>
-			</action>
-		</item>
-		<item label="Evince">
-			<action name="Execute">
-				<execute>
-                   evince
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="TexMaker">
-			<action name="Execute">
-				<execute>
-                    texmaker
-                </execute>
-			</action>
-		</item>
-		<item label="Gummi">
-			<action name="Execute">
-				<execute>
-                    gummi
-                </execute>
-			</action>
-		</item>
-	</menu>
-	<menu id="apps-games-menu" label="Games">
-		<item label="SNES Emulator (zsnes)">
-			<action name="Execute">
-				<execute>
-                   zsnes
-                </execute>
-			</action>
-		</item>
-		<item label="N64 Emulator (mupen64)">
-			<action name="Execute">
-				<execute>
-                   mupen64plus
-                </execute>
-			</action>
-		</item>
-		<item label="NES Emulator (fceux)">
-			<action name="Execute">
-				<execute>
-                   fceux
-                </execute>
-			</action>
-		</item>
-		<item label="GameBoy Emulator">
-			<action name="Execute">
-				<execute>terminal -e /mnt/data/Archive/Linux/bin/gameboy-wrapper</execute>
-			</action>
-		</item>
-		<item label="DOS Emulator (DosBox)">
-			<action name="Execute">
-				<execute>
-                   dosbox -conf /home/pratt/.config/dosbox.conf
-                </execute>
-			</action>
-		</item>
-		<item label="PlayOnLinux">
-			<action name="Execute">
-				<execute>
-                    /mnt/data/System/Apps/playonlinux/playonlinux
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="SimCity 3000">
-			<action name="Execute">
-				<execute>
-                    /usr/bin/sc3u-start
-                </execute>
-			</action>
-		</item>
-		<item label="WorldOfGoo">
-			<action name="Execute">
-				<execute>
-                    /mnt/data/Games/PC/WorldOfGoo/WorldOfGoo
-                </execute>
-			</action>
-		</item>
-		<item label="UrbanTerror">
-			<action name="Execute">
-				<execute>
-                    urbanterror
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="Eboard">
-			<action name="Execute">
-				<execute>
-                    eboard
-                </execute>
-			</action>
-		</item>
-		<item label="KGeography">
-			<action name="Execute">
-				<execute>
-                    kgeography
-                </execute>
+				<execute>umbrello</execute>
 			</action>
 		</item>
 	</menu>
@@ -439,6 +275,20 @@
 			<action name="Execute">
 				<execute>
                     xset dpms force off
+                </execute>
+			</action>
+		</item>
+		<item label="TaskManager">
+			<action name="Execute">
+				<execute>
+                    xfce4-taskmanager
+                </execute>
+			</action>
+		</item>
+		<item label="Openbox Menu">
+			<action name="Execute">
+				<execute>
+                    obmenu
                 </execute>
 			</action>
 		</item>
@@ -454,20 +304,18 @@
 				</startupnotify>
 			</action>
 		</item>
-		<item label="Openbox Menu">
-			<action name="Execute">
-				<execute>
-                    obmenu
-                </execute>
-			</action>
-		</item>
-		<item label="Reconfigure Openbox">
-			<action name="Reconfigure"/>
-		</item>
+		<separator/>
 		<item label="GTK Themes">
 			<action name="Execute">
 				<execute>
                     gtk-chtheme
+                </execute>
+			</action>
+		</item>
+		<item label="KDE System Settings">
+			<action name="Execute">
+				<execute>
+                    kdesu systemsettings
                 </execute>
 			</action>
 		</item>
@@ -487,32 +335,9 @@
 			</action>
 		</item>
 		<separator/>
-		<item label="TaskManager">
-			<action name="Execute">
-				<execute>
-                    xfce4-taskmanager
-                </execute>
-			</action>
+		<item label="Reconfigure Openbox">
+			<action name="Reconfigure"/>
 		</item>
-		<item label="KDE System Settings">
-			<action name="Execute">
-				<execute>
-                    kdesu systemsettings
-                </execute>
-			</action>
-		</item>
-		<separator/>
-		<item label="Volti">
-			<action name="Execute">
-				<execute>volti</execute>
-			</action>
-		</item>
-		<item label="Xfce4 Mixer">
-			<action name="Execute">
-				<execute>xfce4-mixer</execute>
-			</action>
-		</item>
-		<separator/>
 		<item label="Lock Screen">
 			<action name="Execute">
 				<execute>
@@ -548,6 +373,7 @@
 		<menu id="apps-multimedia-menu"/>
 		<menu id="apps-office-menu"/>
 		<menu id="apps-games-menu"/>
+		<menu id="development-menu-link"/>
 		<menu id="menu-apps-misc"/>
 		<item label="Run Application">
 			<action name="Execute">
@@ -576,11 +402,9 @@
                 </execute>
 			</action>
 		</item>
-		<item label="Opera">
+		<item label="Chromium">
 			<action name="Execute">
-				<execute>
-                   env QT_XFT=true opera
-                </execute>
+				<execute>chromium</execute>
 			</action>
 		</item>
 		<item label="Thunderbird">

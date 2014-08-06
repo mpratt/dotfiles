@@ -24,3 +24,8 @@ if [ -x /usr/sbin/smartd ]; then
    echo -e "Starting Smart Daemon"
    /usr/sbin/smartd
 fi
+
+if [ -x /etc/rc.d/rc.vboxdrv ]; then
+    echo -e "Loading Virtualbox kernel module"
+    /etc/rc.d/rc.vboxdrv start
+fi

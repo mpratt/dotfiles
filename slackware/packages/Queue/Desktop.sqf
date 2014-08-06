@@ -27,3 +27,4 @@ i3
 i3status
 conky
 gparted
+hexchat

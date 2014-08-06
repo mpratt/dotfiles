@@ -3,6 +3,11 @@
 # /etc/rc.d/rc.local_shutdown:  Local commands run on shutdown
 # Michael Pratt
 #
+#
+if [ -x /etc/rc.d/rc.vboxdrv ]; then
+    echo -e "Shutting down virtualbox kernel module"
+    /etc/rc.d/rc.vboxdrv stop
+fi
 
 # Empty out the temp Directories
 rm -rf /tmp/*

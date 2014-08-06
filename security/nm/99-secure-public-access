@@ -6,7 +6,7 @@
 
 INTERFACE=$1
 STATUS=$2
-KNOWNNETWORKS=(comcelGSM Jupiter GothamCity AndroidAP)
+KNOWNNETWORKS=(comcelGSM Jupiter GothamCity AndroidAP FortressOfSolitude)
 # View all variables with |> set > /home/pratt/nmvars
 
 for i in ${KNOWNNETWORKS[@]}; do
