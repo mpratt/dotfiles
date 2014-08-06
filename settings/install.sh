@@ -25,6 +25,8 @@ echo "Linking Bash Stuff into ${HOME}"
 symlinkIt ${LOCATION}/bash/bashrc ~/.bashrc
 symlinkIt ${LOCATION}/bash/bash_profile ~/.bash_profile
 symlinkIt ${LOCATION}/bash/xserverrc ~/.xserverrc
+symlinkIt ${LOCATION}/bash/ackrc ~/.ackrc
+symlinkIt ${LOCATION}/bash/ctags ~/.ctags
 echo ""
 
 echo "Linking GTK Stuff into ${HOME}"
@@ -40,24 +42,28 @@ symlinkIt ${LOCATION}/git/gitconfig ~/.gitconfig
 symlinkIt ${LOCATION}/git/gitk ~/.gitk
 echo ""
 
-echo "Linking Vim Stuff into ${HOME}"
-symlinkIt ${LOCATION}/vim/ ~/.vim
-symlinkIt ${LOCATION}/vim/vimrc ~/.vimrc
-echo ""
-
 echo ""
 if [[ "$(whoami)" == "pratt" ]]; then
-    echo "Building Pratt's Profile (openbox, opera, ~/.local, thunderbird)"
+    echo "Linking Vim Stuff into ${HOME}"
+    symlinkIt ${LOCATION}/vim/ ~/.vim
+    symlinkIt ${LOCATION}/vim/vimrc ~/.vimrc
+    echo ""
+
+    echo "Building Pratt's Profile (openbox, chromium, i3, ~/.local, thunderbird)"
     symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
     symlinkIt ${LOCATION}/chromium/ ~/.config/chromium
-    symlinkIt ${LOCATION}/opera/ ~/.opera
     symlinkIt ${LOCATION}/thunderbird/ ~/.thunderbird
     symlinkIt ${LOCATION}/thunar/ ~/.config/Thunar
     symlinkIt ${LOCATION}/local/ ~/.local
     symlinkIt ${LOCATION}/i3/ ~/.i3
     symlinkIt ${LOCATION}/i3/i3status.conf ~/.i3status.conf
-    #symlinkIt ${LOCATION}/tint2/ ~/.config/tint2
 else
+    echo "Copying Vim Stuff into ${HOME}"
+    rm -rf ~/.vim && mkdir ~/.vim
+    cp -r ${LOCATION}/vim/* ~/.vim
+    symlinkIt ~/.vim/vimrc ~/.vimrc
+    echo ""
+
     echo "You are not pratt"
 fi
 
