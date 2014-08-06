@@ -4,7 +4,6 @@ settings/chromium
 settings/thunderbird
 settings/local
 settings/fonts
-settings/git/gitconfig
 bin/gobear
 bin/soho-downloader
 bin/spritefy
