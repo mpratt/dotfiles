@@ -28,6 +28,18 @@ function cpf() { cp "$@" && goto "$_"; }
 function mvf() { mv "$@" && goto "$_"; }
 function mkcd() { mkdir -p "$1" && goto "$1";}
 
+# Create a password
+function makepass()
+{
+    local len=32;
+    if [ "${#}" -eq 1 ]; then
+       len=${1}
+    fi
+
+    local pass=$(openssl rand -base64 ${len} | tr -d '=' | tr '/' '_' | tr '+' '.')
+    echo ${pass:0:${len}}
+}
+
 # Math
 function hex2dec() { printf "%d\n" 0x${1}; }
 function dec2hex() { printf "%X\n" ${1}; }

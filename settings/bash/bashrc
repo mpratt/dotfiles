@@ -62,11 +62,12 @@ alias cd..="cd .."
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
+alias .....="cd ../../../.."
 
 # Other alias
 alias :q="exit"
 alias ls="ls -h --color=auto --group-directories-first"
-alias lsoctal="ls -la | sed -e 's/--x/1/g' -e 's/-w-/2/g' -e 's/-wx/3/g' -e 's/r--/4/g' -e 's/r-x/5/g' -e 's/rw-/6/g' -e 's/rwx/7/g' -e 's/---/0/g'"
+alias lsoctal="stat -c '%a %n'"
 alias cp="cp -i"
 alias mv="mv -i"
 alias grep="grep --color"
@@ -74,15 +75,9 @@ alias nocomment="grep -Ev '^\s*(#|//|$)'"
 alias screenoff="xset dpms force off"
 alias phpunit="phpunit --verbose"
 alias phpcheck="find ./ -iname \*.php | xargs -n 1 php -l"
-alias makepass="openssl rand -base64 32"
 alias servephp="php -S localhost:8000"
 alias servepython="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
 alias regrep="egrep -R -iH -n"
-
-# Allow php ctags
-if [ -e "/mnt/data/Scripts/dotfiles/bin/ctags" ]; then
-    alias ctags-php="/mnt/data/Scripts/dotfiles/bin/ctags -R --fields=+aimS --languages=php"
-fi
 
 # Non root alias
 if [ "$(whoami)" != "root" ]; then
