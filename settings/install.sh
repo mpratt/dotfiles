@@ -27,6 +27,7 @@ symlinkIt ${LOCATION}/bash/bash_profile ~/.bash_profile
 symlinkIt ${LOCATION}/bash/xserverrc ~/.xserverrc
 symlinkIt ${LOCATION}/bash/ackrc ~/.ackrc
 symlinkIt ${LOCATION}/bash/ctags ~/.ctags
+symlinkIt ${LOCATION}/bash/inputrc ~/.inputrc
 echo ""
 
 echo "Linking GTK Stuff into ${HOME}"
