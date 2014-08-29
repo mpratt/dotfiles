@@ -53,3 +53,10 @@ function date2stamp() { [ -z "$*" ] && echo "date2stamp Y-M-D h:m:s [2009-02-03 
 
 # Make gvim open files in the same instance
 function gvim() { command gvim --remote-tab-silent $@ || command gvim $@; }
+
+# Search for sinonyms
+function sinonimo() {
+    local baseUrl="http://www.wordreference.com/sinonimos"
+    local word=$(echo ${1} | tr ' ' '+')
+    exo-open "${baseUrl}/${word}"
+}

@@ -78,6 +78,7 @@ alias phpcheck="find ./ -iname \*.php | xargs -n 1 php -l"
 alias servephp="php -S localhost:8000"
 alias servepython="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
 alias regrep="egrep -R -iH -n"
+alias getip="curl -s http://wtfismyip.com/text"
 
 # Non root alias
 if [ "$(whoami)" != "root" ]; then
