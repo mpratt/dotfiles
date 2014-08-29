@@ -5,18 +5,26 @@
 #######################################################
 set -e
 FOLDER="/mnt/data/Imagenes/Wallpapers"
+FILE=""
 USEPREVIOUS=0
 USERANDOM=0
-FILE=""
+USEGIMMEBAR=0
+USEREDDIT=0
+GIMMEBAR=()
+SUBREDDITS=("/r/EarthPorn" "/r/wallpapers" "/r/ComicWalls")
 ARGS=("--bg-scale")
 
+#######################################################
 # Usage instructions
-wallpaper_usage()
-{
+#######################################################
+wallpaper_usage() {
     clear
     echo "Wallpaper"
     echo "Usage: $(basename $0) [--folder [folder]][ --file [file]][--use-previous][--use-random]"
-    echo "Requirements: feh"
+    echo "                      [--use-random-reddit][--add-subreddit]"
+    echo "                      [--use-random-gimmebar [user | user/collection]]"
+    echo ""
+    echo "Requirements: feh, curl, wget"
     echo "Author: Michael Pratt <pratt@hablarmierda.net>"
     echo ""
     echo "DESCRIPTION"
@@ -24,7 +32,7 @@ wallpaper_usage()
     echo ""
     echo "PARAMS"
     echo "--folder [folder]"
-    echo "  A folder with jpg, png or gif files. Used to fetch a randome wallpaper from it"
+    echo "  A folder with jpg, png or gif files. Used to fetch a random wallpapers from it"
     echo ""
     echo "--file [file]"
     echo "  Path to an image file to be used as a wallpaper"
@@ -35,6 +43,15 @@ wallpaper_usage()
     echo "--use-random"
     echo "  Fetches a random image file from the folder"
     echo ""
+    echo "--use-random-reddit"
+    echo "  Fetches a random image file from reddit or gimmebar"
+    echo ""
+    echo "--add-subreddit"
+    echo "  Adds a new subreddit to be used with the --use-random-reddit parameter"
+    echo ""
+    echo "--use-random-gimmebar [user/collection or just user]"
+    echo "  Fetches a random image file from the given gimmebar collection"
+    echo ""
     echo "AUTHOR"
     echo "  Michael Pratt <pratt@hablarmierda.net>"
     echo "  http://www.michael-pratt.com"
@@ -42,6 +59,64 @@ wallpaper_usage()
     exit 0
 }
 
+#######################################################
+# Downloads an Image from a website
+#######################################################
+download_image() {
+    local img=${1}
+
+    # No stuff from
+    if [ -z "${img}" ]; then
+        return 1;
+    fi
+
+    local filename=$(basename ${img} | tr '[:upper:]' '[:lower:]')
+    local extension="${filename##*.}"
+    local out="${HOME}/.wallpaper-image.${extension}"
+
+    echo "Downloading ${img}"
+    wget ${img} -O ${out}
+    if [ "$?" -eq "0" ]; then
+        ARGS+=( " ${out}" )
+        return 0
+    fi
+
+    return 1
+}
+
+#######################################################
+# Downloads from Gimmebar
+#######################################################
+download_from_gimmebar() {
+    echo "Using GimmeBar API ${1}"
+    download_image $(curl -s ${1} | tr "," "\n" | grep full | egrep -o 'https?:(.*+)' | tr -d '\\' | tr -d '"' | sort -R | head -n 1)
+    [ "$?" -eq "0" ] && return 0 || return 1
+}
+
+#######################################################
+# Downloads from Reddit
+#######################################################
+download_from_reddit() {
+    local list=()
+    echo "Using Reddit API ${1}"
+
+    for i in $(curl -s ${1} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+'); do
+        if [ "$(echo ${i} | egrep -i '(png|jpg|gif)$')" ]; then
+            list+=( "${i}" )
+        fi
+    done
+
+    if [ "${#list[@]}" -le 0 ]; then
+        return 1
+    fi
+
+    download_image ${list[$RANDOM % ${#list[@]}]}
+    [ "$?" -eq "0" ] && return 0 || return 1
+}
+
+#######################################################
+# Yo DJ! Spin that wheel! spin that Wheel!
+#######################################################
 if [ "$#" -eq "0" ]; then
     wallpaper_usage
     exit 0
@@ -52,10 +127,12 @@ while [ -n "$1" ]; do
         --folder)
             shift
             FOLDER="${1}"
+            shift
         ;;
         --file)
             shift
             FILE="${1}"
+            shitf
         ;;
         --use-previous)
             shift
@@ -64,6 +141,30 @@ while [ -n "$1" ]; do
         --use-random)
             shift
             USERANDOM="1"
+        ;;
+        --use-random-gimmebar)
+            shift
+
+            if [ -n "${1}" ]; then
+                USEGIMMEBAR="1"
+                USERANDOM="1"
+                GIMMEBAR+=( "https://gimmebar.com/api/v0/public/assets/${1}?limit=50" )
+                shift
+            else
+                echo "You need to provide your username or username/collection to the gimmebar handler"
+                exit 1
+            fi
+
+        ;;
+        --use-random-reddit)
+            shift
+            USEREDDIT="1"
+            USERANDOM="1"
+        ;;
+        --add-subreddit)
+            shift
+            SUBREDDITS+=( "${1}" )
+            shift
         ;;
         -h|--help)
             usage
@@ -87,6 +188,27 @@ if [ "${USEPREVIOUS}" -eq "1" ]; then
 fi
 
 if [ "${USERANDOM}" -eq "1" ]; then
+    echo "Setting random wallpaper"
+
+    if [ "${USEGIMMEBAR}" -eq "1" ] && [ "${#GIMMEBAR[@]}" -gt "0" ]; then
+        download_from_gimmebar ${GIMMEBAR[$RANDOM % ${#GIMMEBAR[@]}]}
+        if [ "$?" -eq 0 ]; then
+            echo "Setting random GimmeBar Wallpaper!"
+            feh ${ARGS[@]}
+            exit 0
+        fi
+    fi
+
+    if [ "${USEREDDIT}" -eq "1" ] && [ "${#SUBREDDITS[@]}" -gt "0" ]; then
+        URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}/top.json?limit=100"
+        download_from_reddit ${URL}
+        if [ "$?" -eq 0 ]; then
+            echo "Setting random Reddit Wallpaper!"
+            feh ${ARGS[@]}
+            exit 0
+        fi
+    fi
+
     echo "Setting random wallpaper from ${FOLDER}"
     if ! [ -e ${FOLDER} ]; then
         echo "${FOLDER} does not exist, cannot set a random wallpaper"
