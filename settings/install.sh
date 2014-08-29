@@ -83,7 +83,6 @@ if [ -e "/mnt/data/" ]; then
     echo ""
     echo "Creating Home Shortcuts (Archive, Documentos ....)"
     symlinkIt /mnt/data/Audio ~/Audio
-    symlinkIt /mnt/data/Clientes ~/Clientes
     symlinkIt /mnt/data/Descargas ~/Descargas
     symlinkIt /mnt/data/Documentos ~/Documentos
     symlinkIt /mnt/data/Games ~/Games

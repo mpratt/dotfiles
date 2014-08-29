@@ -96,12 +96,9 @@ fi
 # Download Packages
 downloadPkg "vlc" "http://slackware.org.uk/people/alien/restricted_slackbuilds/vlc/$FOLDER/$VERSION/"
 downloadPkg "ffmpeg" "http://slackware.org.uk/people/alien/restricted_slackbuilds/ffmpeg/$FOLDER/$VERSION/"
-downloadPkg "openjdk" "http://www.slackware.com/~alien/slackbuilds/openjdk/$FOLDER/$VERSION/"
-downloadPkg "icedtea-web" "http://www.slackware.com/~alien/slackbuilds/icedtea-web/$FOLDER/$VERSION/"
 downloadPkg "chromium" "http://www.slackware.com/~alien/slackbuilds/chromium/$FOLDER/$VERSION/"
 downloadPkg "chromium-pepperflash-plugin" "http://www.slackware.com/~alien/slackbuilds/chromium-pepperflash-plugin/$FOLDER/$VERSION/"
 downloadPkg "wine" "http://www.slackware.com/~alien/slackbuilds/wine/$FOLDER/$VERSION/"
-#downloadPkg "wine_gecko" "http://www.slackware.com/~alien/slackbuilds/wine_gecko/$FOLDER/$VERSION/"
 downloadPkg "libreoffice" "http://www.slackware.com/~alien/slackbuilds/libreoffice/$FOLDER/$VERSION/"
 downloadPkg "libreoffice-l10n-es" "http://www.slackware.com/~alien/slackbuilds/libreoffice/$FOLDER/$VERSION/"
 downloadPkg "libreoffice-l10n-de" "http://www.slackware.com/~alien/slackbuilds/libreoffice/$FOLDER/$VERSION/"
