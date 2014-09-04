@@ -1,20 +1,8 @@
 # Files and Patterns to ignore
-settings/opera
-settings/chromium
-settings/thunderbird
-settings/local
-settings/fonts
-bin/gobear
-bin/soho-downloader
-bin/spritefy
-bin/ctags
-settings/vim/local/tmp/*
-slackware/packages/*.tgz
-slackware/packages/Slackbuilds/*/*.php
-slackware/packages/Slackbuilds/*/*.tar.gz
-slackware/packages/Slackbuilds/*/*.tar.bz2
-slackware/packages/Slackbuilds/*/*.zip
-slackware/packages/Compiled/*.t*z
+slackware/packages/Slackbuilds/*/adminer*.php
+slackware/packages/Slackbuilds/*/areao*.tar.bz2
+slackware/packages/Slackbuilds/*/facebook*.zip
+slackware/packages/Compiled/webkit*
 settings/vim/bundle/*
-settings/vim/.netrwhist
 *.mp4
+tomighty*jar
