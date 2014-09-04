@@ -30,6 +30,10 @@ if [[ "$(uname -m)" == "x86_64" ]]; then
     fi
 fi
 
+if [ -z "$(ls /var/log/packages/ | grep chromium)" ]; then
+    slackpkg install chromium
+fi
+
 if [ -z "$(ls /var/log/packages/ | grep vlc)" ]; then
     slackpkg install vlc
 fi
