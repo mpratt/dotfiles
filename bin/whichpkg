@@ -16,6 +16,11 @@
 # PARTICULAR PURPOSE.
 #*******************************************************************************
 
+if ! [ -f "/etc/slackware-version" ]; then
+    echo "This script is only intended to be used on slackware linux"
+    exit 1;
+fi
+
 search_pkgs() {
   name1="/${1}\>"
 
