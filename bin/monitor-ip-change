@@ -1,0 +1,152 @@
+#!/bin/bash
+############################################################
+# Monitors the current IP and displays a notification
+# when it changes.
+#
+# Author: Michael Pratt | http://wwww.michael-pratt.com/
+###########################################################
+TMPDIR=${TMPDIR:-$(mktemp -d -t ip_monitor.XXXXXX)}
+IPFILE=${TMPDIR}/lastip
+INTERVAL="10m"
+STOPONCHANGE="1"
+! [ -e "${TMPDIR}" ] && (mkdir -p ${TMPDIR})
+
+trap "ipmon_daemon_exit" 0 1 2 5 15
+#######################################################
+# Remove daemon data on exit
+#######################################################
+ipmon_daemon_exit() {
+    rm -rf ${TMPDIR}
+    ipmon_notify "Shutting down $(basename $0) daemon"
+    exit 0
+}
+
+#######################################################
+# Notify stuff on the terminal and other places
+#######################################################
+ipmon_notify() {
+    echo "${@}"
+    notify-send "IP Monitor" "${@}" --icon=dialog-information
+}
+
+#######################################################
+# Gets the ip from a website
+#######################################################
+ipmon_get_remote_ip() {
+    local services=("https://shtuff.it/myip/short/" "http://wtfismyip.com/text" "http://ifconfig.me/ip")
+    local service="${services[$RANDOM % ${#services[@]}]}"
+    local ua="Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3"
+    local ip=$(curl -A "${ua}" -s ${service} | tr -d ' ')
+
+    if [[ "${ip}" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo ${ip}
+        return 0
+    fi
+
+    if [ -z "${ip}" ]; then
+        ipmon_get_remote_ip
+        return 0
+    fi
+
+    ipmon_notify "Invalid IP: ${ip} from service ${service}"
+    exit 1
+}
+
+#######################################################
+# Gets the ip from stored local file
+#######################################################
+ipmon_get_local_ip() {
+    if [ -e "${IPFILE}" ]; then
+        echo "$(cat ${IPFILE})"
+    else
+        echo ""
+    fi
+}
+
+#######################################################
+# Stores the given ip into a file
+#######################################################
+ipmon_store_ip() {
+    if [[ "${1}" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "${1}" > ${IPFILE}
+    else
+        ipmon_notify "Could not store '${1}'. Not an IP"
+        exit 0
+    fi
+}
+
+#######################################################
+# Usage instructions
+#######################################################
+ipmon_usage() {
+    clear
+    echo "Monitor Ip Change"
+    echo "Usage: $(basename $0) [-i|--interval [int]]"
+    echo ""
+    echo "Requirements: curl"
+    echo "Author: Michael Pratt <pratt@hablarmierda.net>"
+    echo ""
+    echo "DESCRIPTION"
+    echo "  Checks if the IP has changed"
+    echo ""
+    echo "PARAMS"
+    echo "-i|--interval [int]"
+    echo "  The interval in minutes used to check the ip (Default: 10)"
+    echo ""
+    echo "-ds|--dont-stop"
+    echo "  By default this 'daemon' stops when the IP changes."
+    echo "  With this parameter, the 'daemon' keeps running."
+    echo ""
+    echo "AUTHOR"
+    echo "  Michael Pratt <pratt@hablarmierda.net>"
+    echo "  http://www.michael-pratt.com"
+    echo ""
+    exit 0
+}
+
+###########################################################
+# If you start me up! If you start me up I'll never stop!
+# - The Rolling Stones
+###########################################################
+while [ -n "$1" ]; do
+    case ${1} in
+        -i|--interval)
+            shift
+            INTERVAL="${1}m"
+            shift
+        ;;
+        -ds|--dont-stop)
+            shift
+            STOPONCHANGE="0"
+        ;;
+        -h|--help)
+            ipmon_usage
+            exit 0;
+        ;;
+        *)
+            echo "Unknown parameter: ${1}"
+            echo "For more information run '$(basename $0) --help'"
+            exit 0;
+        ;;
+    esac
+done
+
+ipmon_notify "Startup"
+while true; do
+    REMOTEIP=$(ipmon_get_remote_ip)
+    LOCALIP=$(ipmon_get_local_ip)
+
+    echo ${REMOTEIP}
+    if [ ! -e "${IPFILE}" ]; then
+        ipmon_store_ip ${REMOTEIP}
+    elif [[ "${REMOTEIP}" != "${LOCALIP}" ]]; then
+        ipmon_notify "IP CHANGED: '${REMOTEIP}' doesnt match '${LOCALIP}'"
+        if [ "${STOPONCHANGE}" -eq "1" ]; then
+            exit 0
+        else
+            ipmon_store_ip ${REMOTEIP}
+        fi
+    fi
+
+    sleep ${INTERVAL}
+done
