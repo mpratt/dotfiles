@@ -1,0 +1,13 @@
+[Layout]
+DisplayNames=
+LayoutList=us(alt-intl)
+LayoutLoopCount=-1
+Model=pc101
+Options=terminate:ctrl_alt_bksp,caps:escape
+ResetOldOptions=true
+ShowFlag=false
+ShowLabel=true
+ShowLayoutIndicator=true
+ShowSingle=false
+SwitchMode=Global
+Use=true
