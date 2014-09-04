@@ -92,11 +92,6 @@ if [ "$(whoami)" = "root" ] && [ -n "$(who | awk '{print $1}' | uniq | grep prat
 fi
 
 # Append custom PATH
-[ -e "/mnt/data/Scripts/dotfiles/bin" ] && PATH=${PATH}:/mnt/data/Scripts/dotfiles/bin
-[ -r "/mnt/data/Scripts/dotfiles/bin/functions.d/functions.sh" ] && source /mnt/data/Scripts/dotfiles/bin/functions.d/functions.sh
-
-# Load Slackware specific files
-if [ -e "/etc/slackware-version" ]; then
-    [ -r "/mnt/data/Scripts/dotfiles/bin/functions.d/slackware.sh" ] && source /mnt/data/Scripts/dotfiles/bin/functions.d/slackware.sh
-    [ -e "/mnt/data/Scripts/dotfiles/slackware/bin" ] && PATH=$PATH:/mnt/data/Scripts/dotfiles/slackware/bin
-fi
+[ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
+[ -r "${HOME}/.bin/functions.d/functions.sh" ] && source ${HOME}/.bin/functions.d/functions.sh
+[ -r "${HOME}/.bin/functions.d/slackware.sh" ] && [ -e "/etc/slackware-version" ] && source ${HOME}/.bin/functions.d/slackware.sh # Load Slackware specific files
