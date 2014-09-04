@@ -17,9 +17,9 @@ if [ -e "/etc/slackware-version" ]; then
     echo "Slackware Detected"
     if [ -w "/etc/rc.d/" ]; then
         echo "Linking scripts to /etc/rc.d/"
-        symlinkIt ${LOCATION}/config/rc.firewall /etc/rc.d/rc.firewall
-        symlinkIt ${LOCATION}/config/rc.local /etc/rc.d/rc.local
-        symlinkIt ${LOCATION}/config/rc.local_shutdown /etc/rc.d/rc.local_shutdown
+        copyIt ${LOCATION}/config/rc.firewall /etc/rc.d/rc.firewall
+        copyIt ${LOCATION}/config/rc.local /etc/rc.d/rc.local
+        copyIt ${LOCATION}/config/rc.local_shutdown /etc/rc.d/rc.local_shutdown
 
         if [ -z "$(grep 'startup.mp4' /etc/rc.d/rc.S)" ]; then
             echo "Applying Bootsplash patch"
