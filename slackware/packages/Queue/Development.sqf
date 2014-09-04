@@ -13,3 +13,9 @@ php-imagick
 cabextract
 icoutils
 fontforge
+
+# Needed for Vagrant
+acpica
+virtualbox-kernel
+virtualbox
+vagrant
