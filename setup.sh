@@ -10,14 +10,11 @@ LOCATION=$(realpath $(dirname $0))
 # Source function Files
 source bin/functions.d/functions.sh
 
+# Copy /bin
+copyIt ${LOCATION}/bin/ ${HOME}/.bin/
+
 # Install the Environment
 sh settings/install.sh ${LOCATION}
-
-# Minor apache stuff
-sh settings/apache/install.sh ${LOCATION}
-
-# Minor security stuff
-sh security/install.sh ${LOCATION}
 
 # Install Slackware stuff
 sh slackware/install.sh ${LOCATION}
