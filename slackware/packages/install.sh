@@ -6,6 +6,14 @@
 LOCATION=$(realpath $(dirname $0))
 VERSION=$(cat /etc/slackware-version | egrep -o '[0-9\.]+')
 
+# Source function files
+if [ -n "${1}" ] && [ -e "${1}" ]; then
+    source "${1}/bin/functions.d/functions.sh"
+else
+    cd ${LOCATION}
+    source "../../bin/functions.d/functions.sh"
+fi
+
 if ! [ -e "/etc/slackware-version" ]; then
     echo "Not using Slackware"
     exit 0

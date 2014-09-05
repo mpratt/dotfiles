@@ -39,7 +39,7 @@ if [ -e "/etc/slackware-version" ]; then
 
 
     if [[ $(whoami) == "root" ]]; then
-        read -p "Do you want to install slackware packages? (y/n) "
+        read -p "Do you want to install slackware packages? (y/n) " INSTALLPKGS
         if [[ "${INSTALLPKGS}" == "y" ]]; then
             sh ${LOCATION}/packages/install.sh
         fi

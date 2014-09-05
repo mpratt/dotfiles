@@ -37,7 +37,13 @@ function copyIt()
             if [[ "${dstsum}" == "${srcsum}" ]]; then
                 rm -rf ${dst}
             else
-                read -p "Do you want to remove ${dst} before copying? (y/n) " RM
+                read -p "Files dont match. Do you want to remove ${dst} before copying? (y/n/diff) " RM
+                if [[ "${RM}" == "diff" ]]; then
+                    diff -u ${src} ${dst}
+                    copyIt ${src} ${dst}
+                    return 0
+                fi
+
                 if [[ "${RM}" == "y" ]]; then
                     rm -rf ${dst}
                 fi
