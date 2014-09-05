@@ -39,11 +39,11 @@ if [ -e "/etc/slackware-version" ]; then
 
 
     if [[ $(whoami) == "root" ]]; then
-        sh ${LOCATION}/packages/install.sh
-    else
-        echo "You dont have permision to install packages"
+        read -p "Do you want to install slackware packages? (y/n) "
+        if [[ "${INSTALLPKGS}" == "y" ]]; then
+            sh ${LOCATION}/packages/install.sh
+        fi
     fi
-
 else
     echo "Not using slackware"
 fi

@@ -1,0 +1,209 @@
+#!/bin/bash
+##################################################################
+#  Backup script
+#  Author Michael Pratt <pratt@hablarmierda.net>
+##################################################################
+#set -e
+APPNAME=$(basename ${0})
+VERSION="0.1"
+HOST=$(hostname)
+DATE=$(date +%Y-%m-%d)
+SUBFOLDERYEAR=$(date +%Y)
+SUBFOLDERMONTH=$(date +%m-%d)
+TMPDIR=$(mktemp -d -t local-sync.XXXXXX)
+OUTPUTDIR="/mnt/backup"
+MOUNTPOINT="1"
+DIALOG=${DIALOG:- dialog}
+FOLDERS=( ".Skype" ".thunderbird" ".wine" ".vagrant.d" ".vim" ".config" ".gftp" ".kde" )
+[ "$(whoami)" = "root" ] && FOLDERS+=( "/boot" "/etc" "/var" )
+trap "rm -rf ${TMPDIR} && exit" 0 1 2 9 15
+
+##################################################################
+# Log actions
+##################################################################
+function backup_log() { 
+    echo "$(date +%H:%M:%S)# ${1}" >> ${OUTPUTDIR}/local-backup-${DATE}.log; 
+}
+
+##################################################################
+# Backup the Database
+#################################################################
+function backup_db() { 
+    read -p "Enter Password for MySQL Database: " -s DBPASS
+    echo ""
+
+    if [ -n "${DBPASS}" ]; then
+        backup_log "Performing Database Backups"
+        mysqldump -u root -p${DBPASS} --all-databases > ${OUTPUTDIR}/full-database-backup-${DATE}.sql
+        echo "DB backup done"
+    else
+        backup_log "Error Performing Database Backup (no password given)"
+    fi
+}
+
+##################################################################
+# Copies a dir/file to its destination
+##################################################################
+function backup_cp() {
+    local folder=${1}
+    local destination=${2}
+    local uname=$(echo $1 | egrep -o '/home/([a-zA-Z0-9]+)')
+    local tarfile=""
+
+    if [ -n "${uname}" ]; then 
+        destination=${destination}/$(basename ${uname})
+        tarfile="${OUTPUTDIR}/$(basename ${uname})-$(basename ${folder} | sed 's/\./_/')-${HOST}-${DATE}.tar.gz"
+    elif [ "$(echo ${1} | grep '/root')" ]; then
+        destination=${destination}/root
+        tarfile="${OUTPUTDIR}/root-$(basename ${folder} | sed 's/\./_/')-${HOST}-${DATE}.tar.gz"
+    else
+        destination=${destination}/main
+        tarfile="${OUTPUTDIR}/$(basename ${folder} | sed 's/\./_/')-${HOST}-${DATE}.tar.gz"
+    fi
+
+    echo "Backing up ${folder} ...."
+    backup_log "Backing up ${folder}"
+
+    if [ -d "${folder}" ]; then
+        rsync --exclude .git -artvq "${folder}" "${destination}/"
+
+        cd ${destination}
+        for i in $(ls -A | egrep '^\.'); do
+            local name=$(basename $i | sed 's/\./_/g')
+            mv ${i} ${name}
+            backup_log "Renaming $i to $name"
+        done
+
+    elif [ -f "${folder}" ]; then
+        destination="$(echo "${destination}/$(basename ${folder})" | sed 's/\./_/g')"
+        mkdir -p "$(dirname ${destination})"
+        cp -r "${folder}" "${destination}"
+
+    else
+        echo "${folder} not found ..."
+        backup_log "**** ${folder} does not exist"
+        return 1
+    fi
+
+    echo "Compressing file/folder ${destination}"
+    backup_log "Compressing file/folder ${destination}"
+    backup_log "Creating ${destination} file to ${OUTPUTDIR}/$(basename ${tarfile})"
+
+    cd "$(dirname ${destination})"
+    tar cvzf "${tarfile}" "$(basename ${destination})"
+    rm -rf ${destination}
+}
+
+#################################################################
+# Shows the usage
+#################################################################
+backup_usage() {
+    clear
+    echo "$APPNAME - $VERSION"
+    echo "Script that helps me backup my stuff in an external drive"
+    echo ""
+    echo "Requirements: ${DIALOG}, tar, rsync"
+    echo "Author: Michael Pratt <pratt@hablarmierda.net>"
+    echo ""
+    echo "Usage: $(basename $0) [opciones]"
+    echo "    -f | --folder      Name of file or folder you want to backup"
+    echo "    -o | --output-dir  Output directory where stuff is going to stored"
+    echo "    --not-mount-point  Do not check if the output directory is a mount point"
+    echo ""
+}
+
+##################################################################
+# Get options and perform minor checks before running
+##################################################################
+while [ -n "$1" ]; do
+    case ${1} in
+        -f|--folder)
+            shift
+            FOLDERS+=( "${1}" )
+            shift
+        ;;
+        -o|--output-dir)
+            shift
+            if [ -d "${1}" ]; then
+                OUTPUTDIR="${1}"
+            else
+                echo "The output dir ${1} doesnt exist"
+                exit 0
+            fi
+            shift
+        ;;
+        --not-mount-point)
+            shift
+            MOUNTPOINT="0"
+        ;;
+        -h|--help)
+            backup_usage
+            exit 0
+        ;;
+    esac
+done
+
+if mountpoint -q "${OUTPUTDIR}"; then 
+    ISMOUNTPOINT=1
+else
+    ISMOUNTPOINT=0
+fi
+
+if [[ "${MOUNTPOINT}" == "1" && "${ISMOUNTPOINT}" == "0" ]]; then
+    echo "Error: ${OUTPUTDIR} is not a mountpoint! If that was intended use the '--not-mount-point' parameter"
+    exit 1
+fi
+
+##################################################################
+# Mi buenos aires se ve tan suceptible...
+##################################################################
+printf "\"%s\" \"%s\" on \\ \n" "MySQL-DB" "Backup MySQL Database" >> $TMPDIR/folder_list
+
+for f in ${FOLDERS[@]}; do
+    if [ -e "${f}" ]; then
+        printf "\"%s\" \"%s\" off \\ \n" $(echo ${f}) $(echo ${f}) >> $TMPDIR/folder_list
+    fi
+
+    userfolder="${HOME}/${f}"
+    if [ -e "${userfolder}" ]; then
+        printf "\"%s\" \"%s\" on \\ \n" $(echo ${userfolder}) $(echo ${userfolder}) >> $TMPDIR/folder_list
+    fi
+done
+
+if [ "$(whoami)" = "root" ]; then
+    for u in $(ls /home/); do
+        for f in ${FOLDERS[@]}; do
+            userfolder="/home/${u}/${f}"
+            if [ -e "${userfolder}" ]; then
+                printf "\"%s\" \"%s\" on \\ \n" $(echo ${userfolder}) $(echo ${userfolder}) >> $TMPDIR/folder_list
+            fi
+        done
+    done
+fi
+
+cat ${TMPDIR}/folder_list | uniq | xargs ${DIALOG} --clear --title "${APPNAME} ${VERSION}" --backtitle "${APPNAME} ${VERSION}" --item-help --separate-output --checklist "Choose the folders" 15 70 10 2> ${TMPDIR}/tmp_selection
+rm -rf ${TMPDIR}/folder_list
+
+TIMER_START=$(date +%s)
+if [ "$(stat -c%s ${TMPDIR}/tmp_selection)" -eq 0 ]; then
+    ${DIALOG} --clear --title "${APPNAME} ${VERSION}" --backtitle "${APPNAME} ${VERSION}" --msgbox "No folders selected" 15 110
+    exit 1
+fi
+
+[ ! -e "${OUTPUTDIR}/${SUBFOLDERYEAR}/${SUBFOLDERMONTH}" ] && mkdir -p "${OUTPUTDIR}/${SUBFOLDERYEAR}/${SUBFOLDERMONTH}"
+OUTPUTDIR="${OUTPUTDIR}/${SUBFOLDERYEAR}/${SUBFOLDERMONTH}"
+backup_log "========================================================================"
+backup_log "[Backup - ${HOST}] $(date)"
+TSTART=$(date +%s)
+for folder in $(cat ${TMPDIR}/tmp_selection); do
+    if [ -e "${folder}" ]; then
+        backup_cp ${folder} ${TMPDIR}
+    elif [[ "${folder}" == "MySQL-DB" ]]; then
+        backup_db
+    else
+        backup_log "Folder ${folder} does not exist"
+    fi
+done
+TSTOP=$(date +%s)
+backup_log "Done. Total Time: $(echo "($TSTOP - $TSTART)/60"| bc) minutes"
+backup_log "========================================================================"
