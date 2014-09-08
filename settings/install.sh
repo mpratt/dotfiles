@@ -131,7 +131,7 @@ if [ -w "/etc/" ]; then
         echo "Writing mount data into fstab"
         mkdir -p /mnt/{share,storage,backup}
         echo "# SAMSUNG M3 External Drive" >> /etc/fstab
-        echo "/dev/disk/by-uuid/108639C48639AB5C                      /mnt/share   ntfs   defaults,user,umask=022,exec,comment=x-gvfs-show  0   0" >> /etc/fstab
+        echo "/dev/disk/by-uuid/108639C48639AB5C                      /mnt/share   ntfs   defaults,user,rw,umask=000,exec,comment=x-gvfs-show  0   0" >> /etc/fstab
         echo "/dev/disk/by-uuid/9c20bd82-1f3d-416e-b524-380172cd6959  /mnt/storage ext4   defaults,user,exec,comment=x-gvfs-show            0   0" >> /etc/fstab
         echo "/dev/disk/by-uuid/4baf3ce6-d77e-4da9-903c-fec952096f70  /mnt/backup  ext4   defaults,user,exec,comment=x-gvfs-show            0   0" >> /etc/fstab
     fi
