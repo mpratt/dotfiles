@@ -88,7 +88,7 @@ else
     echo "Skipping Facebook PHPSH"
 fi
 
-if [ -z "$(ls /var/log/packages/ | grep sbopkg)" ]; then
+if [ -n "$(ls /var/log/packages/ | grep sbopkg)" ]; then
     echo "Running Sbopkg"
     sbopkg -r
 
