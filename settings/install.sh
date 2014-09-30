@@ -44,15 +44,12 @@ copyIt ${LOCATION}/git/gitk ~/.gitk
 echo ""
 
 echo "Copying Vim Stuff into ${HOME}"
-copyIt ${LOCATION}/vim/ ~/.vim/
+copyIt ${LOCATION}/vim/ ~/.vim/ " --exclude bundle"
 symlinkIt ${HOME}/.vim/vimrc ~/.vimrc
 echo ""
 
 echo "Building User Profile (openbox, i3, etc)"
 copyIt ${LOCATION}/openbox/ ~/.config/openbox
-#[[ "$(whoami)" == "pratt" ]] && copyIt ${LOCATION}/thunderbird/ ~/.thunderbird/
-#mkdir -p ${HOME}/.vagrant.d && copyIt ${LOCATION}/vagrant.d/ ~/.vagrant.d
-
 copyIt ${LOCATION}/i3/ ~/.i3
 symlinkIt ${HOME}/.i3/i3status.conf ~/.i3status.conf
 

@@ -37,6 +37,10 @@ SITES=("reddit.com"\
        "news.ycombinator.com"\
        "hablarmierda.net"\
        "digg.com"\
+       "eltiempo.com"\
+       "lafiscalia.com"\
+       "imgur.com"\
+       "elespectador.com"\
        "stumpleupon.com"\
        "goear.com")
 

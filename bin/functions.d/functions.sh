@@ -27,6 +27,11 @@ function copyIt()
 {
     local src=$(realpath "${1}")
     local dst=${2}
+    local args=""
+
+    if [ -n "${3}" ]; then
+        args="${3}"
+    fi
 
     if [ -e "${src}" ]; then
         echo "Copying $(basename ${src})"
@@ -37,8 +42,8 @@ function copyIt()
             if [[ "${dstsum}" == "${srcsum}" ]]; then
                 rm -rf ${dst}
             else
-                read -p "Files dont match. Do you want to remove ${dst} before copying? (y/n/diff) " RM
-                if [[ "${RM}" == "diff" ]]; then
+                read -p "Files dont match. Do you want to overwrite ${dst}? (y/n/diff) " RM
+                if [[ "${RM}" == "diff" ]] || [[ "${RM}" == "d" ]]; then
                     diff -u ${src} ${dst}
                     copyIt ${src} ${dst}
                     return 0
@@ -46,11 +51,15 @@ function copyIt()
 
                 if [[ "${RM}" == "y" ]]; then
                     rm -rf ${dst}
+                else
+                    return 0
                 fi
             fi
+
             cp -r ${src} ${dst}
+
         elif [ -d "${src}" ]; then
-            rsync --exclude .git -artvq ${src}/ ${dst}/
+            rsync ${args} -b --backup-dir="${HOME}/dotfiles_backup/" --suffix "_old" --exclude .git -artvq ${src}/ ${dst}/
         fi
 
     else
