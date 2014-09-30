@@ -39,6 +39,11 @@ if [ -e "/etc/slackware-version" ]; then
 
 
     if [[ $(whoami) == "root" ]]; then
+        if ! grep ^vboxusers: /etc/group 2>&1 > /dev/null; then
+            echo "Creating vboxusers group!"
+            groupadd -g 215 vboxusers
+        fi
+
         read -p "Do you want to install slackware packages? (y/n) " INSTALLPKGS
         if [[ "${INSTALLPKGS}" == "y" ]]; then
             sh ${LOCATION}/packages/install.sh

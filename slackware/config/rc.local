@@ -29,3 +29,8 @@ if [ -x /etc/rc.d/rc.vboxdrv ]; then
     echo -e "Loading Virtualbox kernel module"
     /etc/rc.d/rc.vboxdrv start
 fi
+
+if [ -x /usr/bin/nvidia-modprobe ]; then
+    echo -e "Loading CUDA"
+    /usr/bin/nvidia-modprobe -c 0 -u
+fi
