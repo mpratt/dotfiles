@@ -3,10 +3,10 @@
 CWD=$(dirname $0)
 
 # Allow transparencies for tint2
-if which xcompmgr >/dev/null 2>&1; then
-    sleep 1
-    xcompmgr &
-fi
+#if which xcompmgr >/dev/null 2>&1; then
+#    sleep 1
+#    xcompmgr &
+#fi
 
 # Thunar Daemon
 thunar --daemon &
