@@ -7,15 +7,17 @@ set nocompatible " Forget compatibility with Vi. Who cares. - Required by Vundle
 filetype off     " required by Vundle
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin()
 
 " Plugins
-Plugin 'gmarik/vundle'
+Plugin 'gmarik/Vundle.vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'skammer/vim-css-color'
 Plugin 'terryma/vim-expand-region'
-Plugin 'kien/ctrlp.vim'
+Plugin 'Shougo/unite.vim'
+Plugin 'Shougo/neomru.vim'
+Plugin 'Shougo/vimproc.vim'
 Plugin 'Glench/Vim-Jinja2-Syntax'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -24,6 +26,8 @@ Plugin 'bling/vim-airline'
 Plugin 'Raimondi/delimitMate'
 Plugin 'mattn/emmet-vim'
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-fugitive'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'paradigm/TextObjectify'
 Plugin 'StanAngeloff/php.vim'
@@ -32,8 +36,10 @@ Plugin 'shawncplus/phpcomplete.vim'
 Plugin 'nanotech/jellybeans.vim'
 Plugin 'veloce/vim-aldmeris'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'mhinz/vim-startify'
+Plugin 'junegunn/goyo.vim'
 
-if has("win32")
+if has("win32") || has("win64")
     Plugin 'Hackworth/vim-ps1'
 endif
 
@@ -55,9 +61,12 @@ for fpath in split(globpath('~/.vim/local/settings', '*.vim'), '\n')
   exe 'source' fpath
 endfor
 
-" Set the color scheme on Gvim
+" Load stuff only when the gui is running
 if has("gui_running")
-    colorscheme aldmeris
+    " Set the color scheme on Gvim
+    if filereadable(expand('~/.vim/bundle/vim-aldmeris/colors/aldmeris.vim'))
+        colorscheme aldmeris
+    endif
 endif
 
 " Common abbreviations

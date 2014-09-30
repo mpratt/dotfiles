@@ -7,6 +7,14 @@ set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
 
+" Terminal Stuff
+set t_Co=256
+set term=xterm-256color
+
+" Disable Background Color Erase so that color scheme work properly
+" when vim is used inside tmux and GNU screen
+set t_ut=
+
 " How my editor looks like
 set linespace=3                       " Prefer a slightly higher line height
 set guifont=consolas\ regular\ 11     " Font and Size
@@ -40,8 +48,6 @@ set selectmode+=mouse  " Enable selections with the mouse
 set mousehide          " Hide mouse when typing
 set synmaxcol=512      " long lines syntax coloring/highlighting
 "set showmode          " Show current mode
-
-"set spell              " Turn on spell checking
 "set fileformats=unix,dos,mac
 set ffs=unix,dos,mac
 set formatoptions+=1            " When wrapping paragraphs, don't end lines with 1-letter words (looks stupid)
@@ -97,19 +103,28 @@ set undolevels=1000                 " use many levels of undo
 set fillchars+=vert:│               "vertical splits less gap between bars
 
 " Undo/Backup/Swap folders. Create them when needed
-set undodir=~/.vim/local/tmp/undo//
-set backupdir=~/.vim/local/tmp/backup//
-set directory=~/.vim/local/tmp/swap//
+set undodir=~/.vim/local/tmp/undo/
+set backupdir=~/.vim/local/tmp/backup/
+set directory=~/.vim/local/tmp/swap/
 
 if !isdirectory(expand(&undodir))
     call mkdir(expand(&undodir), "p")
 endif
+
 if !isdirectory(expand(&backupdir))
     call mkdir(expand(&backupdir), "p")
 endif
+
 if !isdirectory(expand(&directory))
     call mkdir(expand(&directory), "p")
 endif
+
+if !isdirectory(expand('~/.vim/local/sessions'))
+    call mkdir(expand('~/.vim/local/sessions'), "p")
+endif
+
+" Set sensible heights for splits
+set winheight=50
 
 " fix slight delay after pressing ESC then O
 " http://ksjoberg.com/vim-esckeys.html
@@ -138,6 +153,12 @@ set noesckeys
 " Set Shell
 set shell=/bin/bash
 
+" Spell checking stuff
+try
+  lang en_us
+catch
+endtry
+
 if has("gui_running")
     " Display tabs and trailing spaces visually
     set list 
@@ -163,4 +184,9 @@ if has("gui_running")
     " Start Fullscreen!
     set lines=999
     set columns=999
+endif
+
+" Windows Only Settings
+if has("win32") || has("win64")
+    set ssl     " it should do ~ vs $HOME
 endif
