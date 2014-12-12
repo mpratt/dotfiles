@@ -96,3 +96,9 @@ fi
 [ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
 [ -r "${HOME}/.bin/functions.d/functions.sh" ] && source ${HOME}/.bin/functions.d/functions.sh
 [ -r "${HOME}/.bin/functions.d/slackware.sh" ] && [ -e "/etc/slackware-version" ] && source ${HOME}/.bin/functions.d/slackware.sh # Load Slackware specific files
+
+# Source local aliases
+if [ -e "$HOME/.bashrc.local" ]; then
+   . $HOME/.bashrc.local
+fi
+

@@ -32,3 +32,6 @@ if [ "$(whoami)" != "root" ]; then
     alias halt="su -c halt"
     alias reboot="su -c reboot"
 fi
+
+# Add /usr/sbin to $PATH
+PATH=${PATH}:/usr/sbin/
