@@ -23,11 +23,12 @@ set noerrorbells                      " disable sound on errors
 set novisualbell                      " disable sound on errors
 set nowrap                            " Don't wrap lines
 set linebreak                         " Wrap lines at convenient points
-"set nofoldenable                      " Disable code folding
 set title
 
 " General Settings
 set switchbuf=usetab,newtab
+set nofoldenable       " Disable Folding when opening files, use zi to enable manually
+set foldmethod=expr    " Folds are defined by a user-defined expression 
 set nostartofline      " Avoid moving cursor to BOL when jumping around
 set ruler              " show the cursor position all the time
 set autoread           " auto read when file is changed from outside

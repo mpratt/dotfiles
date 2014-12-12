@@ -20,16 +20,6 @@ no <C-left> :bp<CR>
 nmap <C-Tab> :tabnext<CR>
 nmap <C-S-Tab> :tabprevious<CR>
 
-" Move lines/selected text up and down in normal mode with Ctrl and arrow keys
-nmap <C-Up> [e
-nmap <C-Down> ]e
-vmap <C-Up> [egv
-vmap <C-Down> ]egv
-
-" Go to start/end of line in insert mode
-imap <A-i> <ESC>I
-imap <A-a> <ESC>A
-
 " Ctrl+k deletes the current line
 noremap <C-k> dd
 
@@ -52,9 +42,6 @@ noremap <leader>p "+p
 " Create a new line below/above cursor in normal mode
 noremap <leader>o o<ESC>k
 noremap <leader>O O<Esc>j
-
-" Puts me on a good place with functions and php
-noremap <leader>b ^f{i<CR><ESC>f}i<CR><ESC>O
 
 " Clear current search highlight
 noremap <leader>h :nohlsearch<CR>
@@ -79,6 +66,9 @@ nnoremap <silent> <leader>le :setlocal spelllang=en<cr>
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>dm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
+" Split line (sister to [J]oin lines)
+nnoremap <A-p> i<cr><esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
+
 " Made D and Y behave
 nnoremap D d$
 nnoremap Y y$
@@ -90,10 +80,6 @@ vnoremap L g_
 
 " Map U to redo (since u undo's)
 nnoremap U <c-r>
-
-" Split line (sister to [J]oin lines)
-" The normal use of S is covered by cc, so don't worry about shadowing it.
-nnoremap S i<cr><esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
 
 " Type 12<Enter> to go to line 12 (12G breaks my wrist) Or just <Enter> to go to the end of a file
 " Hit Backspace to go to beginning of file.
@@ -133,18 +119,18 @@ nnoremap / /\v
 vnoremap / /\v
 
 " Visual Mode Indenting
-vmap > >gv
-vmap < <gv
-
-" I really hate that things don't auto-center
-nmap G Gzz
-nmap } }zz
-nmap { {zz
-
-" Keep search matches in the middle of the window.
-nnoremap n nzzzv
-nnoremap N Nzzzv
-
+vmddap > >gv
+vmapdd < <gv
+dd
+" ddI really hate that things don't auto-center
+nmapdd G Gzz
+nmap }dd }zz
+nmap { {ddzz
+dd
+" ddKeep search matches in the middle of the window.
+nnorddemap n nzzzv
+nnoremddap N Nzzzv
+dd
 " Same when jumping around
 nnoremap g; g;zz
 nnoremap g, g,zz
@@ -166,4 +152,4 @@ vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
 " Keep the cursor in place while joining lines
-nnoremap J mzJ`z
+" nnoremap J mzJ`z

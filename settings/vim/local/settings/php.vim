@@ -1,0 +1,1 @@
+let g:php_syntax_extensions_enabled = ["core", "curl", "date", "dom", "gd", "hash", "iconv", "json", "libxml", "mbstring", "mcrypt", "mhash", "mysqli", "openssl", "pcre", "pdo", "reflection", "session", "simplexml", "soap", "sockets", "spl", "standard", "tokenizer", "xml", "xmlreader", "xmlwriter", "zip", "zlib"]

@@ -96,9 +96,6 @@ function calculate() { echo "scale=2; $@" | sed 's/*/\*/' | bc -l; }
 function stamp2date() { awk -v date=$1 'BEGIN { print strftime("(d/m/y h:m:s): %d/%m/%Y - %H:%M:%S", date)}'; }
 function date2stamp() { [ -z "$*" ] && echo "date2stamp Y-M-D h:m:s [2009-02-03 15:58:00]" && return 1; date --date="$*" +%s; }
 
-# Make gvim open files in the same instance
-function gvim() { command gvim --remote-tab-silent $@ || command gvim $@; }
-
 # Search for sinonyms
 function sinonimo()
 {
