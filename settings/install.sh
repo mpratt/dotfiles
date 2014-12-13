@@ -21,13 +21,16 @@ else
     echo "Creating ~/.config directory"
 fi
 
-echo "Copying Bash Stuff into ${HOME}"
-copyIt ${LOCATION}/bash/bashrc ~/.bashrc
-copyIt ${LOCATION}/bash/bash_profile ~/.bash_profile
-copyIt ${LOCATION}/bash/xserverrc ~/.xserverrc
-copyIt ${LOCATION}/bash/ackrc ~/.ackrc
-copyIt ${LOCATION}/bash/ctags ~/.ctags
-copyIt ${LOCATION}/bash/inputrc ~/.inputrc
+echo "Copying Environment Stuff into ${HOME}"
+copyIt ${LOCATION}/env/shells.custom ~/.shells.custom
+copyIt ${LOCATION}/env/bashrc ~/.bashrc
+copyIt ${LOCATION}/env/zshrc ~/.zshrc
+copyIt ${LOCATION}/env/bash_profile ~/.bash_profile
+copyIt ${LOCATION}/env/xserverrc ~/.xserverrc
+copyIt ${LOCATION}/env/ackrc ~/.ackrc
+copyIt ${LOCATION}/env/ctags ~/.ctags
+copyIt ${LOCATION}/env/inputrc ~/.inputrc
+copyIt ${LOCATION}/env/terminalrc ~/.config/xfce4/terminal/terminalrc
 echo ""
 
 echo "Copying GTK Stuff into ${HOME}"
