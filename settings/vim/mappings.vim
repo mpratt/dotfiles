@@ -119,18 +119,18 @@ nnoremap / /\v
 vnoremap / /\v
 
 " Visual Mode Indenting
-vmddap > >gv
-vmapdd < <gv
-dd
+vmap > >gv
+vmap < <gv
+
 " ddI really hate that things don't auto-center
-nmapdd G Gzz
+nmap G Gzz
 nmap }dd }zz
 nmap { {ddzz
-dd
+
 " ddKeep search matches in the middle of the window.
-nnorddemap n nzzzv
-nnoremddap N Nzzzv
-dd
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
 " Same when jumping around
 nnoremap g; g;zz
 nnoremap g, g,zz
