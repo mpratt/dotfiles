@@ -1,0 +1,45 @@
+# Michael Pratt <pratt@hablarmierda.net>
+# $HOME/.shells.custom
+
+# Define some options
+export GREP_OPTIONS="--color=auto"
+if [[ "${SHELL}" == "/bin/bash" ]]; then
+    export LS_OPTIONS="-h --color=auto --group-directories-first"
+fi
+
+# Easier directory change
+alias cd..="cd .."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+# Other alias
+alias :q="exit"
+alias lsoctal="stat -c '%a %n'"
+alias cp="cp -i"
+alias mv="mv -i"
+alias nocomment="grep -Ev '^\s*(#|//|$)'"
+alias screenoff="xset dpms force off"
+alias phpunit="phpunit --verbose"
+alias phpcheck="find ./ -iname \*.php | xargs -n 1 php -l"
+alias servephp="php -S localhost:8000"
+alias servepython="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+alias regrep="egrep -R -iH -n"
+alias getip="curl -s http://wtfismyip.com/text"
+alias gvim="gvim --remote-tab-silent"
+
+# Append custom PATH
+[ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
+[ -r "${HOME}/.bin/functions.d/functions.sh" ] && source ${HOME}/.bin/functions.d/functions.sh
+[ -r "${HOME}/.bin/functions.d/slackware.sh" ] && [ -e "/etc/slackware-version" ] && source ${HOME}/.bin/functions.d/slackware.sh # Load Slackware specific files
+
+# Source local aliases
+if [ -e "$HOME/.bashrc.local" ]; then
+   . $HOME/.bashrc.local
+fi
+
+# Source local aliases
+if [ -e "$HOME/.zshrc.local" ]; then
+   . $HOME/.zshrc.local
+fi

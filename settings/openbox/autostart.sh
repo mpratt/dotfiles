@@ -1,4 +1,3 @@
-#!/bin/bash
 # This shell script is run before Openbox launches.
 CWD=$(dirname $0)
 
@@ -19,7 +18,7 @@ setxkbmap -layout "us" -variant "intl"
 xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 
 # Setup the wallpaper
-wallpaper --use-previous --use-random &
+[ -e "${HOME}/.bin/wallpaper" ] && ${HOME}/.bin/wallpaper --use-previous --use-random &
 
 # Start some apps
 tint2 -c "${CWD}/tint2rc" &
