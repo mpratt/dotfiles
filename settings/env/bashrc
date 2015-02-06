@@ -69,6 +69,6 @@ if [ "$(whoami)" = "root" ] && [ -n "$(who | awk '{print $1}' | uniq | grep prat
 fi
 
 # Source aliases, functions and stuff
-if [ -e "$HOME/.shells.custom" ]; then
-   . $HOME/.shells.custom
+if [ -e "$HOME/.shells.common" ]; then
+   . $HOME/.shells.common
 fi

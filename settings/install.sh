@@ -22,7 +22,7 @@ else
 fi
 
 echo "Copying Environment Stuff into ${HOME}"
-copyIt ${LOCATION}/env/shells.custom ~/.shells.custom
+copyIt ${LOCATION}/env/shells.common ~/.shells.common
 copyIt ${LOCATION}/env/bashrc ~/.bashrc
 copyIt ${LOCATION}/env/zshrc ~/.zshrc
 copyIt ${LOCATION}/env/bash_profile ~/.bash_profile
@@ -64,16 +64,6 @@ mkdir -p ${HOME}/.local/share/applications && copyIt ${LOCATION}/vim/gvim.deskto
 if [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
     echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
     copyIt ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
-fi
-
-if [ -w "/usr/share/fonts/TTF/" ] && [ -z "$(ls /usr/share/fonts/TTF/ | egrep -i 'CONSOLA|MONACO')" ]; then
-    echo ""
-    echo "Copying fonts to /usr/share/fonts/TTF/"
-    cp ${LOCATION}/fonts/*.TTF /usr/share/fonts/TTF/
-    cp ${LOCATION}/fonts/*.ttf /usr/share/fonts/TTF/
-    fc-cache -vf
-else
-    echo "Custom fonts already installed! Or you have no permissions to install fonts"
 fi
 
 # Modify some /etc stuff
@@ -135,6 +125,13 @@ if [ -w "/etc/" ]; then
         echo "/dev/disk/by-uuid/9c20bd82-1f3d-416e-b524-380172cd6959  /mnt/storage ext4   defaults,user,exec,comment=x-gvfs-show            0   0" >> /etc/fstab
         echo "/dev/disk/by-uuid/4baf3ce6-d77e-4da9-903c-fec952096f70  /mnt/backup  ext4   defaults,user,exec,comment=x-gvfs-show            0   0" >> /etc/fstab
     fi
+
+    echo ""
+    echo "Copying fonts to /usr/share/fonts/TTF/"
+    cp ${LOCATION}/fonts/TTF/*.TTF /usr/share/fonts/TTF/
+    cp ${LOCATION}/fonts/TTF/*.ttf /usr/share/fonts/TTF/
+    cp ${LOCATION}/fonts/OTF/*.otf /usr/share/fonts/OTF/
+    fc-cache -vf
 else
     echo "You Cannot write into /etc/"
 fi
