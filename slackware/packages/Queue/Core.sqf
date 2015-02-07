@@ -65,3 +65,5 @@ python-xlib
 libconfig
 compton
 ack
+the_silver_searcher
+#adobe-source-code-pro-font

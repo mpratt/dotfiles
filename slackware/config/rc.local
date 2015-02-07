@@ -34,3 +34,7 @@ if [ -x /usr/bin/nvidia-modprobe ]; then
     echo -e "Loading CUDA"
     /usr/bin/nvidia-modprobe -c 0 -u
 fi
+
+if [ -x /etc/rc.d/rc.teamviewerd ]; then
+    /etc/rc.d/rc.teamviewerd start
+fi
