@@ -49,27 +49,25 @@ echo ""
 echo "Copying Vim Stuff into ${HOME}"
 copyIt ${LOCATION}/vim/ ~/.vim/ " --exclude bundle"
 symlinkIt ${HOME}/.vim/vimrc ~/.vimrc
-echo ""
-
-echo "Building User Profile (openbox, i3, etc)"
-copyIt ${LOCATION}/openbox/ ~/.config/openbox
-copyIt ${LOCATION}/i3/ ~/.i3
-symlinkIt ${HOME}/.i3/i3status.conf ~/.i3status.conf
-
-[ -e "${HOME}/.config/Thunar/" ] && copyIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
 mkdir -p ${HOME}/.local/share/pixmaps/ && copyIt ${LOCATION}/vim/gvim.png ${HOME}/.local/share/pixmaps/gvim.png
 mkdir -p ${HOME}/.local/share/icons/hicolor/256x256/apps && copyIt ${LOCATION}/vim/gvim.png ${HOME}/.local/share/icons/hicolor/256x256/apps/gvim.png
 mkdir -p ${HOME}/.local/share/applications && copyIt ${LOCATION}/vim/gvim.desktop ${HOME}/.local/share/applications/gvim.desktop
-
 if [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
-    echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
+    echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC for Vim"
     copyIt ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
 fi
+echo ""
 
-# Modify some /etc stuff
+echo "Copying Window Manager Stuff (kde, openbox, i3, etc)"
+copyIt ${LOCATION}/openbox/ ~/.config/openbox
+copyIt ${LOCATION}/i3/ ~/.i3
+symlinkIt ${HOME}/.i3/i3status.conf ~/.i3status.conf
+[ -e "${HOME}/.config/Thunar/" ] && copyIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
+echo ""
+
 if [ -w "/etc/" ]; then
-    echo ""
-    [ -f "/etc/inetd.conf" ] && echo "Comment all inetd.conf services" && sed -i 's/^#//g;s/^/#/g' /etc/inetd.conf
+    echo "Modifying /etc stuff"
+    [ -f "/etc/inetd.conf" ] && echo "Commenting all services in inetd.conf" && sed -i 's/^#//g;s/^/#/g' /etc/inetd.conf
 
     exists=0
     getent passwd $1 >/dev/null 2>&1 && exists=1
@@ -77,23 +75,30 @@ if [ -w "/etc/" ]; then
         echo "Edditing Sudoers file"
         if [ -f "/etc/sudoers.tmp" ]; then
             echo "/etc/sudoers.tmp exists, cannot edit sudoers"
-            exit 1
+        else
+            touch /etc/sudoers.tmp
+            echo "pratt ALL=NOPASSWD:/sbin/iwconfig,/sbin/iwlist,/sbin/ifconfig, /sbin/shutdown,/sbin/dhclient,/sbin/dhcpcd" >> /tmp/sudoers.new
+            visudo -c -f /tmp/sudoers.new
+            if [ "$?" -eq "0" ]; then
+                cp /tmp/sudoers.new /etc/sudoers
+            fi
+            rm /etc/sudoers.tmp
         fi
-
-        touch /etc/sudoers.tmp
-        echo "pratt ALL=NOPASSWD:/sbin/iwconfig,/sbin/iwlist,/sbin/ifconfig, /sbin/shutdown,/sbin/dhclient,/sbin/dhcpcd" >> /tmp/sudoers.new
-        visudo -c -f /tmp/sudoers.new
-        if [ "$?" -eq "0" ]; then
-            cp /tmp/sudoers.new /etc/sudoers
-        fi
-        rm /etc/sudoers.tmp
     fi
 
     if [ -e "/etc/slackware-version" ]; then
-
         echo "Modify hosts.allow/hosts.deny for more security"
-        copyIt ${LOCATION}/hosts/hosts.allow /etc/hosts.allow
-        copyIt ${LOCATION}/hosts/hosts.deny /etc/hosts.deny
+        echo ""
+
+        sed -i -e '/#dotfilesauto$/d' /etc/hosts.deny
+        echo "Deny Access to all services in hosts.deny"
+        echo -e "All: All #dotfilesauto" >> /etc/hosts.deny
+        echo ""
+
+        sed -i -e '/#dotfilesauto$/d' /etc/hosts.allow
+        echo "Allowing sshd to 192.168.0.,10.42.0.,127.0.0.1"
+        echo -e "sshd:192.168.0.,10.42.0.,127.0.0.1 #dotfilesauto" >> /etc/hosts.allow
+        echo ""
 
         echo "Modifying httpd.conf to allow userdir_module"
         sed -i 's:#Include /etc/httpd/extra/httpd-userdir.conf:Include /etc/httpd/extra/httpd-userdir.conf:' /etc/httpd/httpd.conf
