@@ -13,12 +13,12 @@ nmap <silent><A-Left> :wincmd h<CR>
 nmap <silent><A-Right> :wincmd l<CR>
 
 " Move between buffers in normal mode with Ctrl and arroy keys
-no <C-right> :bn<CR>
-no <C-left> :bp<CR>
+no <C-right> :tabnext<CR>
+no <C-left> :tabprevious<CR>
 
 " Tab Navigation
-nmap <C-Tab> :tabnext<CR>
-nmap <C-S-Tab> :tabprevious<CR>
+nmap <C-Tab> :bn<CR>
+nmap <C-S-Tab> :bp<CR>
 
 " Ctrl+k deletes the current line
 noremap <C-k> dd
