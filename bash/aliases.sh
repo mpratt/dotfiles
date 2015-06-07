@@ -1,5 +1,5 @@
 # Michael Pratt <pratt@hablarmierda.net>
-# $HOME/.shells.custom
+# $HOME/.aliases.sh
 
 # Define some options
 export GREP_OPTIONS="--color=auto"
@@ -31,4 +31,4 @@ alias gvim="gvim --remote-tab-silent"
 [ -e "${HOME}/dotfiles/.bin" ] && PATH=${PATH}:${HOME}/dotfiles/.bin
 
 # Allow root to use DISPLAY
-xhost +
+xhost + &> /dev/null
