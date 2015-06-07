@@ -1,3 +1,5 @@
 # Files and Patterns to ignore
-/vim/bundle/*
+/vim/plugged/*
+/vim/.netrwhist
+/vim/local/tmp/*
 *.mp4
