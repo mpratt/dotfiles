@@ -13,44 +13,48 @@ if has("win32") || has("win64")
     set runtimepath+=$HOME/.vim/after
 endif
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim/
-call vundle#begin()
-
-" Plugins
-Plugin 'gmarik/Vundle.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'skammer/vim-css-color'
-Plugin 'terryma/vim-expand-region'
-Plugin 'Glench/Vim-Jinja2-Syntax'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-Plugin 'justinmk/vim-sneak'
-Plugin 'bling/vim-airline'
-Plugin 'Raimondi/delimitMate'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-unimpaired'
-Plugin 'tpope/vim-fugitive'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'StanAngeloff/php.vim'
-Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'mattn/emmet-vim'
-Plugin 'PProvost/vim-ps1'
-" Plugin 'shawncplus/phpcomplete.vim'
-
-" Colorschemes
-Plugin 'veloce/vim-aldmeris'
-Plugin 'endel/vim-github-colorscheme'
-Plugin 'nanotech/jellybeans.vim'
-Plugin 'sjl/badwolf'
-Plugin 'tomasr/molokai'
-
-if has("unix")
-    Plugin 'Valloric/YouCompleteMe'
+" Setting up vim-plug as the package manager {{{
+if !filereadable(expand("~/.vim/autoload/plug.vim"))
+    echo "Installing vim-plug and plugins. Restart vim after finishing the process."
+    silent call mkdir(expand("~/.vim/autoload", 1), 'p')
+    execute "!curl -fLo ".expand("~/.vim/autoload/plug.vim", 1)." https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    autocmd VimEnter * PlugInstall
 endif
 
-call vundle#end()
+call plug#begin('~/.vim/plugged')
+
+" Plugins
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'scrooloose/syntastic'
+Plug 'skammer/vim-css-color'
+Plug 'terryma/vim-expand-region'
+Plug 'Glench/Vim-Jinja2-Syntax'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'justinmk/vim-sneak'
+Plug 'bling/vim-airline'
+Plug 'Raimondi/delimitMate'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-fugitive'
+Plug 'StanAngeloff/php.vim'
+Plug 'nathanaelkane/vim-indent-guides', {'on': 'IndentGuidesEnable'}
+Plug 'mattn/emmet-vim'
+Plug 'PProvost/vim-ps1'
+Plug 'scrooloose/nerdtree'
+" Plug 'shawncplus/phpcomplete.vim'
+
+" Colorschemes
+Plug 'veloce/vim-aldmeris'
+Plug 'endel/vim-github-colorscheme'
+Plug 'sjl/badwolf'
+Plug 'tomasr/molokai'
+
+if has("unix")
+    Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
+endif
+
+call plug#end()
 filetype plugin indent on
 syntax on
 

@@ -16,44 +16,45 @@ set term=xterm-256color
 set t_ut=
 
 " How my editor looks like
-set linespace=3                       " Prefer a slightly higher line height
-set guifont=consolas\ regular\ 11     " Font and Size
-set go-=T                             " Hide Gvim toolbar by default
-set noerrorbells                      " disable sound on errors
-set novisualbell                      " disable sound on errors
-set nowrap                            " Don't wrap lines
-set linebreak                         " Wrap lines at convenient points
-set title
+set linespace=3                            " Prefer a slightly higher line height
+" set guifont=consolas\ regular\ 11        " Font and Size
+" set guifont=Fira\ Mono\ Regular\ 10      " Font and Size
+set guifont=Source\ Code\ Pro\ Medium\ 10  " Font and Size
+set noerrorbells                           " disable sound on errors
+set novisualbell                           " disable sound on errors
+set nowrap                                 " Don't wrap lines
+set linebreak                              " Wrap lines at convenient points
+set title                                  " Show Title
+set guioptions-=T                          " remove toolbar
+"set guioptions-=m                         " remove menu bar
 
 " General Settings
+set ffs=unix,dos,mac
 set switchbuf=usetab,newtab
 set nofoldenable       " Disable Folding when opening files, use zi to enable manually
-set foldmethod=expr    " Folds are defined by a user-defined expression 
 set nostartofline      " Avoid moving cursor to BOL when jumping around
 set ruler              " show the cursor position all the time
 set autoread           " auto read when file is changed from outside
 set bs=2               " allow backspacing over everything in insert mode
 set backspace=indent,eol,start  " make backspaces more powerfull
 set history=100        " keep 100 lines of command line history
-set hidden             "Switch between buffers without saving
+set hidden             " Switch between buffers without saving
 set showcmd            " Show command in bottom right portion of the screen
 set number             " Show lines numbers
 set showmatch          " Cursor shows matching ) and }
 set cursorline         " Show Cursor line
-set noshowmode         " I dont need this, since Im using Powerline
+set noshowmode         " I dont need this, since Im using Airline
 set clipboard=unnamed  " yank to the system register (*) by default
-set laststatus=2       " Always show the status line
 set confirm            " Y-N-C prompt if closing with unsaved changes.
 set mouse=a            " enable using the mouse if terminal emulator supports it (xterm does)
 set selectmode+=mouse  " Enable selections with the mouse
 set mousehide          " Hide mouse when typing
-set synmaxcol=512      " long lines syntax coloring/highlighting
-"set showmode          " Show current mode
-"set fileformats=unix,dos,mac
-set ffs=unix,dos,mac
-set formatoptions+=1            " When wrapping paragraphs, don't end lines with 1-letter words (looks stupid)
-set pastetoggle=<F11>           " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that won't be autoindented
-set wildmenu                    " Use bash-like tab completion in Vim command line
+set synmaxcol=530      " long lines syntax coloring/highlighting
+set formatoptions+=1   " When wrapping paragraphs, don't end lines with 1-letter words (looks stupid)
+set pastetoggle=<F11>  " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that won't be autoindented
+set ttyfast            " Optimize for fast terminal connections
+set gdefault           " Add the g flag to search/replace by default
+set wildmenu           " Use bash-like tab completion in Vim command line
 set wildmode=longest,list:longest
 
 " Stuff to ignore when tab completing
@@ -72,8 +73,6 @@ set wildignore+=*.luac
 set wildignore+=migrations
 set wildignore+=*.pyc
 set wildignore+=*.orig
-set wildignore+=classes
-set wildignore+=lib
 
 " keep some context when moving
 set scrolloff=15
@@ -86,8 +85,8 @@ set lazyredraw
 set expandtab           " enter spaces when tab is pressed
 set textwidth=500       " break lines when line length increases
 set tabstop=4           " use 4 spaces to represent tab
-set softtabstop=4
 set shiftwidth=4        " number of spaces to use for auto indent
+set softtabstop=4
 set autoindent          " auto indentation
 set smartindent
 
@@ -99,9 +98,9 @@ set incsearch          " Set incremental searching
 
 " Backup and Undo Settings
 set backup             " enable backups
-set noswapfile         " it's 2014, Vim.
-set undolevels=1000                 " use many levels of undo
-set fillchars+=vert:│               "vertical splits less gap between bars
+set noswapfile         " it's 2015, Vim.
+set undolevels=1000    " use many levels of undo
+set fillchars+=vert:│  "vertical splits less gap between bars
 
 " Undo/Backup/Swap folders. Create them when needed
 set undodir=~/.vim/local/tmp/undo/
@@ -191,3 +190,5 @@ endif
 if has("win32") || has("win64")
     set ssl     " it should do ~ vs $HOME
 endif
+
+set omnifunc=syntaxcomplete#Complete

@@ -4,13 +4,12 @@
 " http://www.michael-pratt.com
 
 " Omni Complete settings
-" autocmd FileType python set omnifunc=pythoncomplete#Complete
-" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-" autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-" autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-" autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-set omnifunc=syntaxcomplete#Complete
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 
 " Add $ to the keywords when running php
 " autocmd FileType php setlocal iskeyword+=$
@@ -65,4 +64,4 @@ augroup trailing
 augroup END
 
 " Reload vimrc when edited
-autocmd BufWritePost .vimrc,_vimrc,vimrc so $MYVIMRC
+" autocmd BufWritePost .vimrc,_vimrc,vimrc so $MYVIMRC
