@@ -85,7 +85,7 @@ symlinkIt ${LOCATION}/git/gitk ~/.gitk
 echo ""
 
 echo "Linking Vim Stuff into ${HOME}"
-symlinkIt ${LOCATION}/vim/ ~/.vim/
+symlinkIt ${LOCATION}/vim ~/.vim
 symlinkIt ${HOME}/.vim/vimrc ~/.vimrc
 mkdir -p ${HOME}/.local/share/pixmaps/ && cp ${LOCATION}/vim/gvim.png ${HOME}/.local/share/pixmaps/gvim.png
 mkdir -p ${HOME}/.local/share/icons/hicolor/256x256/apps && cp ${LOCATION}/vim/gvim.png ${HOME}/.local/share/icons/hicolor/256x256/apps/gvim.png
