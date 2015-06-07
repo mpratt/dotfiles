@@ -16,8 +16,21 @@ function symlinkIt()
 
     if [ -e "${dst}" ]; then
         echo "Backing up ${dst}"
-        mkdir ${HOME}/dotfiles_backup
-        mv ${dst} ${HOME}/dotfiles_backup/$(echo ${dst} | tr '.' '_')
+        mkdir -p ${HOME}/dotfiles_backup/
+
+        if [ -L "${dst}" ]; then
+            echo "Symlink, no need to back it up"
+            rm -rf ${dst}
+            return 0
+        fi
+
+        if [ -f "${dst}" ]; then
+            cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+        else
+            cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+        fi
+
+        rm -rf ${dst}
     fi
 
     if [ -e "${src}" ]; then
