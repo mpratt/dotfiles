@@ -1,9 +1,3 @@
 # Files and Patterns to ignore
-slackware/packages/Slackbuilds/*/adminer*.php
-slackware/packages/Slackbuilds/*/areao*.tar.bz2
-slackware/packages/Slackbuilds/*/facebook*.zip
-slackware/packages/Compiled/webkit*
-slackware/packages/Compiled/jdk*
-settings/vim/bundle/*
+/vim/bundle/*
 *.mp4
-tomighty*jar
