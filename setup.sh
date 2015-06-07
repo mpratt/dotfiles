@@ -20,14 +20,12 @@ function symlinkIt()
 
         if [ -L "${dst}" ]; then
             echo "Symlink, no need to back it up"
-            rm -rf ${dst}
-            return 0
-        fi
-
-        if [ -f "${dst}" ]; then
-            cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
         else
-            cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+            if [ -f "${dst}" ]; then
+                cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+            else
+                cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+            fi
         fi
 
         rm -rf ${dst}
