@@ -25,4 +25,3 @@ tint2 -c "${CWD}/tint2rc" &
 nm-applet &
 xfce4-power-manager &
 volti &
-[ -e "${CWD}/tomighty-0.7.1.jar" ] && java -jar "${CWD}/tomighty-0.7.1.jar" &
