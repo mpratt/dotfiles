@@ -28,7 +28,7 @@ alias gvim="gvim --remote-tab-silent"
 
 # Append custom PATH
 [ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
-[ -e "${HOME}/dotfiles/.bin" ] && PATH=${PATH}:${HOME}/dotfiles/.bin
+[ -e "${HOME}/.dotfiles/bin" ] && PATH=${PATH}:${HOME}/.dotfiles/bin
 
 # Allow root to use DISPLAY
 xhost + &> /dev/null
