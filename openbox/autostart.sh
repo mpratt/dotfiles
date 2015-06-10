@@ -18,7 +18,7 @@ setxkbmap -layout "us" -variant "intl"
 xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 
 # Setup the wallpaper
-[ -e "${HOME}/.bin/wallpaper" ] && ${HOME}/.bin/wallpaper --use-previous --use-random &
+[ -e "${HOME}/.dotfiles/bin/wallpaper" ] && ${HOME}/.dotfiles/bin/wallpaper --use-previous --use-random &
 
 # Start some apps
 tint2 -c "${CWD}/tint2rc" &
