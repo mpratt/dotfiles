@@ -1,7 +1,7 @@
 My Dotfiles
 ===========
 
-Hi there friend. This are my dot files and a script to install them on my system.
+Hi there friend. These are my dot files and a script to install them on my system.
 The bootstrap system was inspired by [Zack Holman's Dotfiles Repo](https://github.com/holman/dotfiles).
 
 ## Overview
