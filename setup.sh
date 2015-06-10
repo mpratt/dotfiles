@@ -110,3 +110,12 @@ mkdir -p ~/.fonts
 cp ${LOCATION}/fonts/* ~/.fonts
 fc-cache -vf ~/.fonts
 echo ""
+
+if ! [ -e "${HOME}/.bin/psysh" ]; then
+    echo "Installing physh"
+    mkdir -p ~/.bin
+    cd ~/.bin
+    wget http://psysh.org/psysh
+    chmod +x psysh
+    echo ""
+fi
