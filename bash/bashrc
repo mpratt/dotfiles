@@ -20,13 +20,17 @@ shopt -s nocaseglob # Matches filenames in a case-insensitive fashion when perfo
 shopt -s checkwinsize # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
 
 # GCC tweaks
-if [[ "$(uname -m)" == "x86_64" ]]; then
+if [[ "$(uname -a | grep -i 'AMD A4')" ]]; then
+    CHOST="x86_64-pc-linux-gnu"
+    CFLAGS="-O2 -march=amdfam10 -mcx16 -mpopcnt -pipe"
+elif [[ "$(uname -a | grep -i 'Intel(R) Core(TM)2 Duo CPU')" ]]; then
     CHOST="x86_64-pc-linux-gnu"
     CFLAGS="-march=core2 -O2 -pipe"
-elif [[ "$(uname -a | grep -i celeron)" ]]; then
+elif [[ "$(uname -a | grep -i 'celeron')" ]]; then
     CHOST="i686-pc-linux-gnu"
     CFLAGS="-march=pentium-m -O2 -pipe -fomit-frame-pointer"
 fi
+
 CXXFLAGS="${CFLAGS}"
 
 # Prompt
