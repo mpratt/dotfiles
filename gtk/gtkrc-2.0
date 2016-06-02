@@ -1,5 +1,5 @@
 # -- THEME AUTO-WRITTEN DO NOT EDIT
-include "/usr/share/themes/Clearlooks-Phenix/gtk-2.0/gtkrc"
+include "/usr/share/themes/Radiance-Flat-Orange-Pro/gtk-2.0/gtkrc"
 
 style "user-font" {
 	font_name = "Liberation Sans 10"
