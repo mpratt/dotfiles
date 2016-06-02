@@ -126,6 +126,9 @@ endif
 " Set sensible heights for splits
 set winheight=50
 
+" Autocomplete stuff
+set omnifunc=syntaxcomplete#Complete
+
 " fix slight delay after pressing ESC then O
 " http://ksjoberg.com/vim-esckeys.html
 " set noesckeys
@@ -191,4 +194,11 @@ if has("win32") || has("win64")
     set ssl     " it should do ~ vs $HOME
 endif
 
-set omnifunc=syntaxcomplete#Complete
+" shortcuts to open files externally and perform online searches
+if has('mac')
+    let g:open_command = 'open'
+elseif has('unix')
+    let g:open_command = 'xdg-open'
+else
+    let g:open_command = 'start'
+endif

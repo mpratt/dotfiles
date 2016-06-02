@@ -27,8 +27,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/syntastic'
 Plug 'skammer/vim-css-color'
-Plug 'terryma/vim-expand-region'
-Plug 'Glench/Vim-Jinja2-Syntax'
+Plug 'blueyed/smarty.vim'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'justinmk/vim-sneak'
@@ -37,12 +36,11 @@ Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-vinegar'
+Plug 'pangloss/vim-javascript'
 Plug 'StanAngeloff/php.vim'
-Plug 'nathanaelkane/vim-indent-guides', {'on': 'IndentGuidesEnable'}
-Plug 'mattn/emmet-vim'
-Plug 'PProvost/vim-ps1'
-Plug 'scrooloose/nerdtree'
-" Plug 'shawncplus/phpcomplete.vim'
+Plug 'shawncplus/phpcomplete.vim'
+Plug '2072/PHP-Indenting-for-VIm'
 
 " Colorschemes
 Plug 'veloce/vim-aldmeris'
@@ -80,6 +78,8 @@ endif
 
 " Common abbreviations
 iabbrev lenght length
+iabbrev teh the
+iabbrev Teh The
 
 " Source ~/.vim/.vimrc.after if it exists. In order to allow overriding
 if filereadable(expand("~/.vim/vimrc.after"))
