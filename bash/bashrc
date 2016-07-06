@@ -3,6 +3,7 @@
 # $HOME/.bashrc
 
 # Configuration vars
+unset GREP_OPTIONS
 export TERM=xterm-256color
 export HISTSIZE=40000
 export HISTFILESIZE=40000
