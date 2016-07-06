@@ -2,7 +2,6 @@
 # $HOME/.aliases.sh
 
 # Define some options
-export GREP_OPTIONS="--color=auto"
 export EDITOR="vim"
 export VISUAL="vim"
 
