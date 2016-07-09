@@ -53,6 +53,11 @@ if [ "$(whoami)" != "root" ]; then
    alias su="su -l"
 fi
 
+# Source common variables/settings
+if [ -e "$HOME/.common.sh" ]; then
+   . $HOME/.common.sh
+fi
+
 # Source local aliases
 if [ -e "$HOME/.aliases.sh" ]; then
    . $HOME/.aliases.sh

@@ -24,11 +24,3 @@ alias servepython="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
 alias regrep="egrep -R -iH -n"
 alias getip="curl -s http://wtfismyip.com/text"
 alias gvim="gvim --remote-tab-silent"
-
-# Append custom PATH
-[ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
-[ -e "${HOME}/.dotfiles/bin" ] && PATH=${PATH}:${HOME}/.dotfiles/bin
-[ -e "${HOME}/.slackware/bin" ] && PATH=${PATH}:${HOME}/.slackware/bin
-
-# Allow root to use DISPLAY
-xhost + &> /dev/null

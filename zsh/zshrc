@@ -12,6 +12,10 @@ autoload -U compinit
 compinit
 
 # Shell Options
+export DIRSTACKSIZE=8
+export HISTFILE=~/.zsh-histfile
+export HISTSIZE=5000
+export SAVEHIST=5000
 #setopt ignoreeof           # ignore EOF ('^D') (i.e. don't log out on it)
 #setopt noclobber            # don't overwrite existing files w/ > output redir
 setopt braceccl             # {a-d} expands to a b c d
@@ -21,7 +25,6 @@ setopt autopushd            # automatically pushd directories on dirstack
 setopt nopushdsilent        # print dirstack after each cd/pushd
 setopt pushdignoredups      # don't push dups on stack
 setopt pushdminus           # pushd -N goes to Nth dir in stack
-export DIRSTACKSIZE=8
 setopt autonamedirs         # % export h=/home/sjs; cd ~h; pwd => /home/sjs
 setopt cdablevars           # blah=~/media/movies; cd blah; pwd => ~/media/movies
 setopt correct              # try to correct spelling...
@@ -29,9 +32,6 @@ setopt no_correctall        # ...only for commands, not filenames
 setopt no_listbeep          # don't beep on ambiguous listings
 setopt listpacked           # variable col widths (takes up less space)
 setopt extendedglob         # use extended globbing (#, ~, ^)
-export HISTFILE=~/.zsh-histfile
-export HISTSIZE=5000
-export SAVEHIST=5000
 setopt incappendhistory
 setopt sharehistory
 setopt extendedhistory
@@ -45,7 +45,7 @@ setopt incappendhistory     # incrementally add items to HISTFILE
 setopt longlistjobs         # list jobs in long format
 setopt promptsubst          # allow paramater, command, so on in prompt
 setopt transient_rprompt    # hide RPROMPT after cmdline is executed
-setopt no_beep          # don't beep on errors (in ZLE)
+setopt no_beep              # don't beep on errors (in ZLE)
 setopt auto_resume
 setopt completeinword
 
@@ -70,6 +70,11 @@ zstyle ':completion:*:killall:*' command 'ps -u $USER -o cmd'
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export LS_COLORS='di=34;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
 export GREP_COLOR='1;33'
+
+# Source common variables/settings
+if [ -e "$HOME/.common.sh" ]; then
+   . $HOME/.common.sh
+fi
 
 # Source local aliases
 if [ -e "$HOME/.aliases.sh" ]; then
