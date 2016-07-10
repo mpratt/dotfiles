@@ -107,6 +107,33 @@ if [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
     echo ""
 fi
 
+echo "Setting up Default XDG Home folders"
+symlinkIt ${LOCATION}/xdg/user-dirs.dirs ~/.config/user-dirs.dirs
+
+NOTUSEDDIRECTORIES=('Music' 'Templates')
+for i in ${NOTUSEDDIRECTORIES[@]}; do
+    DP="${HOME}/${i}"
+    if [ -e "${DP}" ]; then
+        if [ ! "$(ls -A ${DP})" ]; then
+            echo "Deleting empty directory ${DP}"
+            rm -rf ${DP}
+        else
+            echo "${DP} is not empty! Lets leave it there"
+        fi
+    fi
+done
+
+CREATEDIRECTORIES=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
+for i in ${CREATEDIRECTORIES[@]}; do
+    DP="${HOME}/${i}"
+    if ! [ -e "${DP}" ]; then
+        echo "Creating ${DP}"
+        mkdir -p ${DP}
+    else
+        echo "${DP} already exists"
+    fi
+done
+
 echo "Copying fonts to ${HOME}/.fonts"
 mkdir -p ~/.fonts
 cp ${LOCATION}/fonts/* ~/.fonts
