@@ -13,18 +13,19 @@ function symlinkIt()
 {
     local src=$(realpath "${1}")
     local dst=${2}
+    local cdate=$(date +%Y-%m-%d_%H_%M)
 
     if [ -e "${dst}" ]; then
         echo "Backing up ${dst}"
-        mkdir -p ${HOME}/dotfiles_backup/
+        mkdir -p ${HOME}/dotfiles_backup/${cdate}
 
         if [ -L "${dst}" ]; then
             echo "Symlink, no need to back it up"
         else
             if [ -f "${dst}" ]; then
-                cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+                cp -rf "${dst}" "${HOME}/dotfiles_backup/${cdate}$(basename ${dst} | tr '.' '_')"
             else
-                cp -rf "${dst}" "${HOME}/dotfiles_backup/$(basename ${dst} | tr '.' '_')"
+                cp -rf "${dst}" "${HOME}/dotfiles_backup/${cdate}$(basename ${dst} | tr '.' '_')"
             fi
         fi
 
