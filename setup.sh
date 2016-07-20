@@ -75,7 +75,6 @@ echo "Linking GTK Stuff into ${HOME}"
 symlinkIt ${LOCATION}/gtk/gtkrc-2.0 ~/.gtkrc-2.0
 symlinkIt ${LOCATION}/gtk/gtk-3.0 ~/.config/gtk-3.0
 symlinkIt ${LOCATION}/gtk/gtkrc.mine ~/.gtkrc.mine
-symlinkIt ${LOCATION}/gtk/gtk-bookmarks ~/.gtk-bookmarks
 echo ""
 
 echo "Linking Git Stuff into ${HOME}"
