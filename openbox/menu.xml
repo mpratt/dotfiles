@@ -345,25 +345,9 @@
                 </execute>
 			</action>
 		</item>
-		<item label="Logout">
+		<item label="Shutdown / Reboot">
 			<action name="Execute">
-				<execute>
-                   openbox --exit
-                </execute>
-			</action>
-		</item>
-		<item label="Reboot">
-			<action name="Execute">
-				<execute>
-                   sudo /sbin/shutdown -r now
-                </execute>
-			</action>
-		</item>
-		<item label="Shutdown">
-			<action name="Execute">
-				<execute>
-                   sudo /sbin/shutdown -h now
-                </execute>
+				<execute>obshutdown</execute>
 			</action>
 		</item>
 	</menu>
