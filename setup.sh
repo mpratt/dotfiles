@@ -122,7 +122,7 @@ for i in ${NOTUSEDDIRECTORIES[@]}; do
     fi
 done
 
-CREATEDIRECTORIES=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
+CREATEDIRECTORIES=('Audio' 'Documents' 'Documents/Templates' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
 for i in ${CREATEDIRECTORIES[@]}; do
     DP="${HOME}/${i}"
     if ! [ -e "${DP}" ]; then
@@ -132,6 +132,9 @@ for i in ${CREATEDIRECTORIES[@]}; do
         echo "${DP} already exists"
     fi
 done
+
+echo "Copying file templates into ~/Documents/Templates"
+cp -r ${LOCATION}/templates/* ${HOME}/Documents/Templates
 
 echo "Copying fonts to ${HOME}/.fonts"
 mkdir -p ~/.fonts
