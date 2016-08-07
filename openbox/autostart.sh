@@ -24,4 +24,4 @@ xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 tint2 -c "${CWD}/tint2rc" &
 nm-applet &
 xfce4-power-manager &
-volti &
+volumeicon &
