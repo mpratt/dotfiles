@@ -1,3 +1,3 @@
-gtk-icon-theme-name = "areao43"
+gtk-icon-theme-name = "areao43-icon-theme"
 gtk-fallback-icon-theme = "gnome"
 gtk-print-preview-command="xpdf -q %f"
