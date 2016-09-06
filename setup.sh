@@ -96,6 +96,10 @@ symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
 symlinkIt ${LOCATION}/i3/ ~/.i3
 echo ""
 
+echo "Linking SSH stuff"
+symlinkIt ${LOCATION}/ssh/config ~/.ssh/config
+echo ""
+
 echo "Copy Custom Actions to Thunar"
 [ -e "${HOME}/.config/Thunar/" ] && symlinkIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
 echo ""
