@@ -104,9 +104,12 @@ echo "Copy Custom Actions to Thunar"
 [ -e "${HOME}/.config/Thunar/" ] && symlinkIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
 echo ""
 
-if [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
+if ! [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
     echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
     cp ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
+elif ! [ -e "${HOME}/.kde/share/config/kxkbrc" ]; then
+    echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
+    cp ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kxkbrc
     echo ""
 fi
 

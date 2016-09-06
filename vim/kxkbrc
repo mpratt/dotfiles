@@ -1,8 +1,8 @@
 [Layout]
-DisplayNames=
+DisplayNames=us
 LayoutList=us(alt-intl)
 LayoutLoopCount=-1
-Model=pc101
+Model=pc105
 Options=terminate:ctrl_alt_bksp,caps:escape
 ResetOldOptions=true
 ShowFlag=false
