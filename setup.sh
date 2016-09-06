@@ -106,9 +106,11 @@ echo ""
 
 if ! [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
     echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
+    mkdir -p ${HOME}/.kde/share/config/kresources/
     cp ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
 elif ! [ -e "${HOME}/.kde/share/config/kxkbrc" ]; then
     echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
+    mkdir -p ${HOME}/.kde/share/config/
     cp ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kxkbrc
     echo ""
 fi
