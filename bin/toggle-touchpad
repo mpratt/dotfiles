@@ -1,0 +1,7 @@
+#!/bin/bash
+##################################################################
+# Toggles synaptic touchpad on and off
+# Url: https://wiki.archlinux.org/index.php/Touchpad_Synaptics
+##################################################################
+# set -e
+synclient TouchpadOff=$(synclient -l | grep -c 'TouchpadOff.*=.*0')
