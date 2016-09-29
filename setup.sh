@@ -94,6 +94,7 @@ echo ""
 echo "Linking User Profile (openbox, i3, etc)"
 symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
 symlinkIt ${LOCATION}/openbox/obshutdown.rc ~/.obshutdown.rc
+symlinkIt ${LOCATION}/gmrun/gmrunrc ~/.gmrunrc
 
 symlinkIt ${LOCATION}/i3/ ~/.i3
 echo ""
