@@ -11,6 +11,7 @@
 
 set $mod Mod4
 
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
 #font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -19,7 +20,7 @@ set $mod Mod4
 # right-to-left text rendering, you should instead use pango for rendering and
 # chose a FreeType font, such as:
 # font pango:DejaVu Sans Mono 10
-font pango:Dejavu Sans Mono 7
+font pango:Dejavu Sans Mono 9
 
 #don't move to neighbouring screen with hjkl
 force_focus_wrapping yes
@@ -27,11 +28,20 @@ force_focus_wrapping yes
 set $blue #005588
 set $gray1 #484848
 set $gray2 #333333
+set $orange #E47200
+set $bgnorm #313131
+set $fgnorm #ffffff
+#set $bfoc   #df1e1e
+set $bfoc   $orange
+set $bgunf #3f3f3f
+#set $bunf   #2a2a2a
+set $bunf   $bgunf
 
 # class                 border  backgr.    text
-client.focused            $gray1   $gray1   #FFFFFF   #333333
-client.focused_inactive   $gray2   $gray2   #FFFFFF   #000000
-client.unfocused          $gray2   $gray2   #FFFFFF   #000000
+client.focused          $bfoc   $orange $fgnorm $bfoc
+client.focused_inactive $orange $bgunf  $fgnorm #484e50
+client.unfocused        $bunf   $bgunf  $fgnorm #292d2e
+client.urgent           $bfoc   $orange $fgnorm #900000
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -116,37 +126,43 @@ new_float normal
 
 # ASSIGN WORKSPACE VARIABLES
 set $WS1 1|main
-set $WS2 2|code
+set $WS2 2|coding
 set $WS3 3|web
-set $WS4 4|VGA1
+set $WS4 4|read
+set $WS5 5|write
+set $WS6 6|tmp
+set $WS7 7|tmp
+set $WS8 8|logout
+set $WS9 9|VGA1
+set $WS10 10|HDMI
 
 # switch to workspace
 bindsym $mod+1 workspace $WS1
-bindsym $mod+2 workspace $WS2
-bindsym $mod+3 workspace $WS3
+bindsym $mod+2 workspace $WS2; layout tabbed
+bindsym $mod+3 workspace $WS3; layout stacking
 bindsym $mod+4 workspace $WS4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+5 workspace $WS5
+bindsym $mod+6 workspace $WS6
+bindsym $mod+7 workspace $WS7
+bindsym $mod+8 workspace $WS8
+bindsym $mod+9 workspace $WS9
+bindsym $mod+0 workspace $WS10
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $WS1
 bindsym $mod+Shift+2 move container to workspace $WS2
 bindsym $mod+Shift+3 move container to workspace $WS3
 bindsym $mod+Shift+4 move container to workspace $WS4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+bindsym $mod+Shift+5 move container to workspace $WS5
+bindsym $mod+Shift+6 move container to workspace $WS6
+bindsym $mod+Shift+7 move container to workspace $WS7
+bindsym $mod+Shift+8 move container to workspace $WS8
+bindsym $mod+Shift+9 move container to workspace $WS9
+bindsym $mod+Shift+0 move container to workspace $WS10
 
 # specify outputs
-workspace $WS4 output VGA1
-# workspace 5 output HDMI3
+workspace $WS9 output VGA1
+workspace $WS10 output HDMI3
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -157,16 +173,14 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
         # Pressing left will shrink the window’s width.
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        # bindsym j resize shrink width 10 px or 10 ppt
+        # bindsym k resize grow height 10 px or 10 ppt
+        # bindsym l resize shrink height 10 px or 10 ppt
+        # bindsym semicolon resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -180,6 +194,21 @@ mode "resize" {
 }
 
 bindsym $mod+r mode "resize"
+
+## Manual management of external displays
+# Set the shortcuts and what they do
+set $mode_display Ext Screen (v) VGA ON, (h) HDMI ON, (x) VGA OFF, (y) HDMI OFF
+mode "$mode_display" {
+    bindsym v exec --no-startup-id xrandr --output VGA1 --auto --right-of LVDS1, mode "default"
+    bindsym h exec --no-startup-id xrandr --output HDMI1 --auto --right-of LVDS1, mode "default"
+    bindsym x exec --no-startup-id xrandr --output VGA1 --auto --off, mode "default"
+    bindsym y exec --no-startup-id xrandr --output HDMI1 --auto --off, mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+x mode "$mode_display"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -197,7 +226,7 @@ bindsym $mod+r mode "resize"
 #     }
 # }
 
-# Conky Bar
+# Main Bar
 bar {
     position top
     workspace_buttons yes
@@ -210,8 +239,15 @@ bar {
     }
 }
 
-#set floating for window classes
-for_window [class="Gmrun"] floating enable
+# Assign Apps to Workspaces
+assign [class="thunar"] $WS1
+assign [class="vim"] $WS2
+assign [class="gvim"] $WS2
+assign [class="chromium"] $WS3
+assign [class="Obshutdown"] $WS8
+
+#set windows options based on classes/title/role
+for_window [class="Gmrun"] focus; floating enable
 for_window [class="[.]*Skype[.]*"] floating enable; resize set 400 x 400
 for_window [class="Orage"] floating enable
 for_window [class="ktorrent"] floating enable
@@ -220,16 +256,42 @@ for_window [class="File Progress.*"] floating enable
 for_window [class="Xfce4-notifyd"] floating enable; border none; focus mode_toggle
 for_window [title="Preferences"] floating enable
 for_window [title="Xfce-notifyd"] floating enable
+for_window [title="audacious"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_role="Open Files"] floating enable
+for_window [class="qBittorrent" window_role="pop-up"] floating enable
+for_window [window_type="dialog"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [class="Chromium" instance="Chromium"] border none; focus mode_toggle
+for_window [class="Galculator"] floating enable border normal
+for_window [class="Pavucontrol"] floating enable border normal
+for_window [class="volume control"] floating enable border normal
+for_window [class="(?i)virtualbox"] floating enable border normal
+for_window [class="Vlc"] floating enable border pixel 1
+for_window [class="xarchiver"] floating enable border pixel 1
+for_window [class="XTerm"] floating enable border pixel 4
+for_window [class="Obshutdown"] focus; fullscreen
 
 ## Float everything
 #for_window [class="[.]*"] floating enable 
 
-# Assign Apps to Workspaces
-assign [class="thunar"] $WS1
-assign [class="vim"] $WS2
-assign [class="gvim"] $WS2
-assign [class="chromium"] $WS3
-for_window [class="Chromium" title=" - Chromium$"] border 3pixel
+# Button Binds
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5%
+bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle
+
+# App Launcher
+bindsym $mod+F1 workspace $WS1; exec --no-startup-id xfce4-terminal
+bindsym $mod+F2 workspace $WS2; exec --no-startup-id gvim
+bindsym $mod+F3 workspace $WS3; exec --no-startup-id chromium
+bindsym $mod+F4 workspace $WS1; exec --no-startup-id thunar
+bindsym $mod+F5 workspace $WS3; exec --no-startup-id thunderbird
+
+# Custom Actions
+bindsym $mod+Shift+p exec /usr/bin/obshutdown -c ~/.i3/obshutdown.rc
 
 # Autostart
 exec --no-startup-id ~/.i3/autostart.sh
