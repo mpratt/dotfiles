@@ -21,7 +21,7 @@ ShowDotFiles = 0
 
 # Timeout (in milliseconds) after which gmrun will simulate a TAB press
 # Set this to NULL if don't like this feature.
-TabTimeout = 0
+TabTimeout = 100
 
 # URL handlers
 # If the entered text is "http://www.google.com" then:
