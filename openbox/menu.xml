@@ -177,7 +177,7 @@
 		</item>
 		<item label="DosBox">
 			<action name="Execute">
-				<execute>dosbox -conf /home/pratt/.config/dosbox.conf</execute>
+				<execute>dosbox -conf ~/.config/dosbox.conf</execute>
 			</action>
 		</item>
 	</menu>
@@ -347,7 +347,7 @@
 		</item>
 		<item label="Shutdown / Reboot">
 			<action name="Execute">
-				<execute>obshutdown</execute>
+                <execute>obshutdown -c ~/.config/openbox/obshutdown.rc</execute>
 			</action>
 		</item>
 	</menu>

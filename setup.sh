@@ -93,7 +93,7 @@ echo ""
 
 echo "Linking User Profile Stuff (openbox, i3, gmrun etc)"
 symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
-symlinkIt ${LOCATION}/openbox/obshutdown.rc ~/.obshutdown.rc
+#symlinkIt ${LOCATION}/openbox/obshutdown.rc ~/.obshutdown.rc
 symlinkIt ${LOCATION}/gmrun/gmrunrc ~/.gmrunrc
 symlinkIt ${LOCATION}/xmodmap/xmodmap ~/.xmodmap
 symlinkIt ${LOCATION}/i3/ ~/.i3
