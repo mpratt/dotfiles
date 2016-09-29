@@ -39,6 +39,17 @@ autohide_hide_timeout = 2
 autohide_height = 2
 strut_policy = follow_size
 
+# Battery
+battery = 1
+battery_low_status = 10
+battery_low_cmd = notify-send "battery low"
+battery_hide = 98
+bat1_font = sans 8
+bat2_font = sans 6
+battery_font_color = #FFFFFF 74
+battery_padding = 1 0
+battery_background_id = 0
+
 # Taskbar
 taskbar_mode = single_desktop
 taskbar_padding = 2 3 2
@@ -104,15 +115,5 @@ mouse_right = close
 mouse_scroll_up = toggle
 mouse_scroll_down = iconify
 
-# Battery
-battery = 0
-battery_low_status = 10
-battery_low_cmd = notify-send "battery low"
-battery_hide = 98
-bat1_font = sans 8
-bat2_font = sans 6
-battery_font_color = #FFFFFF 74
-battery_padding = 1 0
-battery_background_id = 0
 
 # End of config
