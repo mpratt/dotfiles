@@ -1,0 +1,11 @@
+#!/bin/bash
+##################################################################
+# Pulls config/environment files from github
+# Autor: Michael Pratt
+# License: MIT
+##################################################################
+# set -e
+FOLDERS="${HOME}/.dotfiles ${HOME}/.environment-config"
+for f in ${FOLDERS}; do
+    [ -d "${f}" ] && cd ${f} && echo "pulling on ${f}" && git pull || echo "Error on ${f}"
+done
