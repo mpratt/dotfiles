@@ -9,7 +9,7 @@ override_utf8_locale yes
 
 TEXT
 [
-#{"full_text": " [♪ ${exec sh ~/.i3/musicplayer.sh}] ", "color":"\#e4f800"},
+{"full_text": " [♪ ${exec sh ~/.i3/musicplayer.sh}] ", "color":"\#e4f800"},
 #{"full_text": " ☻ [${exec whoami}@${exec hostname}] ", "color":"\#6F3BFF"},
 # {"full_text": " ↑ [${uptime_short}] ","color": "\#dc322f"},
 {"full_text": " ♣ RAM: [$membar] ", "color":"\#B58900"},
