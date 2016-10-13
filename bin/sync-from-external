@@ -1,0 +1,96 @@
+#!/bin/bash
+##################################################################
+#  Pull my directories from external drive
+#  Author Michael Pratt <pratt@hablarmierda.net>
+##################################################################
+#set -e
+APPNAME=$(basename ${0})
+VERSION="0.1"
+EXTERNALDRIVE="/mnt/storage"
+SUPPORTEDFOLDERS=('Audio' 'Documents' 'Pictures' 'Downloads' 'Projects' 'Videos')
+FOLDERS=()
+
+#################################################################
+# Shows the usage
+#################################################################
+external_usage() {
+    clear
+    echo "$APPNAME - $VERSION"
+    echo "Script that helps me sync folders from my external drive"
+    echo ""
+    echo "Requirements: rsync"
+    echo "Author: Michael Pratt <pratt@hablarmierda.net>"
+    echo ""
+    echo "Usage: $(basename $0) [OPTIONS]"
+    echo "    -f | --folder      Name folder you want to copy"
+    echo "    -a | --all         Sync all supported folders"
+    echo ""
+}
+
+#################################################################
+# Syncs folder from my external drive to my current folder
+#################################################################
+function external_sync() {
+    local folder="${HOME}/${1}"
+    local srcfolder="${EXTERNALDRIVE}/${1}"
+    local bkdir="${HOME}/__Backup/${1}"
+    local extraflags=""
+
+    [ ! -d "${bkdir}" ] && mkdir -p ${bkdir}
+    [ ! -d "${folder}" ] && mkdir -p ${folder}
+    [ ! -e "${srcfolder}" ] && echo "Error: ${srcfolder} doesnt exist" && exit 1
+
+    case ${1} in
+        Documents|Audio|Pictures) extraflags="--delete --exclude .git" ;;
+        Projects) extraflags="" ;;
+        Downloads) extraflags="--exclude .git" ;;
+        Videos) extraflags="--exclude Movies --exclude Series" ;;
+    esac
+
+    rsync -artz ${extraflags} --progress --backup --backup-dir=${bkdir} "${srcfolder}/" "${folder}/"
+}
+
+#################################################################
+# Checks if the folder is supported
+#################################################################
+function external_is_supported() {
+    local allowed=0
+
+    for i in ${SUPPORTEDFOLDERS[@]}; do
+        if [[ "${i}" == "${folder}" ]]; then
+            allowed=1
+            break
+        fi
+    done
+
+    if [[ "${allowed}" == 0 ]]; then
+        echo "${folder} is not supported"
+        exit 1
+    fi
+}
+
+##################################################################
+# Lets do this
+##################################################################
+while [ -n "$1" ]; do
+    case ${1} in
+        -f|--folder) shift; FOLDERS+=( "${1}" ); shift ;;
+        -a|--all) shift; FOLDERS=${SUPPORTEDFOLDERS} ;;
+        -h|--help) external_usage; exit 0 ;;
+    esac
+done
+
+if [[ "$(mountpoint -q "${EXTERNALDRIVE}")" ]]; then
+    echo "Error: ${EXTERNALDRIVE} is not a mountpoint!"
+    exit 1
+fi
+if [ "${#FOLDERS[@]}" -eq "0" ]; then
+    echo "You need to at least specify a folder"
+    external_usage
+    exit 0
+fi
+
+for folder in ${FOLDERS[@]}; do
+    external_is_supported ${folder}
+    external_sync ${folder}
+done
