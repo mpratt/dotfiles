@@ -12,7 +12,7 @@ MOUNTPOINT="1"
 DIALOG=${DIALOG:- dialog}
 
 # EXclude this files
-EXCLUDE=( ".esd_auth" ".ICEauthority" ".gmrun_history" ".xfce4-session.verbose-log" ".xsession-errors" "${APPNAME}" ".Xauthority" ".pki" ".wget-hsts" ".xwmconfig" ".wallpaper-image.jpg" ".wallpaper-image.png" ".xsession" ".adobe" ".cache" ".dmrc" ".rnd" ".macromedia" ".bash_history" ".dbus" ".xfce4-session.verbose-log.last" "Desktop" ".thumbnails" ".gimp-2.8" ".gvfs" ".hplip" ".putty" ".pylint.d" ".scim" ".xine" ".mplayer" ".oracle_jre_usage")
+EXCLUDE=( ".esd_auth" ".ICEauthority" ".gmrun_history" ".xfce4-session.verbose-log" ".xsession-errors" "${APPNAME}" ".Xauthority" ".pki" ".wget-hsts" ".xwmconfig" ".wallpaper-image.jpg" ".wallpaper-image.png" ".xsession" ".adobe" ".cache" ".dmrc" ".rnd" ".macromedia" ".bash_history" ".dbus" ".xfce4-session.verbose-log.last" "Desktop" ".thumbnails" ".gimp-2.8" ".gvfs" ".hplip" ".putty" ".pylint.d" ".scim" ".xine" ".mplayer" ".oracle_jre_usage" ".p7zip" ".xinitrc" ".viminfo" ".xscreensaver-getimage.cache" ".screenrc" ".fehbg" ".gtk-bookmarks" )
 SPECIALFOLDERS=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
 
 # Constants
@@ -27,6 +27,7 @@ HOURMINUTE=$(date +%H_%M_%S)
 TMPDIR=$(mktemp -d -t ${APPNAME}.XXXXXX)
 FOLDERS=()
 FILES=()
+ONOROFF="off"
 trap "rm -rf ${TMPDIR} && exit" 0 1 2 9 15
 
 ##################################################################
@@ -158,7 +159,7 @@ function backup_cp_special_case() {
     local foldername=$(basename ${1})
     local bkdir="${TMPDIR}/backup/${foldername}-bk-${DATE}-${HOURMINUTE}"
     local rsyncflags="-artz --progress"
-    local gdrive=0
+    local gdrive=""
 
     if [[ "${CURRENTUSER}" != "${MAINUSER}" || "${HOST}" != "${MAINHOST}" ]]; then
         echo "!!! Cannot Backup ${foldername} because you are not ${MAINUSER} or not on ${MAINHOST}"
@@ -169,7 +170,20 @@ function backup_cp_special_case() {
     case ${foldername} in
         Documents)
             rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
-            gdrive=1
+            gdrive="0B9U2MofcmhRQR0YteDJpOHFTS3M"
+            ;;
+        Public)
+            rsyncflags="${rsyncflags} --exclude .git --delete"
+            gdrive="0B9U2MofcmhRQcEtQdHBQSEZhTlE"
+            ;;
+        Projects|Downloads)
+            rsyncflags="${rsyncflags} --delete --backup --backup-dir=${bkdir}"
+            ;;
+        Pictures)
+            rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
+            ;;
+        Videos)
+            rsyncflags="${rsyncflags} --exclude .git --exclude Movies --exclude Series --delete --backup --backup-dir=${bkdir}"
             ;;
         *)
             backup_log "!!! No special matches for ${foldername}"
@@ -179,13 +193,13 @@ function backup_cp_special_case() {
 
     echo "** Syncing ${foldername} to ${SPECIALDIR}/${foldername}"
     backup_log "** Syncing ${foldername} to ${SPECIALDIR}/${foldername}"
-    backup_log "*** Command Used: rsync ${rsyncflags} ${folder} ${SPECIALDIR}/${foldername}"
-    rsync ${rsyncflags} "${folder}" "${SPECIALDIR}/${foldername}"
+    backup_log "*** Command Used: rsync ${rsyncflags} ${folder} ${SPECIALDIR}"
+    rsync ${rsyncflags} "${folder}" "${SPECIALDIR}"
 
-    if  [[ "$(type "gdrive" &> /dev/null)" && "${gdrive}" == "1" ]] ; then
+    if  [[ -n "${gdrive}" ]] && [[ "$(type gdrive)" ]] ; then
         backup_log "** Syncing ${foldername} to Google Drive"
-        backup_log "*** Command: gdrive sync upload /home/pratt/${foldername}/"
-        gdrive sync upload /home/pratt/${foldername}/
+        backup_log "*** Command: gdrive sync upload /home/pratt/${foldername}/ ${gdrive}"
+        gdrive sync upload /home/pratt/${foldername}/ ${gdrive}
     fi
 }
 
@@ -231,7 +245,7 @@ backup_generate_dialog_list() {
     echo "Generating dialog list"
     for f in ${FOLDERS[@]}; do
         if [ -e "${f}" ]; then
-            printf "\"%s\" \"%s\" on \\ \n" $(echo ${f}) $(echo ${f}) >> $TMPDIR/folder_list
+            printf "\"%s\" \"%s\" ${ONOROFF} \\ \n" $(echo ${f}) $(echo ${f}) >> $TMPDIR/folder_list
         fi
     done
 }
@@ -250,6 +264,7 @@ backup_usage() {
     echo "Usage: $(basename $0) [OPTIONS]"
     echo "    -f | --folder      Name folder you want to backup"
     echo "    -o | --output-dir  Output directory where stuff is going to stored"
+    echo "    --select-yes       Folders are selected by default when prompting the selection dialog"
     echo "    --not-mount-point  Do not check if the output directory is a mount point"
     echo ""
 }
@@ -261,6 +276,7 @@ while [ -n "$1" ]; do
     case ${1} in
         -f|--folder) shift; FOLDERS+=( "${1}" ); shift ;;
         --not-mount-point) shift; MOUNTPOINT="0" ;;
+        --select-yes) shift; ONOROFF="on" exit 0 ;;
         -h|--help) backup_usage; exit 0 ;;
         -o|--output-dir)
             shift
