@@ -7,7 +7,7 @@
 APPNAME=$(basename ${0})
 VERSION="0.1"
 EXTERNALDRIVE="/mnt/storage"
-SUPPORTEDFOLDERS=('Audio' 'Documents' 'Pictures' 'Downloads' 'Projects' 'Videos')
+SUPPORTEDFOLDERS=( 'Audio' 'Documents' 'Pictures' 'Downloads' 'Projects' 'Videos' 'Public' )
 FOLDERS=()
 
 #################################################################
@@ -43,30 +43,12 @@ function external_sync() {
     case ${1} in
         Documents|Audio|Pictures) extraflags="--delete --exclude .git" ;;
         Projects) extraflags="" ;;
-        Downloads) extraflags="--exclude .git" ;;
+        Downloads|Public) extraflags="--exclude .git" ;;
         Videos) extraflags="--exclude Movies --exclude Series" ;;
+        *) echo "${folder} is not supported" && exit 1 ;;
     esac
 
     rsync -artz ${extraflags} --progress --backup --backup-dir=${bkdir} "${srcfolder}/" "${folder}/"
-}
-
-#################################################################
-# Checks if the folder is supported
-#################################################################
-function external_is_supported() {
-    local allowed=0
-
-    for i in ${SUPPORTEDFOLDERS[@]}; do
-        if [[ "${i}" == "${folder}" ]]; then
-            allowed=1
-            break
-        fi
-    done
-
-    if [[ "${allowed}" == 0 ]]; then
-        echo "${folder} is not supported"
-        exit 1
-    fi
 }
 
 ##################################################################
@@ -91,6 +73,5 @@ if [ "${#FOLDERS[@]}" -eq "0" ]; then
 fi
 
 for folder in ${FOLDERS[@]}; do
-    external_is_supported ${folder}
     external_sync ${folder}
 done
