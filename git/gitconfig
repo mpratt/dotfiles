@@ -25,20 +25,28 @@
 [apply]
     whitespace = fix
 [alias]
-    st = status -bs
-    ci = commit
     br = branch
-    bl = blame -C
-    df = diff --word-diff
-    l1 = log --oneline --decorate
     co = checkout
     ci = commit
-    br = branch
-    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-    type = cat-file -t
-    dump = cat-file -p
-    addremove = !git add . && git ls-files --deleted | xargs --no-run-if-empty git rm
+    bl = blame -C
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-    grog = log --graph --abbrev-commit --decorate --all --format=format:\"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)\"
+
+    # Unstage any files that have been added to the staging area
+    unstage = reset HEAD
+
+    # Delete any branches that have been merged into maste
+    delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+    #show alias
+    show-alias = "config --get-regexp alias"
+
+    # Get the current branch name (not so useful in itself, but used in other aliases)
+    branch-name = "!git rev-parse --abbrev-ref HEAD"
+
+    # Push the current branch to the remote "origin", and set it to track the upstream branch
+    publish = "!git push -u origin $(git branch-name)"
+
+    # Delete the remote version of the current branch
+    unpublish = "!git push origin :$(git branch-name)"
 [push]
     default = current
