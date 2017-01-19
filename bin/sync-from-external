@@ -41,7 +41,7 @@ function external_sync() {
     [ ! -e "${srcfolder}" ] && echo "Error: ${srcfolder} doesnt exist" && exit 1
 
     case ${1} in
-        Documents|Audio|Pictures) extraflags="--delete --exclude .git" ;;
+        Documents|Audio|Pictures) extraflags="--delete --exclude .git --exclude Playlists" ;;
         Projects) extraflags="" ;;
         Downloads|Public) extraflags="--exclude .git" ;;
         Videos) extraflags="--exclude Movies --exclude Series" ;;

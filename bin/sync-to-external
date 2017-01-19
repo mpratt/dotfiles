@@ -168,6 +168,9 @@ function backup_cp_special_case() {
     fi
 
     case ${foldername} in
+        Audio)
+            rsyncflags="${rsyncflags} --exclude .git --exclude Playlists --delete --backup --backup-dir=${bkdir}"
+            ;;
         Documents)
             rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
             gdrive="0B9U2MofcmhRQR0YteDJpOHFTS3M"
