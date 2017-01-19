@@ -28,6 +28,7 @@ TMPDIR=$(mktemp -d -t ${APPNAME}.XXXXXX)
 FOLDERS=()
 FILES=()
 ONOROFF="off"
+SHOWHIDDEN="1"
 trap "rm -rf ${TMPDIR} && exit" 0 1 2 9 15
 
 ##################################################################
@@ -248,6 +249,11 @@ backup_generate_dialog_list() {
     echo "Generating dialog list"
     for f in ${FOLDERS[@]}; do
         if [ -e "${f}" ]; then
+
+            if [ "${SHOWHIDDEN}" -eq 0 ] && [ -z "$(echo "${f}" | egrep -v '^\.|/\.')" ]; then
+                continue
+            fi
+
             printf "\"%s\" \"%s\" ${ONOROFF} \\ \n" $(echo ${f}) $(echo ${f}) >> $TMPDIR/folder_list
         fi
     done
@@ -278,8 +284,9 @@ backup_usage() {
 while [ -n "$1" ]; do
     case ${1} in
         -f|--folder) shift; FOLDERS+=( "${1}" ); shift ;;
-        --not-mount-point) shift; MOUNTPOINT="0" ;;
-        --select-yes) shift; ONOROFF="on" exit 0 ;;
+        --not-mount-point) shift; MOUNTPOINT="0"; shift ;;
+        --select-yes) shift; ONOROFF="on"; shift ;;
+        --ignore-hidden) shift; SHOWHIDDEN="0"; shift ;;
         -h|--help) backup_usage; exit 0 ;;
         -o|--output-dir)
             shift
