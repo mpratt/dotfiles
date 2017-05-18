@@ -59,8 +59,8 @@ if [ "${TOTAL_FILES}" -eq 0 ]; then
     exit 1
 fi
 
-cat ${LISTS[@]} | egrep -v '^#|^$' > .tmp_list.m3u
-FILES=$(cat .tmp_list.m3u | egrep -v '^#|^$' | uniq | sort -R | sort -R | head -n ${TOTAL_FILES})
+cat ${LISTS[@]} | egrep -v '^#|^$' > _tmp_list.m3u
+FILES=$(cat _tmp_list.m3u | egrep -v '^#|^$' | uniq | sort -R | sort -R | uniq | head -n ${TOTAL_FILES})
 if [ -n "${FILES}" ]; then
     if [ -z "${OUTPUTDIR}" ]; then
         OUTPUTDIR="${CWD}/random-mp3s"
@@ -72,7 +72,7 @@ else
     exit 1
 fi
 
-rm -rf .tmp_list.m3u
+rm -rf _tmp_list.m3u
 IFS=$(echo -en "\n\b")
 for f in ${FILES}; do
     echo "Copying: ${f}"
