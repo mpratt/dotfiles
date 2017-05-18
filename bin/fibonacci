@@ -1,0 +1,15 @@
+#!/bin/bash
+#######################################################
+# Fibonacci 1 1 2 3 5 8 13 21 34 55 89
+# Autor: Michael Pratt <pratt@hablarmierda.net>
+#######################################################
+[ "$#" -ne 1 ] && echo "$(basename $0) [top-index]" && exit 0
+
+start=1; index=0; iterations=0;
+while [ "$iterations" -lt "$1" ]; do
+    echo "(Iterations: $iterations) $start "
+    sum=$((start + index))
+    index=${start}
+    start=${sum}
+    ((iterations++))
+done
