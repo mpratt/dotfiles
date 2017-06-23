@@ -38,5 +38,5 @@ URL_s = chromium 'http://www.google.com/search?q=%s'
 # extension handlers
 # Customize your own extension handler.
 EXT:doc,rtf,txt,cc,tex,latex,am,ps,pdf = xdg-open %s
-EXT:cpp,h,java,html,htm,epl,js,css,xml,xsl,php,py = gvim %s
+EXT:cpp,h,java,html,htm,epl,js,css,xml,xsl,php,py = gvim --remote %s
 
