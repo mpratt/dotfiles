@@ -749,10 +749,10 @@
   # end of the example
 -->
     <application class="Gvim">
-        <maximized>yes</maximized>
+      <maximized>yes</maximized>
     </application>
     <application class="Ktorrent">
-        <maximized>yes</maximized>
+      <maximized>yes</maximized>
     </application>
   </applications>
 </openbox_config>
