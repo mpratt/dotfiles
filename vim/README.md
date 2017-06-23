@@ -82,3 +82,6 @@ Theese are plugin mappings that I should either memorize or have remapped:
     - <kbd>ysiw]</kbd> Surrounds a word with brackets
     - <kbd>ys2aw"</kbd> Surrounds two words with double quotes
     - <kbd>Shift-V (select) S<tag></kbd> Surrounds the selection with a tag
+* Custom Scripts
+    - <kbd>Leader-js</kbd> (javascript) Beautify Javascript
+    - <kbd>Leader-mb</kbd> (javascript & PHP) Debug word

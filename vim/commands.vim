@@ -36,6 +36,10 @@ autocmd BufWritePre *.html :%s/\s\+$//e
 " JsBeautifier Plugin
 au Filetype javascript source $HOME/.vim/local/scripts/jsbeautify.vim
 
+" Debug Commands for JS/PHP
+au FileType javascript nnoremap <leader>mb ^vg_daconsole.log( <esc>pa );<cr><esc>
+au FileType php nnoremap <leader>mb ^vg_daprint_r(<esc>pa, true);<cr><esc>
+
 " Exit insert mode after 4 seconds of idle time
 " :au CursorHoldI * stopinsert 
 
