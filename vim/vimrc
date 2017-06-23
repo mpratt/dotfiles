@@ -1,6 +1,5 @@
 " .vimrc
 " Michael Pratt
-" pratt@hablarmierda.net 
 " http://www.michael-pratt.com
 
 set nocompatible " Forget compatibility with Vi. Who cares. - Required by Vundle
@@ -78,12 +77,72 @@ if filereadable(expand('~/.vim/plugged/vim-aldmeris/colors/aldmeris.vim'))
     colorscheme aldmeris
 endif
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Common abbreviations
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 iabbrev lenght length
 iabbrev teh the
 iabbrev Teh The
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" The following mappings change/overwrite the normal behaviour of some keys
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Unmap the arrow keys in normal and visual mode
+no <up> <Nop>
+no <down> <Nop>
+no <left> <Nop>
+no <right> <Nop>
+vno <up> <Nop>
+vno <down> <Nop>
+vno <left> <Nop>
+vno <right> <Nop>
+
+" This makes the cursor move to the next visual line when navigating wrapped text, rather than the next actual line.
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
+" Use sane regexes.
+nnoremap / /\v
+vnoremap / /\v
+
+" Visual Mode Indenting
+vmap > >gv
+vmap < <gv
+
+" ddI really hate that things don't auto-center
+nmap G Gzz
+nmap }dd }zz
+nmap { {ddzz
+
+" ddKeep search matches in the middle of the window.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" Same when jumping around
+nnoremap g; g;zz
+nnoremap g, g,zz
+
+" Common Typos
+command! -bang E e<bang>
+command! -bang Q q<bang>
+command! -bang W w<bang>
+command! -bang QA qa<bang>
+command! -bang Qa qa<bang>
+command! -bang Wa wa<bang>
+command! -bang WA wa<bang>
+command! -bang Wq wq<bang>
+command! -bang WQ wq<bang>
+
+" Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp.
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Source ~/.vim/.vimrc.after if it exists. In order to allow overriding
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if filereadable(expand("~/.vim/vimrc.after"))
   source ~/.vim/vimrc.after
 endif

@@ -26,7 +26,7 @@ set nowrap                                 " Don't wrap lines
 set linebreak                              " Wrap lines at convenient points
 set title                                  " Show Title
 set guioptions-=T                          " remove toolbar
-set guioptions-=m                         " remove menu bar
+set guioptions-=m                          " remove menu bar
 
 " General Settings
 set ffs=unix,dos,mac

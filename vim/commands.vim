@@ -1,6 +1,5 @@
 " ~/.vim/commands.vim
 " Michael Pratt
-" pratt@hablarmierda.net 
 " http://www.michael-pratt.com
 
 " Omni Complete settings
