@@ -1,9 +1,7 @@
 Vim
 ====
 
-Welcome to my vim config! It is mostly managed via [Vundle](https://github.com/gmarik/vundle/).
-It has a bunch of plugins and colorschemes.
-
+Welcome to my vim config!
 As you can see the configuration is divided into different vim files that are later sourced inside the vimrc.
 
 * settings.vim (Global Settings)
