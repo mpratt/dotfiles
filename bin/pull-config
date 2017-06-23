@@ -7,5 +7,5 @@
 # set -e
 FOLDERS="${HOME}/.dotfiles ${HOME}/.environment-config"
 for f in ${FOLDERS}; do
-    [ -d "${f}" ] && cd ${f} && echo "pulling on ${f}" && git pull || echo "Error on ${f}"
+    [ -d "${f}" ] && cd ${f} && echo "pulling on ${f}" && git pull && bash setup.sh || echo "Error on ${f}"
 done
