@@ -86,9 +86,8 @@ echo ""
 echo "Linking Vim Stuff into ${HOME}"
 symlinkIt ${LOCATION}/vim ~/.vim
 symlinkIt ${HOME}/.vim/vimrc ~/.vimrc
-mkdir -p ${HOME}/.local/share/pixmaps/ && cp ${LOCATION}/vim/gvim.png ${HOME}/.local/share/pixmaps/gvim.png
-mkdir -p ${HOME}/.local/share/icons/hicolor/256x256/apps && cp ${LOCATION}/vim/gvim.png ${HOME}/.local/share/icons/hicolor/256x256/apps/gvim.png
-mkdir -p ${HOME}/.local/share/applications && cp ${LOCATION}/vim/gvim.desktop ${HOME}/.local/share/applications/gvim.desktop
+mkdir -p ${HOME}/.local/share/pixmaps/ && cp ${LOCATION}/vim/local/shortcuts/gvim.png ${HOME}/.local/share/pixmaps/gvim.png
+mkdir -p ${HOME}/.local/share/icons/hicolor/256x256/apps && cp ${LOCATION}/vim/local/shortcuts/gvim.png ${HOME}/.local/share/icons/hicolor/256x256/apps/gvim.png
 mkdir -p ${HOME}/.local/share/applications && cp ${LOCATION}/vim/local/shortcuts/gvim.desktop ${HOME}/.local/share/applications/gvim.desktop
 echo ""
 
@@ -107,11 +106,11 @@ echo ""
 if ! [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
     echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
     mkdir -p ${HOME}/.kde/share/config/kresources/
-    cp ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
+    cp ${LOCATION}/vim/local/layout/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
 elif ! [ -e "${HOME}/.kde/share/config/kxkbrc" ]; then
     echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
     mkdir -p ${HOME}/.kde/share/config/
-    cp ${LOCATION}/vim/kxkbrc ${HOME}/.kde/share/config/kxkbrc
+    cp ${LOCATION}/vim/local/layout/kxkbrc ${HOME}/.kde/share/config/kxkbrc
     echo ""
 fi
 
