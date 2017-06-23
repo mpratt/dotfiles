@@ -89,6 +89,7 @@ symlinkIt ${HOME}/.vim/vimrc ~/.vimrc
 mkdir -p ${HOME}/.local/share/pixmaps/ && cp ${LOCATION}/vim/gvim.png ${HOME}/.local/share/pixmaps/gvim.png
 mkdir -p ${HOME}/.local/share/icons/hicolor/256x256/apps && cp ${LOCATION}/vim/gvim.png ${HOME}/.local/share/icons/hicolor/256x256/apps/gvim.png
 mkdir -p ${HOME}/.local/share/applications && cp ${LOCATION}/vim/gvim.desktop ${HOME}/.local/share/applications/gvim.desktop
+mkdir -p ${HOME}/.local/share/applications && cp ${LOCATION}/vim/local/shortcuts/gvim.desktop ${HOME}/.local/share/applications/gvim.desktop
 echo ""
 
 echo "Linking User Profile Stuff (openbox, i3, gmrun etc)"
