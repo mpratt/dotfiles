@@ -26,11 +26,12 @@ set nowrap                                 " Don't wrap lines
 set linebreak                              " Wrap lines at convenient points
 set title                                  " Show Title
 set guioptions-=T                          " remove toolbar
-"set guioptions-=m                         " remove menu bar
+set guioptions-=m                         " remove menu bar
 
 " General Settings
 set ffs=unix,dos,mac
 set switchbuf=usetab,newtab
+set exrc               " Enable project specific .vimrc
 set nofoldenable       " Disable Folding when opening files, use zi to enable manually
 set nostartofline      " Avoid moving cursor to BOL when jumping around
 set ruler              " show the cursor position all the time
@@ -98,7 +99,7 @@ set incsearch          " Set incremental searching
 
 " Backup and Undo Settings
 set backup             " enable backups
-set noswapfile         " it's 2015, Vim.
+set noswapfile         " it's 2015+, Vim.
 set undolevels=1000    " use many levels of undo
 set fillchars+=vert:│  "vertical splits less gap between bars
 
@@ -181,8 +182,8 @@ if has("gui_running")
     "set listchars+=extends:❯
     "set listchars+=precedes:❮ 
 
-    " set tab labels to show at most 20 characters
-    set guitablabel=%-0.20t%M
+    " set tab labels to show at most 15 characters
+    " set guitablabel=%-0.15t%M
 
     " Start Fullscreen!
     set lines=999

@@ -13,7 +13,7 @@ if has("win32") || has("win64")
     set runtimepath+=$HOME/.vim/after
 endif
 
-" Setting up vim-plug as the package manager {{{
+" Setting up vim-plug as the package manager
 if !filereadable(expand("~/.vim/autoload/plug.vim"))
     echo "Installing vim-plug and plugins. Restart vim after finishing the process."
     silent call mkdir(expand("~/.vim/autoload", 1), 'p')
@@ -23,11 +23,10 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-" Plugins
+" Core Plugins
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'scrooloose/syntastic'
-Plug 'skammer/vim-css-color'
-Plug 'blueyed/smarty.vim'
+Plug 'scrooloose/nerdtree'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'justinmk/vim-sneak'
@@ -37,21 +36,23 @@ Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-vinegar'
-Plug 'pangloss/vim-javascript'
-Plug 'StanAngeloff/php.vim'
-Plug 'shawncplus/phpcomplete.vim'
-Plug '2072/PHP-Indenting-for-VIm'
 
-" Colorschemes
+" if has("unix")
+"     Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
+" endif
+
+" Language Specific Plugins
+Plug 'ap/vim-css-color'
+Plug 'pangloss/vim-javascript'
+Plug '2072/PHP-Indenting-for-VIm'
+Plug '2072/vim-syntax-for-PHP'
+Plug 'blueyed/smarty.vim'
+
+" " Colorschemes
 Plug 'veloce/vim-aldmeris'
 Plug 'endel/vim-github-colorscheme'
 Plug 'sjl/badwolf'
 Plug 'tomasr/molokai'
-
-if has("unix")
-    Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
-endif
 
 call plug#end()
 filetype plugin indent on
