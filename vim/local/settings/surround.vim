@@ -1,2 +1,2 @@
-" Ctrl-sw: Quickly surround word
+" Ctrl-r: Quickly surround word
 nmap <leader>r ysiw
