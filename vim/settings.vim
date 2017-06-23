@@ -55,6 +55,7 @@ set formatoptions+=1   " When wrapping paragraphs, don't end lines with 1-letter
 set pastetoggle=<F11>  " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that won't be autoindented
 set ttyfast            " Optimize for fast terminal connections
 set gdefault           " Add the g flag to search/replace by default
+set laststatus=2       " Might be needed for vim-airline
 set wildmenu           " Use bash-like tab completion in Vim command line
 set wildmode=longest,list:longest
 

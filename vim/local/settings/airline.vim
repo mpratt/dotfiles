@@ -1,4 +1,4 @@
-let g:airline_theme='powerlineish'
+let g:airline_theme='molokai'
 let g:bufferline_rotate=1
 let g:airline#extensions#tabline#enabled=1 " Automatically displays all buffers when there's only one tab open.
 let g:airline#extensions#tabline#buffer_nr_show = 1 " Show Buffer number
