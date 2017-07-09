@@ -31,6 +31,9 @@
     bl = blame -C
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
+    # Show list of files in a conflict state.
+    conflict = "git ls-files -u | awk '{print $4}' | sort -u"
+
     # Unstage any files that have been added to the staging area
     unstage = reset HEAD
 
