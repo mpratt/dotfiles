@@ -1,0 +1,157 @@
+#!/bin/bash
+#############################################################
+# This script uses phploc to analize a project git source
+# and gnuplot to display the evolution of a project
+# in terms of complexity, files, etc.
+# Autor: Michael Pratt <pratt@hablarmierda.net>
+#############################################################
+#set -e
+APPNAME="PHP Analize"
+VERSION="0.1"
+CWD=$(pwd)
+TMPDIR=${TMPDIR:-$(mktemp -d -t phpanalize.XXXXXX)}
+PROJECT=""
+BRANCH="master"
+EXCLUDE="--exclude composer.phar --exclude Tests --exclude tests --exclude vendor --exclude Vendor"
+SKIP=5
+TOTALROUNDS=0
+
+trap "exitThis" 0 1 2 5 15
+#############################################################
+# This function uses gnuplot to draw the graphics
+#############################################################
+plotThis()
+{
+    echo "Generating Plot for ${1}"
+    rm -rf ${TMPDIR}/plot.gnu
+
+    if [ -n "${4}" ]; then
+       more=${4}
+    else
+        more=""
+    fi
+
+    echo "set terminal png size 1200,800" >> ${TMPDIR}/plot.gnu
+    echo "set xdata time" >> ${TMPDIR}/plot.gnu
+    echo "set timefmt \"%Y-%m-%d\"" >> ${TMPDIR}/plot.gnu
+    echo "set output \"${1}.png\"" >> ${TMPDIR}/plot.gnu
+    echo "set grid" >> ${TMPDIR}/plot.gnu
+    echo "set xtics nomirror rotate by -45" >> ${TMPDIR}/plot.gnu
+    echo "set xlabel \"Date\"" >> ${TMPDIR}/plot.gnu
+    echo "set ylabel \"${1}\"" >> ${TMPDIR}/plot.gnu
+    echo "set title \"${3}\"" >> ${TMPDIR}/plot.gnu
+    echo "set key left box" >> ${TMPDIR}/plot.gnu
+    echo "plot \"${2}\" using 1:2 title '${1}' with lines${more}" >> ${TMPDIR}/plot.gnu
+
+    gnuplot ${TMPDIR}/plot.gnu
+}
+
+#############################################################
+# Clean the folder
+#############################################################
+exitThis() 
+{ 
+    echo "Exiting - Cleaning files"
+    rm -rf ${TMPDIR}/ 
+    exit 0
+}
+
+#############################################################
+# Show usage when no params were given
+#############################################################
+if [ "${#}" -eq 0 ]; then
+    echo "Usage: $(basename ${0}) -p|--project project_dir -e|--exclude customFolder -s|--skip 5 -b|--branch master -t|--total-commits 40"
+    exit 1;
+fi
+
+#############################################################
+# Get The Options
+#############################################################
+while [ -n "$1" ]; do
+  case "$1" in
+    -p|--project)
+        shift
+        PROJECT="${1}" ;;
+    -b|--branch)
+        shift
+        BRANCH="${1}" ;;
+    -t|--total-commits)
+        shift
+        TOTALROUNDS="${1}" ;;
+    -e|--exclude)
+        shift
+        EXCLUDE+=" --exclude ${1}" ;;
+    -s|--skip)
+        shift
+        SKIP="${1}" ;;
+    *)
+        echo "Unknown Parameter"
+        echo "Allowed are -p|--project -e|--exclude -s|--skip -t|--total-commits -b|--branch"
+        exit 1 ;;
+  esac
+  shift
+done
+
+#############################################################
+# Verify Git Repo
+#############################################################
+if ! [ -d "${PROJECT}" ]; then
+    echo "${PROJECT} is not a directory"
+    exit 1;
+fi
+
+if ! [ -d "${PROJECT}/.git" ]; then
+    echo "${PROJECT} doesnt seem to be a git repo"
+    exit 1;
+fi
+
+#############################################################
+# Start the process
+#############################################################
+cp -r ${PROJECT} ${TMPDIR}/repo/
+cd ${TMPDIR}/repo
+TOTALCOMMITS=$(git rev-list --count --first-parent ${BRANCH})
+git checkout ${BRANCH}
+
+if [ "${TOTALROUNDS}" -eq 0 ]; then
+    TOTALROUNDS=$((${TOTALCOMMITS}/${SKIP}))
+fi
+
+echo "Total Commits: ${TOTALCOMMITS} - Number of Rounds: ${TOTALROUNDS}"
+CURRENTROUND=1
+touch ${TMPDIR}/{date_cyclo_lines,date_cyclo_methods,date_files}
+while [ ${CURRENTROUND} -le ${TOTALROUNDS} ]; do
+    phploc ${EXCLUDE} . >> ${TMPDIR}/out-${CURRENTROUND}
+
+    commitDate=$(git show -s --format="%ci" | egrep -o '[0-9-]*' | head -n 1)
+    cycloLinesCode=$(grep -i 'Cyclomatic Complexity / Lines of Code:' ${TMPDIR}/out-${CURRENTROUND} | egrep -o '([0-9\.]+)')
+    cycloNumMethods=$(grep -i 'Cyclomatic Complexity / Number of Methods:' ${TMPDIR}/out-${CURRENTROUND} | egrep -o '([0-9\.]+)')
+    files=$(grep -i 'Files:' ${TMPDIR}/out-${CURRENTROUND} | egrep -o '([0-9\.]+)')
+    classes=$(grep -i 'Classes:' ${TMPDIR}/out-${CURRENTROUND} | egrep -o '([0-9\.]+)')
+    interfaces=$(grep -i 'Interfaces:' ${TMPDIR}/out-${CURRENTROUND} | egrep -o '([0-9\.]+)')
+
+    echo "Current Commit Date - ${commitDate}"
+    echo -e "${commitDate} ${cycloLinesCode}\n$(cat ${TMPDIR}/date_cyclo_lines)" > ${TMPDIR}/date_cyclo_lines
+    echo -e "${commitDate} ${cycloNumMethods}\n$(cat ${TMPDIR}/date_cyclo_methods)" > ${TMPDIR}/date_cyclo_methods
+    echo -e "${commitDate} ${files} ${classes} ${interfaces}\n$(cat ${TMPDIR}/date_files)" > ${TMPDIR}/date_files
+
+    echo "Round ${CURRENTROUND} from ${TOTALROUNDS}"
+    if ! [[ $(git reset --hard HEAD~${SKIP}) ]]; then
+        echo "$(git rev-list HEAD --count) Commits remain"
+        break;
+    fi
+
+    rm -rf ${TMPDIR}/out-${CURRENTROUND}
+    CURRENTROUND=$((${CURRENTROUND}+1))
+done
+
+echo -e "date cyclo_per_line \n$(cat ${TMPDIR}/date_cyclo_lines | uniq)" > ${TMPDIR}/date_cyclo_lines
+echo -e "date cyclo_per_method\n$(cat ${TMPDIR}/date_cyclo_methods | uniq)" > ${TMPDIR}/date_cyclo_methods
+echo -e "date files classes interfaces\n$(cat ${TMPDIR}/date_files | uniq)" > ${TMPDIR}/date_files
+
+plotThis "$(basename ${PROJECT})-ComplexityPerLine" "${TMPDIR}/date_cyclo_lines" "Cyclomatic Complexity Per Line"
+plotThis "$(basename ${PROJECT})-ComplexityPerMethod" "${TMPDIR}/date_cyclo_methods" "Cyclomatic Complexity Per Methods"
+plotThis "$(basename ${PROJECT})-Files" "${TMPDIR}/date_files" "Files per time" ", '${TMPDIR}/date_files' using 1:3 title 'Classes' with lines, '${TMPDIR}/date_files' using 1:4 title 'Interfaces' with lines"
+
+mv *.png ${CWD}/
+exit 0
