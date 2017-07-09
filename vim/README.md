@@ -28,6 +28,8 @@ As you can see the configuration is divided into different vim files that are la
 * [2072/PHP-Indenting-for-VIm](https://github.com/2072/PHP-Indenting-for-VIm)
 * [2072/vim-syntax-for-PHP](https://github.com/2072/vim-syntax-for-PHP)
 * [blueyed/smarty.vim](https://github.com/blueyed/smarty.vim)
+* [c9s/phpunit.vim](https://github.com/c9s/phpunit.vim)
+* [ludovicchabant/vim-gutentags](https://github.com/ludovicchabant/vim-gutentags)
 * Colorschemes:
     - [veloce/vim-aldmeris](https://github.com/veloce/vim-aldmeris)
     - [endel/vim-github-colorscheme](https://github.com/endel/vim-github-colorscheme)
@@ -80,6 +82,10 @@ Theese are plugin mappings that I should either memorize or have remapped:
     - <kbd>ysiw]</kbd> Surrounds a word with brackets
     - <kbd>ys2aw"</kbd> Surrounds two words with double quotes
     - <kbd>Shift-V (select) S<tag></kbd> Surrounds the selection with a tag
+* PHPUnit
+    - <kbd>Leader-ta</kbd> Run all test cases
+    - <kbd>Leader-ts</kbd> Switch between source & test file
+    - <kbd>Leader-tf</kbd> Run current test case class
 * Custom Scripts
     - <kbd>Leader-js</kbd> (javascript) Beautify Javascript
     - <kbd>Leader-mb</kbd> (javascript & PHP) Debug word
