@@ -29,12 +29,59 @@
 	<directories/>
 </action>
 <action>
+	<icon>xfce4-clipman-plugin</icon>
+	<name>Copy Contents to Clipboard</name>
+	<unique-id>1499621047815070-6</unique-id>
+	<command>xclip -selection c -i %f</command>
+	<description></description>
+	<patterns>*</patterns>
+	<text-files/>
+</action>
+<action>
 	<icon>emblem-generic-greyorange</icon>
 	<name>Edit as Root</name>
 	<unique-id>1389735585522907-4</unique-id>
 	<command>kdesu gvim %F</command>
 	<description></description>
 	<patterns>*</patterns>
+	<text-files/>
+</action>
+<action>
+	<icon>gpicview</icon>
+	<name>Convert To JPG</name>
+	<unique-id>1499620374742509-1</unique-id>
+	<command>convert-to-jpg -f %f</command>
+	<description></description>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon>gpicview</icon>
+	<name>Convert To PNG</name>
+	<unique-id>1499620381531425-2</unique-id>
+	<command>convert-to-png -f %f</command>
+	<description></description>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon>applications-multimedia</icon>
+	<name>Media Info</name>
+	<unique-id>1499620472185765-3</unique-id>
+	<command>media-info -f %f -t %n</command>
+	<description></description>
+	<patterns>*</patterns>
+	<audio-files/>
+	<image-files/>
+</action>
+<action>
+	<icon>kompare</icon>
+	<name>Compare Files</name>
+	<unique-id>1499621445560022-8</unique-id>
+	<command>meld %F</command>
+	<description></description>
+	<patterns>*</patterns>
+	<directories/>
 	<text-files/>
 </action>
 </actions>
