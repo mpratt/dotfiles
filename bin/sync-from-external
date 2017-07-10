@@ -1,7 +1,8 @@
 #!/bin/bash
 ##################################################################
 #  Pull my directories from external drive
-#  Author Michael Pratt <pratt@hablarmierda.net>
+#  Author Michael Pratt 
+#  Url: http://michael-pratt.com
 ##################################################################
 #set -e
 APPNAME=$(basename ${0})

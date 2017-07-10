@@ -68,7 +68,7 @@
 	<icon>applications-multimedia</icon>
 	<name>Media Info</name>
 	<unique-id>1499620472185765-3</unique-id>
-	<command>media-info -f %f -t %n</command>
+	<command>media-info -f %f -g</command>
 	<description></description>
 	<patterns>*</patterns>
 	<audio-files/>

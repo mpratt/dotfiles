@@ -4,7 +4,8 @@ This script generates playlists for my mp3 collection.
 It builds the playlists from either the title, id3's genre
 and id3's comment
 
-Author: Michael Pratt <pratt@hablarmierda.net>
+Author: Michael Pratt
+Url: http://www.michael-pratt.com/
 """
 
 import os

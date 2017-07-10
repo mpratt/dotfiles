@@ -2,11 +2,12 @@
 ##################################################################
 # For times when I need to focus, this script "blocks" sites that are
 # a complete time-waste.
+#
 # Author: Michael Pratt
 # Url: http://wwww.michael-pratt.com/
 #
 # license: MIT
-# Copyright (C) 2014 by Michael Pratt <pratt@hablarmierda.net>
+# Copyright (C) 2014 by Michael Pratt
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

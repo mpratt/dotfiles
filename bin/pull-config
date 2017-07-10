@@ -2,6 +2,7 @@
 ##################################################################
 # Pulls config/environment files from github
 # Autor: Michael Pratt
+# Url: http://michael-pratt.com
 # License: MIT
 ##################################################################
 # set -e

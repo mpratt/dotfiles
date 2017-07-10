@@ -5,7 +5,7 @@
 #
 # Requirements: Imagemagick.
 #
-# Michael Pratt <pratt@hablarmierda.net>
+# Michael Pratt
 # http://www.michael-pratt.com
 #
 # License: MIT
@@ -43,14 +43,14 @@ function iman_exit() { rm -rf ${TMPDIR}; }
 #################################################################
 iman_requires()
 {
-	local app
-	for app in ${@}; do
-		echo "Buscando por $app....."
-		if ! [ "$(which $app 2> /dev/null)" ]; then
-			echo "Paquete que debes instalar: $app (probablemente no tienes imagemagick o dialog instalados)"
-			exit 0
-		fi
-	done
+    local app
+    for app in ${@}; do
+        echo "Buscando por $app....."
+        if ! [ "$(which $app 2> /dev/null)" ]; then
+            echo "Paquete que debes instalar: $app (probablemente no tienes imagemagick o dialog instalados)"
+            exit 0
+        fi
+    done
 }
 
 #################################################################
@@ -58,9 +58,9 @@ iman_requires()
 #################################################################
 function iman_alert()
 {
-  ${DIALOG} --clear --title "$APPNAME - $VERSION" \
-	  --backtitle "$APPNAME - $VERSION"	\
-	  --msgbox "$1" 15 110
+    ${DIALOG} --clear --title "$APPNAME - $VERSION" \
+        --backtitle "$APPNAME - $VERSION"	\
+        --msgbox "$1" 15 110
 }
 
 #################################################################
@@ -68,12 +68,12 @@ function iman_alert()
 #################################################################
 function iman_resize()
 {
-	local img=${1}
-	local ratio=${2}
-	local name=$(basename ${img})
+    local img=${1}
+    local ratio=${2}
+    local name=$(basename ${img})
 
-	! [ -d "${CWD}/resized/" ] && mkdir "${CWD}/resized/"
-	convert -strip -geometry ${ratio} ${img} "${CWD}/resized/${ratio}_${name}"
+    ! [ -d "${CWD}/resized/" ] && mkdir "${CWD}/resized/"
+    convert -strip -geometry ${ratio} ${img} "${CWD}/resized/${ratio}_${name}"
 }
 
 #################################################################
@@ -81,12 +81,12 @@ function iman_resize()
 #################################################################
 function iman_txt()
 {
-	local img=${1}
-	local text=${2}
-	local name=$(basename ${img})
+    local img=${1}
+    local text=${2}
+    local name=$(basename ${img})
 
-	! [ -d "${CWD}/watermarked/" ] && mkdir "${CWD}/watermarked/"
-	convert -strip -fill white -box "#00000080" -gravity SouthEast -font Helvetica-Bold -pointsize 15 -annotate +0+5 "${text}" ${img} "${CWD}/watermarked/${name}"
+    ! [ -d "${CWD}/watermarked/" ] && mkdir "${CWD}/watermarked/"
+    convert -strip -fill white -box "#00000080" -gravity SouthEast -font Helvetica-Bold -pointsize 15 -annotate +0+5 "${text}" ${img} "${CWD}/watermarked/${name}"
 }
 
 #################################################################
@@ -94,13 +94,13 @@ function iman_txt()
 #################################################################
 function iman_border()
 {
-	local img=${1}
-	local color=${2}
-	local size=${3}
-	local name=$(basename ${img})
+    local img=${1}
+    local color=${2}
+    local size=${3}
+    local name=$(basename ${img})
 
-	! [ -d "${CWD}/bordered/" ] && mkdir "${CWD}/bordered/"
-	convert -strip -bordercolor ${color} -border ${size}x${size} ${img} "${CWD}/bordered/${size}_${name}"
+    ! [ -d "${CWD}/bordered/" ] && mkdir "${CWD}/bordered/"
+    convert -strip -bordercolor ${color} -border ${size}x${size} ${img} "${CWD}/bordered/${size}_${name}"
 }
 
 #################################################################
@@ -108,11 +108,11 @@ function iman_border()
 #################################################################
 function iman_flip()
 {
-	local img=${1}
-	local name=$(basename ${img})
+    local img=${1}
+    local name=$(basename ${img})
 
-	! [ -d "${CWD}/fliped/" ] && mkdir "${CWD}/fliped/"
-	convert -strip -flip ${img} "${CWD}/fliped/${name}"
+    ! [ -d "${CWD}/fliped/" ] && mkdir "${CWD}/fliped/"
+    convert -strip -flip ${img} "${CWD}/fliped/${name}"
 }
 
 #################################################################
@@ -120,11 +120,11 @@ function iman_flip()
 #################################################################
 function iman_flop()
 {
-	local img=${1}
-	local name=$(basename ${img})
+    local img=${1}
+    local name=$(basename ${img})
 
-	! [ -d "${CWD}/floped/" ] && mkdir "${CWD}/floped/"
-	convert -strip -flop ${img} "${CWD}/floped/${name}"
+    ! [ -d "${CWD}/floped/" ] && mkdir "${CWD}/floped/"
+    convert -strip -flop ${img} "${CWD}/floped/${name}"
 }
 
 #################################################################
@@ -132,12 +132,12 @@ function iman_flop()
 #################################################################
 function iman_rotate()
 {
-	local img=${1}
-	local degrees=${2}
-	local name=$(basename ${img})
+    local img=${1}
+    local degrees=${2}
+    local name=$(basename ${img})
 
-	! [ -d "${CWD}/rotated/" ] && mkdir "${CWD}/rotated/"
-	convert -strip -rotate ${degrees} ${img} "${CWD}/rotated/${degrees}_${name}"
+    ! [ -d "${CWD}/rotated/" ] && mkdir "${CWD}/rotated/"
+    convert -strip -rotate ${degrees} ${img} "${CWD}/rotated/${degrees}_${name}"
 }
 
 #################################################################
@@ -152,80 +152,80 @@ echo "Searching for ${extension} images"
 find -L "${CWD}" -maxdepth 1 -type f -regextype posix-egrep -iregex ".*\.(png|jpg|gif)$" -printf "\"%P\" \"\" on \n" | sort > "${TMPDIR}/images"
 
 if [ "$(stat -c%s ${TMPDIR}/images)" -eq 0 ]; then
-	iman_alert "No se encontraron imagenes en ${CWD}"
-	exit 0
+    iman_alert "No se encontraron imagenes en ${CWD}"
+    exit 0
 fi
 
 # Select the images you want to modify
 ${DIALOG} --clear --title "$APPNAME - $VERSION" \
-		--backtitle "$APPNAME - $VERSION" --separate-output\
-		--checklist "Escoge las imagenes que quieres modificar:" 15 110 15 \
-		--file ${TMPDIR}/images 2> ${TMPDIR}/files
+    --backtitle "$APPNAME - $VERSION" --separate-output\
+    --checklist "Escoge las imagenes que quieres modificar:" 15 110 15 \
+    --file ${TMPDIR}/images 2> ${TMPDIR}/files
 
 clear
 cat "${TMPDIR}/files" | while read line; do
-	if [ -f "$CWD/$line" ]; then
-		rename=$(echo "${line}" | tr [A-Z] [a-z] | tr ' ' '_')
-		echo "Preparando $line"
-		echo "Normalizando $line a $rename"
-		cp "${CWD}/${line}" "${TMPDIR}"
+if [ -f "$CWD/$line" ]; then
+    rename=$(echo "${line}" | tr [A-Z] [a-z] | tr ' ' '_')
+    echo "Preparando $line"
+    echo "Normalizando $line a $rename"
+    cp "${CWD}/${line}" "${TMPDIR}"
 
-		if ! [ "${rename}" = "${line}" ]; then
-			mv "${TMPDIR}/${line}" "${TMPDIR}/${rename}"
-			echo "${TMPDIR}/${rename}" >> ${TMPDIR}/file_list
-		else
-			echo "${TMPDIR}/${line}" >> ${TMPDIR}/file_list
-		fi
-	fi
+    if ! [ "${rename}" = "${line}" ]; then
+        mv "${TMPDIR}/${line}" "${TMPDIR}/${rename}"
+        echo "${TMPDIR}/${rename}" >> ${TMPDIR}/file_list
+    else
+        echo "${TMPDIR}/${line}" >> ${TMPDIR}/file_list
+    fi
+fi
 done
 
 # Select the action you want to do with the images
 ${DIALOG} --clear --title "$APPNAME $VERSION" \
-		  --backtitle "$APPNAME $VERSION" \
-		  --menu "Que quieres hacer con las imagenes?" 10 80 0 \
-		  "1"  "Ajusta el tamano de las imagenes" \
-		  "2"  "Escribe texto en una imagen" \
-		  "3"  "Le pone un borde a las imagenes" \
-		  "4"  "Rota una imagen en los grados especificados" \
-		  "5"  "Voltea una imagen de izquierda a derecha" \
-		  "6"  "Voltea una imagen de arriba a abajo" 2> ${TMPDIR}/choice
+    --backtitle "$APPNAME $VERSION" \
+    --menu "Que quieres hacer con las imagenes?" 10 80 0 \
+    "1"  "Ajusta el tamano de las imagenes" \
+    "2"  "Escribe texto en una imagen" \
+    "3"  "Le pone un borde a las imagenes" \
+    "4"  "Rota una imagen en los grados especificados" \
+    "5"  "Voltea una imagen de izquierda a derecha" \
+    "6"  "Voltea una imagen de arriba a abajo" 2> ${TMPDIR}/choice
 clear
 if [ "$(stat -c%s $TMPDIR/choice)" -eq 0 ]; then
-	iman_alert "Cancelado! - Adios!"
-	clear
-	exit 0
+    iman_alert "Cancelado! - Adios!"
+    clear
+    exit 0
 fi
 
 args=()
 case $(cat $TMPDIR/choice) in
-	1)	module="iman_resize"
-		read -p "Resize ratio: " ratio
-		args+=( ${ratio} ) ;;
+    1)	module="iman_resize"
+        read -p "Resize ratio: " ratio
+        args+=( ${ratio} ) ;;
 
-	2)	module="iman_txt"
-		read -p "Your text: " text
-		args+=( "${text}" ) ;;
+    2)	module="iman_txt"
+        read -p "Your text: " text
+        args+=( "${text}" ) ;;
 
-	3)	module="iman_border"
-		read -p "Border Color (black): " color
-		read -p "Border Size (6): " size
-		args+=( "${color}" "${size}" ) ;;
+    3)	module="iman_border"
+        read -p "Border Color (black): " color
+        read -p "Border Size (6): " size
+        args+=( "${color}" "${size}" ) ;;
 
-	4) 	module="iman_rotate"
-		read -p "Degrees: " degrees
-		args+=( "${degrees}" ) ;;
+    4) 	module="iman_rotate"
+        read -p "Degrees: " degrees
+        args+=( "${degrees}" ) ;;
 
-	5) module="iman_flop" ;;
+    5) module="iman_flop" ;;
 
-	6) module="iman_flip" ;;
+    6) module="iman_flip" ;;
 esac
 
 [ -z "${module}" ] && exit 0
 [ "$(stat -c%s ${TMPDIR}/file_list)" -eq 0 ] && iman_alert "File list missing! Sorry :(" && exit 0
 
 for i in $(cat ${TMPDIR}/file_list); do
-	if [ -e "${i}" ]; then
-		echo "Procesando ${i} ..."
-		${module} "${i}" ${args[@]}
-	fi
+    if [ -e "${i}" ]; then
+        echo "Procesando ${i} ..."
+        ${module} "${i}" ${args[@]}
+    fi
 done

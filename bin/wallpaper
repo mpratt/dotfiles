@@ -1,10 +1,11 @@
 #!/bin/bash
 #######################################################
 # Wallpaper Management via feh
-# Michael Pratt <pratt@hablarmierda.net>
+# Michael Pratt
+# http://michael-pratt.com
 #######################################################
 set -e
-FOLDER="/mnt/data/Imagenes/Wallpapers"
+FOLDER="${HOME}/Pictures/wallpapers"
 FILE=""
 USEPREVIOUS=0
 USERANDOM=0

@@ -1,7 +1,8 @@
 #!/bin/bash
 ############################################################
-# Michael Pratt <pratt@hablarmierda.net>
 # Saves a Full Website for offline viewing
+# Michael Pratt 
+# http://michael-pratt.com
 ###########################################################
 [ ${#} -ne "1" ] && echo "You have tu specify a URL" && exit 0
 DOMAIN=$(echo ${1} | sed -e "s/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/")

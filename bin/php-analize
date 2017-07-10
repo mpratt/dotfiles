@@ -3,7 +3,8 @@
 # This script uses phploc to analize a project git source
 # and gnuplot to display the evolution of a project
 # in terms of complexity, files, etc.
-# Autor: Michael Pratt <pratt@hablarmierda.net>
+# Autor: Michael Pratt
+# Url: http://michael-pratt.com
 #############################################################
 #set -e
 APPNAME="PHP Analize"
