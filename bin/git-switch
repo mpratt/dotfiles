@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Make it easier to switch to a branch by a substring of its
+# name. More useful if you are good about deleting branches
+# which have been merged upstream and if your branch names include
+# unique identifiers like ticket/issue numbers.
+#
+# Source: https://github.com/Andrew565/dotfiles
+if [ "${#}" -eq 0 ]; then
+    echo "$(basename ${0}) [branchname]"
+    exit 0
+fi
+
+BRANCH=$(git branch | grep "$1")
+exec git checkout $BRANCH

@@ -32,12 +32,13 @@
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
     # Show list of files in a conflict state.
-    conflict = "git ls-files -u | awk '{print $4}' | sort -u"
+    conflict = "!git ls-files -u | awk '{print $4}' | sort -u"
 
     # Unstage any files that have been added to the staging area
     unstage = reset HEAD
 
     # Delete any branches that have been merged into maste
+    #delete-merged-branches = "git branch -d `git branch --merged | grep -v '^*' | tr -d '\n'`"
     delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
     #show alias
@@ -51,5 +52,27 @@
 
     # Delete the remote version of the current branch
     unpublish = "!git push origin :$(git branch-name)"
+
+    # Show the diff of everything you haven't pushed yet.
+    unpushed = "!git diff origin/$(git branch-name)..HEAD"
+
+    # Ranks users by changes
+    changes = "!git log --pretty=format:'%an <%ae>' | sort | uniq -c | sort -nr"
+
+    # Get the number of commits on the current branch
+    count = "rev-list HEAD --count"
+
+    # Commits per day
+    commits-per-day = "!git log --format=format:"%cd" --date=short --no-merges --all | uniq -c | awk '{ total += $1; count++ } END { print total/count }'"
+
+    # Show what files are being ignored in the repo
+    ignored = "ls-files --others --i --exclude-standard"
+
+    # Compact a git repo
+    compact = "!git reflog expire --expire=now --all && git gc --prune=now && git gc --aggressive --prune=now"
+
+    # Cleanse your working directory with fire
+    reset-with-fire = "!git reset --hard HEAD && git clean -fdx"
+
 [push]
     default = current

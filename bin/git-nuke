@@ -1,0 +1,16 @@
+#!/bin/bash
+set -o errexit
+
+if [ "${#}" -eq 0 ]; then
+    echo "$(basename ${0}) - Nukes a branch locally and on the origin remote."
+    echo "$(basename ${0}) [branch-name]"
+    exit 0
+fi
+
+if [[ "${1}" == "master" ]]; then
+    echo "Cannot nuke master branch"
+    exit 0
+fi
+
+git branch -D ${1}
+git push origin :${1}
