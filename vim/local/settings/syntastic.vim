@@ -9,9 +9,11 @@ let g:syntastic_style_error_symbol = '✠✠'
 let g:syntastic_style_warning_symbol = '≈≈'
 
 " PHP settings
-let g:syntastic_php_checkers=['php', 'phpmd', 'phpcs']
-let g:syntastic_php_phpmd_post_args='text codesize,design,unusedcode'
-"let g:syntastic_php_phpmd_post_args='cleancode,codesize,controversial,design,unusedcode'
+let g:syntastic_php_checkers=['php', 'phpmd']
+"let g:syntastic_php_checkers=['php', 'phpmd', 'phpcs']
+let g:syntastic_php_phpmd_post_args='codesize,controversial,design,unusedcode,BooleanArgumentFlag'
+" let g:syntastic_php_phpmd_post_args='cleancode,codesize,controversial,design,unusedcode'
+" let g:syntastic_php_phpmd_post_args='text codesize,design,unusedcode'
 let g:syntastic_php_phpcs_args='--standard=psr2'
 
 " HTML Settings
