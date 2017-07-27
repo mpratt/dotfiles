@@ -50,7 +50,7 @@ SITES=("reddit.com"\
 #################################################################
 be_efficient_usage()
 {
-    echo "usage $(basename ${0}) [--enable|--disable] [--add website] [--remove website] [--list]"
+    echo "usage $(basename ${0}) [--enable|--disable|--map] [--add website] [--remove website] [--list]"
     exit 0
 }
 
@@ -94,6 +94,11 @@ be_efficient_add()
 be_efficient_remove()
 {
     local website="${1}"
+    if [[ "${website}" == "127.0.0.1" ]]; then
+        echo "Could not add website 127.0.0.1"
+        exit 1
+    fi
+
     sed -i "/${website}/d" ${HOSTFILE}
     sed -i "/www.${website}/d" ${HOSTFILE}
     echo "Removed ${website}"
@@ -104,7 +109,7 @@ be_efficient_remove()
 #################################################################
 be_efficient_list()
 {
-    grep '#be' ${HOSTFILE} | awk '{print $2}'
+    grep '#be' ${HOSTFILE} | awk '{print $2 "\t" $1}'
 }
 
 #################################################################
@@ -127,11 +132,15 @@ while [ -n "${1}" ]; do
             be_efficient_enable ;;
 
         --map)
+            TMPDIR=$(mktemp -d -t beffff.XXXXXX)
             dialog --inputbox "Enter website url (Example: reddit.com - No WWW):" 8 40 2> ${TMPDIR}/website
             dialog --inputbox "Enter the mapped ip:" 8 40 2> ${TMPDIR}/ip
-            [ "$(stat -c%s ${TMPDIR}/web)" -eq 0 ] && echo "No Website Given" && exit 1 || web="$(cat ${TMPDIR}/website)"
+            [ "$(stat -c%s ${TMPDIR}/website)" -eq 0 ] && echo "No Website Given" && exit 1 || web="$(cat ${TMPDIR}/website)"
             [ "$(stat -c%s ${TMPDIR}/ip)" -eq 0 ] && ip="127.0.0.1" || ip="$(cat ${TMPDIR}/ip)"
-            be_efficient_add "${web}" "${ip}";;
+            be_efficient_add "${web}" "${ip}"
+            rm -rf ${TMPDIR}
+            ;;
+
 
         --add)
             shift
