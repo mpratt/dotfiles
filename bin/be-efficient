@@ -61,7 +61,7 @@ be_efficient_enable()
 {
     local i
     for i in ${SITES[@]}; do
-        be_efficient_add "${i}"
+        be_efficient_add "${i}" "127.0.0.1"
     done
 
     echo "Work mode enabled"
@@ -82,8 +82,9 @@ be_efficient_clean()
 be_efficient_add()
 {
     local website="${1}"
-    echo -e "127.0.0.1\t$website\t#beefficient" >> ${HOSTFILE}
-    echo -e "127.0.0.1\twww.$website\t#beefficient" >> ${HOSTFILE}
+    local ip="${2}"
+    echo -e "${ip}\t${website}\t#beefficient" >> ${HOSTFILE}
+    echo -e "${ip}\twww.${website}\t#beefficient" >> ${HOSTFILE}
     echo "Added ${website}"
 }
 
@@ -125,9 +126,16 @@ while [ -n "${1}" ]; do
             be_efficient_clean
             be_efficient_enable ;;
 
+        --map)
+            dialog --inputbox "Enter website url (Example: reddit.com - No WWW):" 8 40 2> ${TMPDIR}/website
+            dialog --inputbox "Enter the mapped ip:" 8 40 2> ${TMPDIR}/ip
+            [ "$(stat -c%s ${TMPDIR}/web)" -eq 0 ] && echo "No Website Given" && exit 1 || web="$(cat ${TMPDIR}/website)"
+            [ "$(stat -c%s ${TMPDIR}/ip)" -eq 0 ] && ip="127.0.0.1" || ip="$(cat ${TMPDIR}/ip)"
+            be_efficient_add "${web}" "${ip}";;
+
         --add)
             shift
-            be_efficient_add "${1}" ;;
+            be_efficient_add "${1}" "127.0.0.1";;
 
         --remove)
             shift
