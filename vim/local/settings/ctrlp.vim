@@ -4,7 +4,8 @@ let g:ctrlp_extensions = ['tag']    " Search in Tags also
 let g:ctrlp_lazy_update = 100
 let g:ctrlp_max_height = 30
 let g:ctrlp_default_input = 1
-" let g:ctrlp_mruf_relative = 1
+let g:ctrlp_mruf_relative = 1
+let g:ctrlp_root_markers = ['.ctrlp', '.gitignore', 'config.xml']
 
 if !isdirectory(expand('~/.vim/local/tmp/cache/ctrlp'))
     call mkdir(expand('~/.vim/local/tmp/cache/ctrlp'), "p")
