@@ -25,3 +25,8 @@ tint2 -c "${CWD}/tint2rc" &
 nm-applet &
 xfce4-power-manager &
 volumeicon &
+
+# Autorun x11vnc on adrastea
+if [ "${HOST}" -eq "adrastea" ] && [ -e "/usr/bin/x11vnc" ]; then
+    x11vnc -usepw &
+fi
