@@ -28,5 +28,5 @@ volumeicon &
 
 # Autorun x11vnc on adrastea
 if [ "${HOST}" -eq "adrastea" ] && [ -e "/usr/bin/x11vnc" ]; then
-    x11vnc -usepw &
+    x11vnc -usepw -bg -forever
 fi
