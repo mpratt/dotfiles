@@ -36,6 +36,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'bling/vim-bufferline'
 
 " if has("unix")
 "     Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
