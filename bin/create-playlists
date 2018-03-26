@@ -12,6 +12,7 @@ import os
 import argparse
 import unicodedata
 import re
+import time
 import eyed3
 
 def is_mp3_file(filename):
@@ -311,6 +312,9 @@ if __name__ == "__main__":
             add_to_playlist(file, playlist_path(ALBUM_PLAYLIST_FOLDER, find_album_playlist(audioData)), audioData)
         else:
             add_to_playlist(file, playlist_path(PLAYLIST_FOLDER, '00-without-album.m3u'), audioData)
+
+        if time.time() - os.path.getmtime(file) < (3 * 30 * 24 * 60 * 60) :
+            add_to_playlist(file, playlist_path(PLAYLIST_FOLDER, '00-recently-added.m3u'), audioData)
 
         add_to_playlist(file, playlist_path(ARTIST_PLAYLIST_FOLDER, find_artist_playlist(audioData)), audioData)
         add_to_playlist(file, playlist_path(YEARLY_PLAYLIST_FOLDER, find_yearly_playlist(audioData)), audioData)
