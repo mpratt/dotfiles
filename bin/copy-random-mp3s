@@ -60,7 +60,7 @@ if [ "${TOTAL_FILES}" -eq 0 ]; then
 fi
 
 cat ${LISTS[@]} | egrep -v '^#|^$' > _tmp_list.m3u
-FILES=$(cat _tmp_list.m3u | egrep -v '^#|^$' | uniq | sort -R | sort -R | uniq | head -n ${TOTAL_FILES})
+FILES=$(cat _tmp_list.m3u | egrep -v '^#|^$' | uniq | sort -R | sort -R | uniq | sort -R | head -n ${TOTAL_FILES})
 if [ -n "${FILES}" ]; then
     if [ -z "${OUTPUTDIR}" ]; then
         OUTPUTDIR="${CWD}/random-mp3s"
