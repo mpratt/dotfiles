@@ -29,38 +29,42 @@
 LISTS=()
 CWD="${PWD}"
 OUTPUTDIR=""
-TOTAL_FILES="0"
+TOTAL_FILES="20"
+PLFOLDER="${HOME}/Audio/Playlists"
+RANDOMPL="3"
 
 usage() {
     echo "Usage ${0} playlist1.m3u playlist2.m3u --total [number of mp3s] --output-dir [dir]"
 }
 
-if [ "${#}" -eq 0 ]; then
-    usage
-    exit
-fi
-
 while [ -n "$1" ]; do
     case ${1} in
         --total) shift; TOTAL_FILES="${1}"; shift ;;
         --output-dir) shift; OUTPUTDIR="${1}"; shift ;;
+        -h|--help) usage; exit 0;;
         *) 
             if [ -f "${1}" ]; then
                 LISTS+=( "${1}" )
             fi
-
             shift ;;
     esac
 done
 
-if [ "${TOTAL_FILES}" -eq 0 ]; then
-    echo "ERROR: You need to specify a number of songs"
-    usage
-    exit 1
+if [ ${#LISTS[@]} -eq 0 ]; then
+    echo "Finding Random ${RANDOMPL} Playlists in ${PLFOLDER}"
+    find "${PLFOLDER}" -type f -maxdepth 1 -iname "*.m3u" > _tmp_pl.tmp 
+    for i in $(cat _tmp_pl.tmp | egrep -v '00' | shuf | head -n ${RANDOMPL}); do
+        LISTS+=( "${i}" )
+    done
+    rm -rf _tmp_pl.tmp
 fi
 
+for pl in ${LISTS[@]}; do
+    echo "Using Playlist: ${pl}"
+done
+
 cat ${LISTS[@]} | egrep -v '^#|^$' > _tmp_list.m3u
-FILES=$(cat _tmp_list.m3u | egrep -v '^#|^$' | uniq | sort -R | sort -R | uniq | sort -R | head -n ${TOTAL_FILES})
+FILES=$(cat _tmp_list.m3u | egrep -v '^#|^$' | uniq | shuf | sort -R | shuf |  head -n ${TOTAL_FILES})
 if [ -n "${FILES}" ]; then
     if [ -z "${OUTPUTDIR}" ]; then
         OUTPUTDIR="${CWD}/random-mp3s"
