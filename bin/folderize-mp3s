@@ -46,7 +46,7 @@ done
 IFS=$'\n'
 if [ -n "${CWD}" ] && [ -e "${CWD}" ]; then
     cd ${CWD}
-    for i in $(find "${CWD}" -type f -iname "*.${EXTENSION}" -printf "%f\n"); do
+    for i in $(find "${CWD}" -maxdepth 1 -type f -iname "*.${EXTENSION}" -printf "%f\n"); do
         foldername=$(echo "${i%.*}" | egrep -o '^[^-]+')
         echo "Creating folder ${CWD}/${foldername}"
         mkdir -p "${CWD}/${foldername}"
