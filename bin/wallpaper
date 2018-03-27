@@ -90,7 +90,7 @@ download_image() {
 #######################################################
 download_from_gimmebar() {
     echo "Using GimmeBar API ${1}"
-    download_image $(curl -s ${1} | tr "," "\n" | grep full | egrep -o 'https?:(.*+)' | tr -d '\\' | tr -d '"' | sort -R | head -n 1)
+    download_image $(curl -L -s ${1} | tr "," "\n" | grep full | egrep -o 'https?:(.*+)' | tr -d '\\' | tr -d '"' | sort -R | head -n 1)
     [ "$?" -eq "0" ] && return 0 || return 1
 }
 
@@ -101,7 +101,7 @@ download_from_reddit() {
     local list=()
     echo "Using Reddit API ${1}"
 
-    for i in $(curl -s ${1} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+'); do
+    for i in $(curl -L -s ${1} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+'); do
         if [ "$(echo ${i} | egrep -i '(png|jpg|gif)$')" ]; then
             list+=( "${i}" )
         fi
