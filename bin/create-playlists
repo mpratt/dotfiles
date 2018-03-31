@@ -57,7 +57,7 @@ def get_audio_data(filename):
 
     comments = []
     for i in audio_file.tag.comments:
-        comment = correct_playlist_names(i.text.lower())
+        comment = correct_playlist_names(i.text.lower().strip())
         comments += comment.replace('|', ',').replace('/', ',').strip('|').split(',')
 
     return {
@@ -77,7 +77,7 @@ def correct_playlist_names(text):
     :returns: string
     """
 
-    if not text:
+    if not text or len(text) <= 2:
         return ''
 
     table = {
@@ -88,21 +88,26 @@ def correct_playlist_names(text):
         'detusch': 'deutsch',
         'aletrnative': 'alternative',
         'let-go': 'lets-go',
+        '+': ' ',
     }
 
     for key in table.keys():
         text = text.replace(key, table[key])
 
+    " Ignore urls, strange checksums, 'ripped by' tags and useless junk "
     regexes = [
-        'https?://\S+', 'ripped', 'cxmxix', 'to\xf1o valverde', 'feat',
-        'ac_ripper', 'ripp', 'created by', 'Florilegium Musicorum Aetati', 'eeuu', 'm3u',
-        'goo goo dolls cover', 'good', 'bitches', 'one group to rule them all', 'tranquil',
-        '\xa9 \xa4 @', 'album title', 'artist album', 'Luisitou',
+        '^https?://\S+', '^album title', '^artist album', 
+        '^goo goo dolls cover', '^good', '^bitches', '^one group to rule them all', '^tranquil',
+        '^ac_ripper', '^ripp', '^created by', '^Florilegium Musicorum Aetati', '^eeuu', '^m3u',
+        'cxmxix', 'to\xf1o valverde', '^feat', '\xa9 \xa4 @', 'Luisitou',
+        '\.com$', '^www', '^[0-9a-z]{7,8}[ \-][0-9a-z]{7,8}[ \-][0-9a-z]{7,8}', '[0-9a-z]{7,8}[ \-][0-9a-z]{7,8}[ \-][0-9a-z]{7,8}$',
+        '^[0-9a-z]{6,8} [0-9a-z]{6,7} [0-9a-z]{2}', '^[0-9]{2} [0-9a-z]+ [0-9]+$',
     ]
 
-    " Ignore urls, strange checksums and 'ripped by' tags "
-    regex = re.compile('|'.join(regexes), re.IGNORECASE)
-    if re.match(regex, text) or len(text) <= 2 or len(text) > 40:
+    r = '(' + ')|('.join(regexes) + ')'
+    regex = re.compile(r, re.IGNORECASE)
+    if re.match(regex, text):
+        print '*** Ignoring comment {}'.format(text)
         return ''
 
     return text
