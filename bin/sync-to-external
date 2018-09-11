@@ -14,7 +14,7 @@ DIALOG=${DIALOG:- dialog}
 
 # EXclude this files
 EXCLUDE=( ".esd_auth" ".ICEauthority" ".gmrun_history" ".xfce4-session.verbose-log" ".xsession-errors" "${APPNAME}" ".Xauthority" ".pki" ".wget-hsts" ".xwmconfig" ".wallpaper-image.jpg" ".wallpaper-image.png" ".xsession" ".adobe" ".cache" ".dmrc" ".rnd" ".macromedia" ".bash_history" ".dbus" ".xfce4-session.verbose-log.last" "Desktop" ".thumbnails" ".gimp-2.8" ".gvfs" ".hplip" ".putty" ".pylint.d" ".scim" ".xine" ".mplayer" ".oracle_jre_usage" ".p7zip" ".xinitrc" ".viminfo" ".xscreensaver-getimage.cache" ".screenrc" ".fehbg" ".gtk-bookmarks" )
-SPECIALFOLDERS=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
+SPECIALFOLDERS=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Games' 'Videos')
 
 # Constants
 HOST=$(hostname)
@@ -181,14 +181,14 @@ function backup_cp_special_case() {
             rsyncflags="${rsyncflags} --exclude .git --delete"
             gdrive="0B9U2MofcmhRQcEtQdHBQSEZhTlE"
             ;;
-        Projects|Downloads)
+        Projects|Downloads|Games)
             rsyncflags="${rsyncflags} --delete --backup --backup-dir=${bkdir}"
             ;;
         Pictures)
             rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
             ;;
         Videos)
-            rsyncflags="${rsyncflags} --exclude .git --exclude Movies --exclude Series --delete --backup --backup-dir=${bkdir}"
+            rsyncflags="${rsyncflags} --exclude .git --exclude Movies --exclude Series --exclude movies --exclude series --delete --backup --backup-dir=${bkdir}"
             ;;
         *)
             backup_log "!!! No special matches for ${foldername}"

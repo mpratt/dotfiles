@@ -8,7 +8,7 @@
 APPNAME=$(basename ${0})
 VERSION="0.1"
 EXTERNALDRIVE="/mnt/storage"
-SUPPORTEDFOLDERS=( 'Audio' 'Documents' 'Pictures' 'Downloads' 'Projects' 'Videos' 'Public' )
+SUPPORTEDFOLDERS=( 'Audio' 'Documents' 'Pictures' 'Downloads' 'Projects' 'Videos' 'Public' 'Games' )
 FOLDERS=()
 
 #################################################################
