@@ -76,7 +76,7 @@ download_image() {
     local out="${HOME}/.wallpaper-image.${extension}"
 
     echo "Downloading ${img}"
-    wget ${img} -O ${out}
+    wget --user-agent="Mozilla" ${img} -O ${out}
     if [ "$?" -eq "0" ]; then
         ARGS+=( " ${out}" )
         return 0
@@ -102,12 +102,14 @@ download_from_reddit() {
     echo "Using Reddit API ${1}"
 
     for i in $(curl -L -s ${1} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+'); do
-        if [ "$(echo ${i} | egrep -i '(png|jpg|gif)$')" ]; then
+        echo ${i}
+        if [ -n "$(echo ${i} | egrep -i '(png|jpg|gif|s\=(.*?))$')" ]; then
             list+=( "${i}" )
         fi
     done
 
     if [ "${#list[@]}" -le 0 ]; then
+        echo "No Images Found"
         return 1
     fi
 
