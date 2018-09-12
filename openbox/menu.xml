@@ -347,7 +347,7 @@
 		</item>
 		<item label="Shutdown / Reboot">
 			<action name="Execute">
-                <execute>obshutdown -c ~/.config/openbox/obshutdown.rc</execute>
+				<execute>obshutdown -c ~/.config/openbox/obshutdown.rc</execute>
 			</action>
 		</item>
 	</menu>
@@ -389,19 +389,6 @@
 		<item label="Chromium">
 			<action name="Execute">
 				<execute>chromium</execute>
-			</action>
-		</item>
-		<item label="Thunderbird">
-			<action name="Execute">
-				<decor>
-                   yes
-                </decor>
-				<fullscreen>
-                   no
-                </fullscreen>
-				<execute>
-                   thunderbird
-                </execute>
 			</action>
 		</item>
 		<separator label="System Tools"/>
