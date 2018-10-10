@@ -45,7 +45,7 @@ function external_sync() {
         Documents|Audio|Pictures|Games) extraflags="--delete --exclude .git --exclude Playlists" ;;
         Projects) extraflags="" ;;
         Downloads|Public) extraflags="--exclude .git" ;;
-        Videos) extraflags="--exclude Movies --exclude Series" ;;
+        Videos) extraflags="--exclude movies --exclude series" ;;
         *) echo "${folder} is not supported" && exit 1 ;;
     esac
 
@@ -58,7 +58,7 @@ function external_sync() {
 while [ -n "$1" ]; do
     case ${1} in
         -f|--folder) shift; FOLDERS+=( "${1}" ); shift ;;
-        -a|--all) shift; FOLDERS=${SUPPORTEDFOLDERS} ;;
+        -a|--all) shift; FOLDERS=${SUPPORTEDFOLDERS[@]} ;;
         -h|--help) external_usage; exit 0 ;;
     esac
 done
