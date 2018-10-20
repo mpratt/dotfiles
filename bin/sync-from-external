@@ -74,5 +74,6 @@ if [ "${#FOLDERS[@]}" -eq "0" ]; then
 fi
 
 for folder in ${FOLDERS[@]}; do
+    echo "Syncing ${folder}"
     external_sync ${folder}
 done
