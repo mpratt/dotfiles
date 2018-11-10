@@ -35,19 +35,17 @@ Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'bling/vim-bufferline'
+Plug 'ludovicchabant/vim-gutentags'
 
 " if has("unix")
 "     Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
 " endif
 
 " Language Specific Plugins
-Plug 'ap/vim-css-color'
 Plug 'pangloss/vim-javascript'
-Plug '2072/PHP-Indenting-for-VIm'
+Plug 'StanAngeloff/php.vim'
 Plug '2072/vim-syntax-for-PHP'
-Plug 'blueyed/smarty.vim'
 Plug 'c9s/phpunit.vim'
 
 " Colorschemes
@@ -55,6 +53,7 @@ Plug 'veloce/vim-aldmeris'
 Plug 'endel/vim-github-colorscheme'
 Plug 'sjl/badwolf'
 Plug 'tomasr/molokai'
+Plug 'chriskempson/base16-vim'
 
 call plug#end()
 filetype plugin indent on
@@ -76,9 +75,24 @@ if has("gui_running")
 endif
 
 " Set the color scheme on Gvim
-if filereadable(expand('~/.vim/plugged/vim-aldmeris/colors/aldmeris.vim'))
+if filereadable(expand('~/.vim/plugged/base16-vim/colors/base16-ashes.vim'))
+    colorscheme base16-ashes
+elseif filereadable(expand('~/.vim/plugged/vim-aldmeris/colors/aldmeris.vim'))
     colorscheme aldmeris
 endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Common Functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Execute a command while preserving cursor position and history.
+function! Preserve(command)
+    let _s=@/         " Save search history.
+    let l = line('.') " Save current line.
+    let c = col('.')  " Save current column.
+    execute a:command
+    let @/=_s         " Reset search history.
+    call cursor(l, c) " Reset cursor position.
+endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Common abbreviations

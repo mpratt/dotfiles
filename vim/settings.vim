@@ -97,6 +97,7 @@ set hlsearch           " Highlight searching
 set ignorecase         " case insensitive search
 set smartcase          " unless uppercase letters are used in the regex.
 set incsearch          " Set incremental searching
+set fileignorecase     " Ignode case whil searching for a file.
 
 " Backup and Undo Settings
 set backup             " enable backups
@@ -186,9 +187,9 @@ if has("gui_running")
     " set tab labels to show at most 15 characters
     " set guitablabel=%-0.15t%M
 
-    " Start Fullscreen!
-    set lines=999
-    set columns=999
+    " Start little bigger
+    set lines=40
+    set columns=150
 endif
 
 " Windows Only Settings

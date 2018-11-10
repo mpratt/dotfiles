@@ -22,16 +22,26 @@ au BufNewFile,BufRead *.json set ft=javascript
 " Change cwd to file we are currently editing
 autocmd BufEnter * silent! lcd %:p:h
 
-" Remove trailing whitespace on save for a bunch of filetypes
-autocmd BufWritePre *.php :%s/\s\+$//e
-autocmd BufWritePre *.md :%s/\s\+$//e
-autocmd BufWritePre *.py :%s/\s\+$//e
-autocmd BufWritePre *.sh :%s/\s\+$//e
-autocmd BufWritePre *.txt :%s/\s\+$//e
-autocmd BufWritePre *.js :%s/\s\+$//e
-autocmd BufWritePre *.json :%s/\s\+$//e
-autocmd BufWritePre *.twig :%s/\s\+$//e
-autocmd BufWritePre *.html :%s/\s\+$//e
+" Remove trailing whitespace on save for a bunch of filetypes on save
+if exists("*Preserve")
+    autocmd BufWritePre *.php call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.md call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.py call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.sh call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.txt call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.js call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.json call Preserve("%s/\\s\\+$//e")
+    autocmd BufWritePre *.html call Preserve("%s/\\s\\+$//e")
+else
+    autocmd BufWritePre *.php :%s/\s\+$//e
+    autocmd BufWritePre *.md :%s/\s\+$//e
+    autocmd BufWritePre *.py :%s/\s\+$//e
+    autocmd BufWritePre *.sh :%s/\s\+$//e
+    autocmd BufWritePre *.txt :%s/\s\+$//e
+    autocmd BufWritePre *.js :%s/\s\+$//e
+    autocmd BufWritePre *.json :%s/\s\+$//e
+    autocmd BufWritePre *.html :%s/\s\+$//e
+endif
 
 " JsBeautifier Plugin
 au Filetype javascript source $HOME/.vim/local/scripts/jsbeautify.vim

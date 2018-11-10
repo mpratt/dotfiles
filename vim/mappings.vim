@@ -75,6 +75,9 @@ nnoremap U <c-r>
 " Type 12<Enter> to go to line 12 (12G breaks my wrist) Or just <Enter> to go to the start of the file
 nnoremap <CR> gg
 
+" <leader>= Reindent all the file
+nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
+
 " Send visual selection to my site
 " vnoremap <c-p> :w !curl -sF 'sprunge=<-' 'http://michael-pratt.com' \| tr -d '\n ' \| pbcopy && open `pbpaste`<cr>
 
