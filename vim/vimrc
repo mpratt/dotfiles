@@ -38,9 +38,9 @@ Plug 'tpope/vim-fugitive'
 Plug 'bling/vim-bufferline'
 Plug 'ludovicchabant/vim-gutentags'
 
-" if has("unix")
-"     Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
-" endif
+if has("unix")
+    Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
+endif
 
 " Language Specific Plugins
 Plug 'pangloss/vim-javascript'
@@ -71,14 +71,15 @@ endfor
 
 " Load stuff only when the gui is running
 if has("gui_running")
-    "
-endif
-
-" Set the color scheme on Gvim
-if filereadable(expand('~/.vim/plugged/base16-vim/colors/base16-ashes.vim'))
-    colorscheme base16-ashes
-elseif filereadable(expand('~/.vim/plugged/vim-aldmeris/colors/aldmeris.vim'))
-    colorscheme aldmeris
+    if filereadable(expand('~/.vim/plugged/base16-vim/colors/base16-ashes.vim'))
+        colorscheme base16-ashes
+    elseif filereadable(expand('~/.vim/plugged/vim-aldmeris/colors/aldmeris.vim'))
+        colorscheme aldmeris
+    endif
+else
+    if filereadable(expand('~/.vim/plugged/vim-aldmeris/colors/aldmeris.vim'))
+        colorscheme aldmeris
+    endif
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
