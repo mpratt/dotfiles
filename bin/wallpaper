@@ -5,25 +5,26 @@
 # http://michael-pratt.com
 #######################################################
 set -e
-FOLDER="${HOME}/Pictures/wallpapers"
-FILE=""
+CONFIGFOLDER="${HOME}/.config/wallpaper_script"
+SUBREDDITS=("/r/EarthPorn" "/r/CityPorn" )
+UA="Mozilla / Mpratt Wallpaper Grabber 1.0"
 USEPREVIOUS=0
-USERANDOM=0
-USEGIMMEBAR=0
 USEREDDIT=0
-GIMMEBAR=()
-SUBREDDITS=("/r/EarthPorn" "/r/wallpapers" "/r/ComicWalls")
-ARGS=("--bg-scale")
-
+USEEARTHVIEW=0
+USEBING=0
+mkdir -p "${CONFIGFOLDER}/cache"
+mkdir -p "${CONFIGFOLDER}/img"
 #######################################################
 # Usage instructions
 #######################################################
 wallpaper_usage() {
     clear
     echo "Wallpaper"
-    echo "Usage: $(basename $0) [--folder [folder]][ --file [file]][--use-previous][--use-random]"
-    echo "                      [--use-random-reddit][--add-subreddit]"
-    echo "                      [--use-random-gimmebar [user | user/collection]]"
+    echo "Usage: $(basename $0) [--folder [folder]][ --file [file]][--use-previous]"
+    echo "                      [--random]"
+    echo "                      [--use-random-subreddit][--use-subreddit [subreddit]]"
+    echo "                      [--use-earthview]"
+    echo "                      [--use-bing]"
     echo ""
     echo "Requirements: feh, curl, wget"
     echo "Author: Michael Pratt <pratt@hablarmierda.net>"
@@ -38,83 +39,175 @@ wallpaper_usage() {
     echo "--file [file]"
     echo "  Path to an image file to be used as a wallpaper"
     echo ""
+    echo "--random"
+    echo "  Pick a random wallpaper from earthview, bing, folder and reddit"
+    echo ""
     echo "--use-previous"
     echo "  Checks the home folder for a .fehbg file and runs it"
     echo ""
-    echo "--use-random"
-    echo "  Fetches a random image file from the folder"
+    echo "--use-random-subreddit"
+    echo "  Fetches a random image file from reddit"
     echo ""
-    echo "--use-random-reddit"
-    echo "  Fetches a random image file from reddit or gimmebar"
+    echo "--use-subreddit"
+    echo "  Fetches images from the given subreddit. No need to add the /r/ prefix."
     echo ""
-    echo "--add-subreddit"
-    echo "  Adds a new subreddit to be used with the --use-random-reddit parameter"
+    echo "--use-earthview"
+    echo "  Fetches a Random earthview Image"
     echo ""
-    echo "--use-random-gimmebar [user/collection or just user]"
-    echo "  Fetches a random image file from the given gimmebar collection"
+    echo "--use-bing"
+    echo "  Fetches a Random bing Image"
+    echo ""
+    echo "--clean"
+    echo "  Cleans cached responses"
     echo ""
     echo "AUTHOR"
-    echo "  Michael Pratt <pratt@hablarmierda.net>"
+    echo "  Michael Pratt <yo@michael-pratt.com>"
     echo "  http://www.michael-pratt.com"
     echo ""
     exit 0
 }
 
 #######################################################
+# Check for Internet Access
+#######################################################
+check_internet() {
+    echo "Checking Internet Access ...."
+    wget --user-agent="${UA}" -q --spider https://google.com
+    if [ $? -ne 0 ]; then
+        echo "ERROR: No Internet Access found"
+        exit 1
+    fi
+}
+
+#######################################################
+# Set Wallpaper
+#######################################################
+set_wallpaper() {
+    local file=${1}
+
+    if ! [ -e "${file}" ]; then
+        echo "ERROR: ${file} not found!"
+        exit 1
+    fi
+
+    echo "Setting Wallpaper ${file}"
+    case ${DESKTOP_SESSION} in
+        xfce|XFCE) 
+            for property in $(xfconf-query --channel xfce4-desktop --list | grep last-image); do
+                xfconf-query --channel xfce4-desktop --property ${property} --set "${file}"
+            done ;;
+
+        *) feh --bg-scale "${file}" ;;
+    esac
+
+    echo "${file}" > "${CONFIGFOLDER}/last-image"
+}
+
+#######################################################
 # Downloads an Image from a website
 #######################################################
-download_image() {
+set_download_image() {
     local img=${1}
 
     # No stuff from
     if [ -z "${img}" ]; then
-        return 1;
+        echo "ERROR: No Image given"
+        exit 1
     fi
 
     local filename=$(basename ${img} | tr '[:upper:]' '[:lower:]')
     local extension="${filename##*.}"
-    local out="${HOME}/.wallpaper-image.${extension}"
+    local out=$(echo "${CONFIGFOLDER}/img/$(date +"%m-%d-%Y")_${filename}.${extension}" | sed 's/?.*//g' )
 
-    echo "Downloading ${img}"
-    wget --user-agent="Mozilla" ${img} -O ${out}
+    echo "Downloading ${img} to ${out}"
+    wget -q --user-agent="${UA}" ${img} -O ${out}
     if [ "$?" -eq "0" ]; then
-        ARGS+=( " ${out}" )
-        return 0
+        set_wallpaper ${out}
+    else
+        echo "ERROR: Could not download ${img}"
+        exit 1
     fi
-
-    return 1
-}
-
-#######################################################
-# Downloads from Gimmebar
-#######################################################
-download_from_gimmebar() {
-    echo "Using GimmeBar API ${1}"
-    download_image $(curl -L -s ${1} | tr "," "\n" | grep full | egrep -o 'https?:(.*+)' | tr -d '\\' | tr -d '"' | sort -R | head -n 1)
-    [ "$?" -eq "0" ] && return 0 || return 1
 }
 
 #######################################################
 # Downloads from Reddit
 #######################################################
 download_from_reddit() {
+    local url="${1}"
     local list=()
-    echo "Using Reddit API ${1}"
+    check_internet
 
-    for i in $(curl -L -s ${1} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+'); do
-        echo ${i}
-        if [ -n "$(echo ${i} | egrep -i '(png|jpg|gif|s\=(.*?))$')" ]; then
-            list+=( "${i}" )
+    echo "Fetching subreddit API list ${url}"
+    for im in $(make_http_request ${url} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+' | grep -v 'external-'); do
+        if [ -n "$(echo ${im} | egrep -i '(png|jpg|gif|s\=(.*?))$')" ]; then
+            list+=( "${im/preview/i}" )
         fi
     done
 
     if [ "${#list[@]}" -le 0 ]; then
-        echo "No Images Found"
-        return 1
+        echo "ERROR: No Images Found on ${1}"
+        exit 1
     fi
 
-    download_image ${list[$RANDOM % ${#list[@]}]}
-    [ "$?" -eq "0" ] && return 0 || return 1
+    set_download_image ${list[$RANDOM % ${#list[@]}]}
+}
+
+#######################################################
+# Makes an Http request and does some minor caching
+#######################################################
+make_http_request() {
+    local url="${1}"
+    local md5=$(echo $url | md5sum | tr -d '[:blank:]')
+    if ! [ -e "${CONFIGFOLDER}/cache/${md5}.cache" ]; then
+        wget -q --user-agent="${UA}" ${url} -O ${CONFIGFOLDER}/cache/${md5}.cache
+    fi
+
+    cat ${CONFIGFOLDER}/cache/${md5}.cache
+    if [ -n "$(find ${CONFIGFOLDER}/cache/${md5}.cache -mmin +60)" ]; then
+        rm ${CONFIGFOLDER}/cache/${md5}.cache
+    fi
+}
+
+#######################################################
+# Downloads from EarthView
+#######################################################
+download_from_earthview() {
+    local url="https://earthview.withgoogle.com"
+
+    check_internet
+    echo "Making Request to ${url}"
+    local src=$(make_http_request ${url})
+    local images="$(echo ${src} | egrep -o 'https://www.gstatic.com/prettyearth/assets/full/[0-9]+.jpg' | uniq)"
+
+    for i in ${images}; do
+        set_download_image ${i}
+    done
+}
+
+#######################################################
+# Downloads from Bing
+#######################################################
+download_from_bing() {
+    local url="http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10&mkt=en-US"
+
+    check_internet
+    echo "Making Request to ${url}"
+    local src=$(make_http_request ${url})
+    local images="$(echo ${src} | tr "," "\n" | egrep '"url"' | egrep -o '"/(.+)"' | tr -d '"')"
+    local list=()
+
+    for im in ${images}; do
+        if [ -n "$(echo ${im} | egrep -i '(png|jpg|gif|s\=(.*?))$')" ]; then
+            list+=( "https://bing.com${im}" )
+        fi
+    done
+
+    if [ "${#list[@]}" -le 0 ]; then
+        echo "ERROR: No Images Found on ${1}"
+        exit 1
+    fi
+
+    set_download_image ${list[$RANDOM % ${#list[@]}]}
 }
 
 #######################################################
@@ -129,103 +222,82 @@ while [ -n "$1" ]; do
     case ${1} in
         --folder)
             shift
-            FOLDER="${1}"
+            set_wallpaper "$(find ${1} -type f -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | shuf -n1)"
             shift
         ;;
         --file)
             shift
-            FILE="${1}"
-            shitf
+            set_wallpaper "${1}"
+            shift
         ;;
         --use-previous)
             shift
             USEPREVIOUS="1"
         ;;
-        --use-random)
-            shift
-            USERANDOM="1"
-        ;;
-        --use-random-gimmebar)
-            shift
-
-            if [ -n "${1}" ]; then
-                USEGIMMEBAR="1"
-                USERANDOM="1"
-                GIMMEBAR+=( "https://gimmebar.com/api/v0/public/assets/${1}?limit=50" )
-                shift
-            else
-                echo "You need to provide your username or username/collection to the gimmebar handler"
-                exit 1
-            fi
-
-        ;;
-        --use-random-reddit)
+        --use-random-subreddit)
             shift
             USEREDDIT="1"
-            USERANDOM="1"
         ;;
-        --add-subreddit)
+        --use-earthview)
             shift
-            SUBREDDITS+=( "${1}" )
+            USEEARTHVIEW="1"
+        ;;
+        --use-bing)
             shift
+            USEBING="1"
+        ;;
+        --clean)
+            shift
+            rm -rf ${CONFIGFOLDER}/cache/*.cache
+        ;;
+        --use-subreddit)
+            shift
+            USEREDDIT="1"
+            SUBREDDITS=( "/r/${1}" )
+            shift
+        ;;
+        --random)
+            shift
+            POSIBILITIES=( "REDDIT" "BING"  "EARTHVIEW" )
+            TERM="${POSIBILITIES[$RANDOM % ${#POSIBILITIES[@]}]}"
+            if [ "${TERM}" == "BING" ]; then
+                USEBING=1
+            elif [ "${TERM}" == "EARTHVIEW" ]; then
+                USEEARTHVIEW=1
+            else
+                USEREDDIT=1
+            fi
         ;;
         -h|--help)
-            usage
+            wallpaper_usage
             exit 0
         ;;
-        *) ARGS+=( "${1}" );;
+        *) shift ;;
     esac
 done
 
 if [ "${USEPREVIOUS}" -eq "1" ]; then
-    echo "Using latest wallpaper from ${HOME}/.fehbg"
-    if ! [ -e "${HOME}/.fehbg" ]; then
-        echo "${HOME}/.fehbg not found"
-        if [ "${USERANDOM}" -eq "0" ] && [ -z "${FILE}" ]; then
-            exit 1
-        fi
+    echo "Using latest wallpaper from ${CONFIGFOLDER}/last-image"
+    if ! [ -e "${CONFIGFOLDER}/last-image" ]; then
+        echo "ERROR: No Previous wallpaper found"
     else
-        sh ${HOME}/.fehbg
-        exit 0
+        set_wallpaper $(cat "${CONFIGFOLDER}/last-image")
     fi
 fi
 
-if [ "${USERANDOM}" -eq "1" ]; then
-    echo "Setting random wallpaper"
+if [ "${USEEARTHVIEW}" -eq "1" ]; then
+    echo "Using Earthview"
+    download_from_earthview
+fi
 
-    if [ "${USEGIMMEBAR}" -eq "1" ] && [ "${#GIMMEBAR[@]}" -gt "0" ]; then
-        download_from_gimmebar ${GIMMEBAR[$RANDOM % ${#GIMMEBAR[@]}]}
-        if [ "$?" -eq 0 ]; then
-            echo "Setting random GimmeBar Wallpaper!"
-            feh ${ARGS[@]}
-            exit 0
-        fi
-    fi
+if [ "${USEBING}" -eq "1" ]; then
+    echo "Using Bing"
+    download_from_bing
+fi
 
-    if [ "${USEREDDIT}" -eq "1" ] && [ "${#SUBREDDITS[@]}" -gt "0" ]; then
-        URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}/top.json?limit=100"
-        download_from_reddit ${URL}
-        if [ "$?" -eq 0 ]; then
-            echo "Setting random Reddit Wallpaper!"
-            feh ${ARGS[@]}
-            exit 0
-        fi
-    fi
-
-    echo "Setting random wallpaper from ${FOLDER}"
-    if ! [ -e ${FOLDER} ]; then
-        echo "${FOLDER} does not exist, cannot set a random wallpaper"
-        exit 1
-    fi
-
-    feh ${ARGS[@]} "$(find ${FOLDER} -type f -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | shuf -n1)"
-
-elif [ -n "${FILE}" ]; then
-
-    if ! [ -e ${FILE} ]; then
-        echo "${FILE} doesnt exists!"
-        exit 1
-    fi
-
-    feh ${ARGS[@]} "${FILE}"
+if [ "${USEREDDIT}" -eq "1" ] && [ "${#SUBREDDITS[@]}" -gt "0" ]; then
+    echo "Using Reddit"
+    #URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}/top.json?limit=100"
+    URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}.json?limit=100"
+    download_from_reddit ${URL}
 fi
