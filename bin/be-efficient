@@ -29,28 +29,19 @@
 ##################################################################
 # set -e
 HOSTFILE="/etc/hosts"
-SITES=("reddit.com"\
+SITES=( "reddit.com"\
        "facebook.com"\
        "twitter.com"\
        "vimeo.com"\
        "flickr.com"\
-       "youtube.com"\
-       "news.ycombinator.com"\
-       "hablarmierda.net"\
-       "digg.com"\
-       "eltiempo.com"\
-       "lafiscalia.com"\
-       "imgur.com"\
-       "elespectador.com"\
-       "stumpleupon.com"\
-       "goear.com")
+       "lafiscalia.com")
 
 #################################################################
 # Usage
 #################################################################
 be_efficient_usage()
 {
-    echo "usage $(basename ${0}) [--enable|--disable|--map] [--add website] [--remove website] [--list]"
+    echo "usage $(basename ${0}) [--enable|--disable|--map] [--add website] [--remove website] [--list] [--no-fap]"
     exit 0
 }
 
@@ -113,6 +104,22 @@ be_efficient_list()
 }
 
 #################################################################
+# Disable Fapping Sites
+#################################################################
+be_efficient_nofap()
+{
+    local TMPDIR=$(mktemp -d -t beffff.XXXXXX)
+    wget -q --user-agent="Mozilla / Fetcher" https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts -O ${TMPDIR}/hosts.cache
+    for url in $(cat ${TMPDIR}/hosts.cache | egrep -o '^0(.+)$'); do
+        if [[ "${url}" != "0.0.0.0" ]]; then
+            be_efficient_add "${url}" "127.0.0.1"
+        fi
+    done
+
+    rm -rf ${TMPDIR}
+}
+
+#################################################################
 # Just start
 #################################################################
 if [ "$#" -eq "0" ]; then
@@ -128,8 +135,11 @@ fi
 while [ -n "${1}" ]; do
     case ${1} in
         --enable)
+            shift
             be_efficient_clean
-            be_efficient_enable ;;
+            be_efficient_enable 
+            be_efficient_nofap
+            ;;
 
         --map)
             TMPDIR=$(mktemp -d -t beffff.XXXXXX)
@@ -141,6 +151,10 @@ while [ -n "${1}" ]; do
             rm -rf ${TMPDIR}
             ;;
 
+        --no-fap)
+            shift
+            be_efficient_nofap 
+            ;;
 
         --add)
             shift
@@ -151,9 +165,11 @@ while [ -n "${1}" ]; do
             be_efficient_remove "${1}" ;;
 
         --disable)
+            shift
             be_efficient_clean ;;
 
         --list)
+            shift
             be_efficient_list ;;
 
         *) be_efficient_usage ;;
