@@ -35,7 +35,7 @@ Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
-Plug 'bling/vim-bufferline'
+" Plug 'bling/vim-bufferline'
 Plug 'ludovicchabant/vim-gutentags'
 
 if has("unix")
@@ -53,7 +53,8 @@ Plug 'veloce/vim-aldmeris'
 Plug 'endel/vim-github-colorscheme'
 Plug 'sjl/badwolf'
 Plug 'tomasr/molokai'
-Plug 'chriskempson/base16-vim'
+" Plug 'chriskempson/base16-vim'
+Plug 'danielwe/base16-vim'
 
 call plug#end()
 filetype plugin indent on
