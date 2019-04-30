@@ -1,7 +1,8 @@
-# ack is a tool like grep, designed for programmers with large trees of heterogeneous source code
+Updated. Elapsed time: 59.486905 sec.
 # Michael Pratt <pratt@hablarmierda.net>
 # $HOME/.ackrc
- 
+- Finishing ... Done!
+- Post-update hook for YouCompleteMe ... OK
 # Use smart case
 --smart-case
 

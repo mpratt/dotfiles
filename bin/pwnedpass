@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo -n "Password:"
+read -s -r PASSWORD
+echo
+HASH="$(echo -n "$PASSWORD" | openssl sha1)"
+UPPERCASE="$(echo "$HASH" | tr '[:lower:]' '[:upper:]')"
+PREFIX="${UPPERCASE:0:5}"
+RESPONSE=$(curl -s "https://api.pwnedpasswords.com/range/${PREFIX}")
+while read -r LINE; do
+    ORIGINAL_LINE="${PREFIX}${LINE}"
+    if [ "${ORIGINAL_LINE:0:40}" == "$UPPERCASE" ]; then
+        HOWMANY=$(echo "$LINE" | cut -d: -f2 | tr -d "[:space:]")
+        echo "Password breached ${HOWMANY} times."
+        exit 1
+    fi
+done <<< "$RESPONSE"
+
+echo "Password not found in breached database."
+exit 0

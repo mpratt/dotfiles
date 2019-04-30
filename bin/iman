@@ -144,88 +144,104 @@ function iman_rotate()
 # Run this shit
 #################################################################
 iman_requires ${DIALOG} convert mogrify
-iman_alert "Hola!\n\nEste script no sobreescribe tus archivos originales! Asi que usalo con tranquilidad!\n\nPulsa Enter Para continuar"
 ! [ -e "${TMPDIR}" ] && mkdir "${TMPDIR}"
 
-# Search for images
-echo "Searching for ${extension} images"
-find -L "${CWD}" -maxdepth 1 -type f -regextype posix-egrep -iregex ".*\.(png|jpg|gif)$" -printf "\"%P\" \"\" on \n" | sort > "${TMPDIR}/images"
+# No aguments were given so lets do it with prompts
+if [ "$#" -lt "2" ]; then
+    iman_alert "Hola!\n\nEste script no sobreescribe tus archivos originales! Asi que usalo con tranquilidad!\n\nPulsa Enter Para continuar"
+    echo "Searching for ${extension} images"
+    find -L "${CWD}" -maxdepth 1 -type f -regextype posix-egrep -iregex ".*\.(png|jpg|gif)$" -printf "\"%P\" \"\" on \n" | sort > "${TMPDIR}/images"
 
-if [ "$(stat -c%s ${TMPDIR}/images)" -eq 0 ]; then
-    iman_alert "No se encontraron imagenes en ${CWD}"
-    exit 0
-fi
-
-# Select the images you want to modify
-${DIALOG} --clear --title "$APPNAME - $VERSION" \
-    --backtitle "$APPNAME - $VERSION" --separate-output\
-    --checklist "Escoge las imagenes que quieres modificar:" 15 110 15 \
-    --file ${TMPDIR}/images 2> ${TMPDIR}/files
-
-clear
-cat "${TMPDIR}/files" | while read line; do
-if [ -f "$CWD/$line" ]; then
-    rename=$(echo "${line}" | tr [A-Z] [a-z] | tr ' ' '_')
-    echo "Preparando $line"
-    echo "Normalizando $line a $rename"
-    cp "${CWD}/${line}" "${TMPDIR}"
-
-    if ! [ "${rename}" = "${line}" ]; then
-        mv "${TMPDIR}/${line}" "${TMPDIR}/${rename}"
-        echo "${TMPDIR}/${rename}" >> ${TMPDIR}/file_list
-    else
-        echo "${TMPDIR}/${line}" >> ${TMPDIR}/file_list
+    if [ "$(stat -c%s ${TMPDIR}/images)" -eq 0 ]; then
+        iman_alert "No se encontraron imagenes en ${CWD}"
+        exit 0
     fi
-fi
-done
 
-# Select the action you want to do with the images
-${DIALOG} --clear --title "$APPNAME $VERSION" \
-    --backtitle "$APPNAME $VERSION" \
-    --menu "Que quieres hacer con las imagenes?" 10 80 0 \
-    "1"  "Ajusta el tamano de las imagenes" \
-    "2"  "Escribe texto en una imagen" \
-    "3"  "Le pone un borde a las imagenes" \
-    "4"  "Rota una imagen en los grados especificados" \
-    "5"  "Voltea una imagen de izquierda a derecha" \
-    "6"  "Voltea una imagen de arriba a abajo" 2> ${TMPDIR}/choice
-clear
-if [ "$(stat -c%s $TMPDIR/choice)" -eq 0 ]; then
-    iman_alert "Cancelado! - Adios!"
+    # Select the images you want to modify
+    ${DIALOG} --clear --title "$APPNAME - $VERSION" \
+        --backtitle "$APPNAME - $VERSION" --separate-output\
+        --checklist "Escoge las imagenes que quieres modificar:" 15 110 15 \
+        --file ${TMPDIR}/images 2> ${TMPDIR}/files
+
     clear
-    exit 0
+    cat "${TMPDIR}/files" | while read line; do
+    if [ -f "$CWD/$line" ]; then
+        rename=$(echo "${line}" | tr [A-Z] [a-z] | tr ' ' '_')
+        echo "Preparando $line"
+        echo "Normalizando $line a $rename"
+        cp "${CWD}/${line}" "${TMPDIR}"
+
+        if ! [ "${rename}" = "${line}" ]; then
+            mv "${TMPDIR}/${line}" "${TMPDIR}/${rename}"
+            echo "${TMPDIR}/${rename}" >> ${TMPDIR}/file_list
+        else
+            echo "${TMPDIR}/${line}" >> ${TMPDIR}/file_list
+        fi
+    fi
+    done
+
+    # Select the action you want to do with the images
+    ${DIALOG} --clear --title "$APPNAME $VERSION" \
+        --backtitle "$APPNAME $VERSION" \
+        --menu "Que quieres hacer con las imagenes?" 10 80 0 \
+        "1"  "Ajusta el tamano de las imagenes" \
+        "2"  "Escribe texto en una imagen" \
+        "3"  "Le pone un borde a las imagenes" \
+        "4"  "Rota una imagen en los grados especificados" \
+        "5"  "Voltea una imagen de izquierda a derecha" \
+        "6"  "Voltea una imagen de arriba a abajo" 2> ${TMPDIR}/choice
+    clear
+    if [ "$(stat -c%s $TMPDIR/choice)" -eq 0 ]; then
+        iman_alert "Cancelado! - Adios!"
+        clear
+        exit 0
+    fi
+
+    args=()
+    case $(cat $TMPDIR/choice) in
+        1) module="iman_resize"
+           read -p "Resize ratio: " ratio
+           args+=( ${ratio} ) ;;
+
+        2) module="iman_txt"
+           read -p "Your text: " text
+           args+=( "${text}" ) ;;
+
+        3) module="iman_border"
+           read -p "Border Color (black): " color
+           read -p "Border Size (6): " size
+           args+=( "${color}" "${size}" ) ;;
+
+        4) module="iman_rotate"
+           read -p "Degrees: " degrees
+           args+=( "${degrees}" ) ;;
+
+        5) odule="iman_flop" ;;
+
+        6) odule="iman_flip" ;;
+    esac
+
+    [ -z "${module}" ] && exit 0
+    [ "$(stat -c%s ${TMPDIR}/file_list)" -eq 0 ] && iman_alert "File list missing! Sorry :(" && exit 0
+
+    for i in $(cat ${TMPDIR}/file_list); do
+        if [ -e "${i}" ]; then
+            echo "Procesando ${i} ..."
+            ${module} "${i}" ${args[@]}
+        fi
+    done
 fi
 
-args=()
-case $(cat $TMPDIR/choice) in
-    1)	module="iman_resize"
-        read -p "Resize ratio: " ratio
-        args+=( ${ratio} ) ;;
-
-    2)	module="iman_txt"
-        read -p "Your text: " text
-        args+=( "${text}" ) ;;
-
-    3)	module="iman_border"
-        read -p "Border Color (black): " color
-        read -p "Border Size (6): " size
-        args+=( "${color}" "${size}" ) ;;
-
-    4) 	module="iman_rotate"
-        read -p "Degrees: " degrees
-        args+=( "${degrees}" ) ;;
-
-    5) module="iman_flop" ;;
-
-    6) module="iman_flip" ;;
-esac
-
-[ -z "${module}" ] && exit 0
-[ "$(stat -c%s ${TMPDIR}/file_list)" -eq 0 ] && iman_alert "File list missing! Sorry :(" && exit 0
-
-for i in $(cat ${TMPDIR}/file_list); do
-    if [ -e "${i}" ]; then
-        echo "Procesando ${i} ..."
-        ${module} "${i}" ${args[@]}
+FILE="${1}"
+FORMAT="$(echo ${2} | tr '[:upper:]' '[:lower:]')"
+if ! [ -e "${FILE}" ]; then
+    if [ -e "${CWD}/${FILE}" ]; then
+        FILE="${CWD}/${FILE}"
+    else 
+        echo "${FILE} Doesnt Exist"
+        exit 1
     fi
-done
+fi
+
+echo "Converting ${FILE} to ${FILE}.${FORMAT}"
+$(which convert) "${FILE}" "${FILE}.${FORMAT}"

@@ -6,7 +6,7 @@
 #######################################################
 set -e
 CONFIGFOLDER="${HOME}/.config/wallpaper_script"
-SUBREDDITS=("/r/EarthPorn" "/r/CityPorn" )
+SUBREDDITS=("/r/EarthPorn" "/r/wallpapers" "/r/wallpaper" )
 UA="Mozilla / Mpratt Wallpaper Grabber 1.0"
 USEPREVIOUS=0
 USEREDDIT=0

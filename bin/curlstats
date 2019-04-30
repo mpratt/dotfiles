@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ $# -eq 0 ]; then
+    echo "Usage: $(basename ${0}) WEBSITE"
+fi
+
+WEBSITE="${1}"
+echo "Analyzing ${WEBSITE}"
+
+curl "${WEBSITE}" -w "
+HTTP Code: %{http_code}
+Connection: %{time_connect} secs
+Time to First Byte: %{time_starttransfer} secs
+Total Time: %{time_total} secs
+DNS Lookup: %{time_namelookup} secs
+Download Speed: %{speed_download}
+" -o /dev/null -s
