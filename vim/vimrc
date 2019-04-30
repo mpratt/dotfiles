@@ -29,7 +29,6 @@ call plug#end()
 filetype plugin indent on
 syntax on
 
-<<<<<<< HEAD
 " Load stuff only when the gui is running
 if has("gui_running")
     if filereadable(expand('~/.vim/plugged/onedark.vim/colors/onedark.vim'))
@@ -40,28 +39,33 @@ if has("gui_running")
 else
     if filereadable(expand('~/.vim/plugged/vim/colors/dracula.vim'))
         colorscheme dracula
-    endif
-=======
-" Core Plugins
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'scrooloose/syntastic'
-Plug 'scrooloose/nerdtree'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'justinmk/vim-sneak'
-Plug 'bling/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'Raimondi/delimitMate'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-fugitive'
-" Plug 'bling/vim-bufferline'
-Plug 'ludovicchabant/vim-gutentags'
-
-if has("unix")
-    Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
->>>>>>> 260d891bf373c38022961705cad8b9018d964709
 endif
+" " Core Plugins
+" Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/nerdtree'
+" Plug 'SirVer/ultisnips'
+" Plug 'honza/vim-snippets'
+" Plug 'justinmk/vim-sneak'
+" Plug 'bling/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+" Plug 'Raimondi/delimitMate'
+" Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-unimpaired'
+" Plug 'tpope/vim-fugitive'
+" " Plug 'bling/vim-bufferline'
+" Plug 'ludovicchabant/vim-gutentags'
+" 
+" if has("unix")
+"     Plug 'Valloric/YouCompleteMe', {'do': './install.sh' }
+" endif
+" " Colorschemes
+" Plug 'veloce/vim-aldmeris'
+" Plug 'endel/vim-github-colorscheme'
+" Plug 'sjl/badwolf'
+" Plug 'tomasr/molokai'
+" " Plug 'chriskempson/base16-vim'
+" Plug 'danielwe/base16-vim'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Settings
@@ -74,19 +78,10 @@ set fileencoding=utf-8
 set t_Co=256
 set term=xterm-256color
 
-<<<<<<< HEAD
 " Disable Background Color Erase so that color scheme work properly
 " when vim is used inside tmux and GNU screen
 set t_ut=
-=======
-" Colorschemes
-Plug 'veloce/vim-aldmeris'
-Plug 'endel/vim-github-colorscheme'
-Plug 'sjl/badwolf'
-Plug 'tomasr/molokai'
-" Plug 'chriskempson/base16-vim'
-Plug 'danielwe/base16-vim'
->>>>>>> 260d891bf373c38022961705cad8b9018d964709
+
 
 " How my editor looks like
 set linespace=3                            " Prefer a slightly higher line height
