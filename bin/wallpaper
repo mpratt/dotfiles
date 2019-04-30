@@ -209,7 +209,7 @@ download_from_bing() {
     local list=()
 
     for im in ${images}; do
-        if [ -n "$(echo ${im} | egrep -i '(png|jpg|gif|s\=(.*?))$')" ]; then
+        if [ -n "$(echo ${im} | egrep -i '\.(png|jpg|gif)')" ]; then
             list+=( "https://bing.com${im}" )
         fi
     done
