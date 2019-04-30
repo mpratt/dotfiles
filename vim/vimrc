@@ -39,6 +39,7 @@ if has("gui_running")
 else
     if filereadable(expand('~/.vim/plugged/vim/colors/dracula.vim'))
         colorscheme dracula
+    endif
 endif
 " " Core Plugins
 " Plug 'ctrlpvim/ctrlp.vim'
