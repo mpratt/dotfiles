@@ -90,3 +90,5 @@ fi
 if [ -e "$HOME/.zshrc.local" ]; then
    . $HOME/.zshrc.local
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

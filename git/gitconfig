@@ -76,3 +76,5 @@
 
 [push]
     default = current
+[merge]
+	tool = vimdiff
