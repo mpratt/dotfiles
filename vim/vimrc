@@ -10,6 +10,7 @@ filetype off     " required by Vundle
 if has("win32") || has("win64")
     set runtimepath^=$HOME/.vim
     set runtimepath+=$HOME/.vim/after
+    set ssl     " it should do ~ vs $HOME
 endif
 
 " Setting up vim-plug as the package manager
@@ -23,7 +24,7 @@ endif
 " Load custom settings/plugins
 call plug#begin('~/.vim/plugged')
 for fpath in split(globpath('~/.vim/local/plugins', '*.vim'), '\n')
-  exe 'source' fpath
+    exe 'source' fpath
 endfor
 call plug#end()
 filetype plugin indent on
@@ -59,17 +60,12 @@ set t_ut=
 
 " How my editor looks like
 set linespace=3                            " Prefer a slightly higher line height
-" set guifont=consolas\ regular\ 11        " Font and Size
-" set guifont=Fira\ Mono\ Regular\ 10      " Font and Size
 set guifont=Source\ Code\ Pro\ Medium\ 10  " Font and Size
 set noerrorbells                           " disable sound on errors
 set novisualbell                           " disable sound on errors
 set nowrap                                 " Don't wrap lines
 set linebreak                              " Wrap lines at convenient points
 set title                                  " Show Title
-set guioptions-=T                          " remove toolbar
-set guioptions-=m                          " remove menu bar
-set guioptions-=e                          " remove buffer bar
 
 " General Settings
 set ffs=unix,dos,mac
@@ -93,14 +89,14 @@ set confirm            " Y-N-C prompt if closing with unsaved changes.
 set mouse=a            " enable using the mouse if terminal emulator supports it (xterm does)
 set selectmode+=mouse  " Enable selections with the mouse
 set mousehide          " Hide mouse when typing
-set synmaxcol=530      " long lines syntax coloring/highlighting
+set synmaxcol=1000     " long lines syntax coloring/highlighting
 set formatoptions+=1   " When wrapping paragraphs, don't end lines with 1-letter words (looks stupid)
-set pastetoggle=<F11>  " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that won't be autoindented
+set pastetoggle=<F11>  " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that wont be autoindented
 set ttyfast            " Optimize for fast terminal connections
 set gdefault           " Add the g flag to search/replace by default
 set laststatus=2       " Might be needed for vim-airline
 set wildmenu           " Use bash-like tab completion in Vim command line
-set wildmode=longest,list:longest
+set wildmode=list:longest,full
 
 " Stuff to ignore when tab completing
 set wildignore+=.hg,.git,.svn
@@ -118,6 +114,7 @@ set wildignore+=*.luac
 set wildignore+=migrations
 set wildignore+=*.pyc
 set wildignore+=*.orig
+set wildignore+=node_modules/**
 
 " keep some context when moving
 set scrolloff=15
@@ -140,7 +137,7 @@ set hlsearch           " Highlight searching
 set ignorecase         " case insensitive search
 set smartcase          " unless uppercase letters are used in the regex.
 set incsearch          " Set incremental searching
-set fileignorecase     " Ignode case whil searching for a file.
+set fileignorecase     " Ignore case while searching for a file.
 
 " Backup and Undo Settings
 set backup             " enable backups
@@ -172,6 +169,9 @@ endif
 " Set sensible heights for splits
 set winheight=50
 
+" Open splits on the right
+set splitright
+
 " Autocomplete stuff
 set omnifunc=syntaxcomplete#Complete
 
@@ -182,10 +182,9 @@ set ttimeout
 set ttimeoutlen=10
 
 " Better Completion
-set completeopt=longest,menu,preview
-set completeopt+=menuone
-set complete=.,w,b,u,t
-set shortmess+=c   " Shut off completion messages
+set completeopt=longest,menuone,noinsert
+set complete=.,w,b,u,t,i " Scan the current buffer, buffers from other windows, buffers from the buffer list, Scan buffers that have been unloaded from the buffer list, Tag completion and the current and included files
+"set shortmess+=c   " Shut off completion messages
 
 " Show end of command visually when editing text
 set cpoptions+=$
@@ -201,40 +200,22 @@ set shell=/bin/bash
 
 " Spell checking stuff
 try
-  lang en_us
+    lang en_us
 catch
 endtry
 
 if has("gui_running")
+    set guioptions-=T                          " remove toolbar
+    set guioptions-=m                          " remove menu bar
+    set guioptions-=e                          " remove buffer bar
+
     " Display tabs and trailing spaces visually
     set list 
     set listchars=nbsp:¬,eol:↳,tab:└─,extends:»,precedes:«
 
-    " Other Alternative
-    "set listchars=tab:›\ 
-    "set listchars+=trail:-
-    "set listchars+=extends:>
-    "set listchars+=precedes:<
-    "set listchars+=eol:¬
-
-    " Other Alternative
-    "set listchars=tab:▶\ 
-    "set listchars+=eol:★
-    "set listchars+=trail:◥
-    "set listchars+=extends:❯
-    "set listchars+=precedes:❮ 
-
-    " set tab labels to show at most 15 characters
-    " set guitablabel=%-0.15t%M
-
     " Start little bigger
     set lines=40
     set columns=150
-endif
-
-" Windows Only Settings
-if has("win32") || has("win64")
-    set ssl     " it should do ~ vs $HOME
 endif
 
 " shortcuts to open files externally and perform online searches
@@ -246,7 +227,13 @@ else
     let g:open_command = 'start'
 endif
 
-" Better color to the Debug Gutter
+" Open diffs in vertical splits
+" Use 'xdiff' library options: patience algorithm with indent-heuristics (same to Git options)
+" NOTE: vim uses the external diff utility which doesn't do word diffs nor can it find moved-and-modified lines.
+" See: https://stackoverflow.com/questions/36519864/the-way-to-improve-vimdiff-similarity-searching-mechanism
+set diffopt=internal,filler,vertical,context:5,foldcolumn:1,indent-heuristic,algorithm:patience
+
+" Better color to the Debug Gutter, since it normally displays errors
 highlight SignColumn guibg=red
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -266,8 +253,7 @@ endfunction
 " Common abbreviations
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 iabbrev lenght length
-iabbrev teh the
-iabbrev Teh The
+iabbrev llorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The following mappings change/overwrite the normal behaviour of some keys
@@ -288,20 +274,16 @@ nnoremap k gk
 vnoremap j gj
 vnoremap k gk
 
-" Use sane regexes.
-nnoremap / /\v
-vnoremap / /\v
-
 " Visual Mode Indenting
 vmap > >gv
 vmap < <gv
 
-" ddI really hate that things don't auto-center
+" I really hate that things don't auto-center
 nmap G Gzz
 nmap }dd }zz
 nmap { {ddzz
 
-" ddKeep search matches in the middle of the window.
+" Keep search matches in the middle of the window.
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
@@ -325,6 +307,9 @@ vnoremap <silent> y y`]
 vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
+" This turns off Vim’s crazy default regex characters and makes searches use normal regexes
+nnoremap / /\v
+vnoremap / /\v
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Other Mappings
@@ -333,15 +318,14 @@ nnoremap <silent> p p`]
 " Want a different map leader than \
 let mapleader = "\<Space>"
 
+" Use jj to escape insert mode
+inoremap jj <ESC>
+
 " Switch between windows easily with alt and arrow keys
 nmap <silent><A-Up> :wincmd k<CR>
 nmap <silent><A-Down> :wincmd j<CR>
 nmap <silent><A-Left> :wincmd h<CR>
 nmap <silent><A-Right> :wincmd l<CR>
-
-" Move between next/previous tabs
-no <C-right> :tabnext<CR>
-no <C-left> :tabprevious<CR>
 
 " Tab Navigation
 nmap <C-Tab> :bn<CR>
@@ -351,9 +335,10 @@ nmap <C-S-Tab> :bp<CR>
 vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 nnoremap <C-r> :%s/<c-r><c-w>//gc<left><left><left>
 
-" Use <leader>+s for saving
-noremap <C-s> :echoerr "Use leader-s for saving"<CR><ESC>
-inoremap <C-s> <ESC>:echoerr "Use leader-s for saving"<CR><ESC>
+" Source selection with <leader>+s on visual mode
+vnoremap <leader>r y:execute @@<cr>:echo 'Sourced selection.'<cr>
+
+" Use <leader>+s for saving on normal mode
 noremap <leader>s :update<CR>
 
 " Make <leader>w write and close the buffer
@@ -369,20 +354,24 @@ noremap <leader>o o<ESC>k
 " Clear current search highlight
 noremap <leader>h :nohlsearch<CR>
 
-" Toggle line numbers
-nnoremap <leader>n :setlocal rnu!<cr>
-
-" Source selection
-vnoremap <leader>a y:execute @@<cr>:echo 'Sourced selection.'<cr>
-
 " Select entire buffer
 nnoremap <leader>b ggVG
 
-" Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>dm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+"Quickly open a markdown buffer for scribble
+noremap <leader>l :e ~/buffer.md<cr>
 
-" Split line (sister to [J]oin lines)
-nnoremap <A-p> i<cr><esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
+" Go to first error
+noremap <leader>e :lfirst<CR>
+
+" <leader>= Reindent all the file
+nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
+
+" Map <leader> + 1-9 to jump to respective buffer
+let i = 1
+while i < 10
+  execute ":nmap <leader>" . i . " :buffer " . i . "<CR>"
+  let i += 1
+endwhile
 
 " Made D and Y behave
 nnoremap D d$
@@ -391,76 +380,38 @@ nnoremap Y y$
 " Use H and L to navigate to start/finish of line
 noremap H ^
 noremap L $
-vnoremap L g_
 
-" qq to record, Q to replay
-" nnoremap Q @q
+" Map U to redo (since u undo's)
+nnoremap U <c-r>
+
+" Panic Button
+nnoremap <f9> mzggg?G`z
 
 " Move lines up / down
 nmap <C-Up> ddkP
 nmap <C-Down> ddp
 
-" Map U to redo (since u undo's)
-nnoremap U <c-r>
-
-" Type 12<Enter> to go to line 12 (12G breaks my wrist) Or just <Enter> to go to the start of the file
-nnoremap <CR> gg
-
-" <leader>= Reindent all the file
-nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
-
-" Send visual selection to my site
-" vnoremap <c-p> :w !curl -sF 'sprunge=<-' 'http://michael-pratt.com' \| tr -d '\n ' \| pbcopy && open `pbpaste`<cr>
-
-" Panic Button
-nnoremap <f9> mzggg?G`z
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Auto Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Omni Complete settings
-" autocmd FileType python set omnifunc=pythoncomplete#Complete
-" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-" autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-" autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-" autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-
-" Add $ to the keywords when running php
-" autocmd FileType php setlocal iskeyword+=$
-
-" Make sure all markdown files have the correct filetype set and setup wrapping
+" Correct some filetypes
 au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn,txt} setf markdown
-
-" Treat JSON files like JavaScript
+au BufRead,BufNewFile *.ejs,*.mustache setfiletype html
 au BufNewFile,BufRead *.json set ft=javascript
+au BufRead,BufNewFile *.json.* setfiletype json
 
 " Change cwd to file we are currently editing
 autocmd BufEnter * silent! lcd %:p:h
 
 " Remove trailing whitespace on save for a bunch of filetypes on save
-if exists("*Preserve")
-    autocmd BufWritePre *.php call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.md call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.py call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.sh call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.txt call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.js call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.json call Preserve("%s/\\s\\+$//e")
-    autocmd BufWritePre *.html call Preserve("%s/\\s\\+$//e")
-else
-    autocmd BufWritePre *.php :%s/\s\+$//e
-    autocmd BufWritePre *.md :%s/\s\+$//e
-    autocmd BufWritePre *.py :%s/\s\+$//e
-    autocmd BufWritePre *.sh :%s/\s\+$//e
-    autocmd BufWritePre *.txt :%s/\s\+$//e
-    autocmd BufWritePre *.js :%s/\s\+$//e
-    autocmd BufWritePre *.json :%s/\s\+$//e
-    autocmd BufWritePre *.html :%s/\s\+$//e
-endif
-
-" JsBeautifier Plugin
-au Filetype javascript source $HOME/.vim/local/scripts/jsbeautify.vim
+autocmd BufWritePre *.php call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.md call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.py call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.sh call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.txt call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.js call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.json call Preserve("%s/\\s\\+$//e")
+autocmd BufWritePre *.html call Preserve("%s/\\s\\+$//e")
 
 " Exit insert mode after 4 seconds of idle time
 " :au CursorHoldI * stopinsert 
@@ -481,7 +432,7 @@ augroup cline
     au WinEnter,InsertLeave * set cursorline
 augroup END
 
-" Only show trailing whitspace when not in insert mode
+" Only show trailing whitespace when not in insert mode
 augroup trailing
     au!
     au InsertEnter * :set listchars-=trail:•
@@ -492,8 +443,8 @@ augroup END
 " autocmd BufWritePost .vimrc,_vimrc,vimrc so $MYVIMRC
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Source ~/.vim/.vimrc.after if it exists. In order to allow overriding
+" Source ~/.vimrc.after if it exists. In order to allow overriding
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if filereadable(expand("~/.vim/vimrc.after"))
-  source ~/.vim/vimrc.after
+if filereadable(expand("~/vimrc.after"))
+    source ~/vimrc.after
 endif

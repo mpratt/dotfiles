@@ -1,84 +1,59 @@
-snippet <?p "PHP start and ending tags" !b
-<?php
-$1
-?>
-endsnippet
-
 snippet docb "Simple Dockblock" !b
 /**
  * ${1:Description}
  *
- * @param string $string
- * @return string
+ * @param 
+ * @return
  */
-endsnippet
-
-snippet method "A simple public class method" !b
-/**
- * ${1:Description} 
- *
- * @return void
- */
-public function ${2:methodName}($3)
-{
-    $4
-}
-endsnippet
-
-snippet class "Basic Class File" !b
-/**
- * ${1:File}.php
- *
- * @package ${2:Default}
- * @author  Michael Pratt <pratt@hablarmierda.net>
- * @link    http://www.michael-pratt.com/
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- */
-
-namespace $2;
-
-class ${3:className}
-{
-    /**
-     * ${4:Description}
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-         $5
-    }
-
-}
 endsnippet
 
 snippet docb_inherit "Inheritance docblock" !b
-    /** inline {@inheritdoc} */
+/** inline {@inheritdoc} */
 endsnippet
 
-snippet phpunit "Php unit Test Case" !b
-/**
- * ${1:File}.php
- *
- * @author  Michael Pratt <pratt@hablarmierda.net>
- * @link    http://www.michael-pratt.com/
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-class $1 extends PHPUnit_Framework_TestCase
+snippet funct "function shortcut" !b
+function ${1:functionName}($2)
 {
-    /**
-     * Set Up
-     */
-    public function setUp()
-    {
-        $2
-    }
 
+}
+endsnippet
+
+snippet public "A public method" !b
+public function ${1:methodName}($2)
+{
+
+}
+endsnippet
+
+snippet protected "A protected method" !b
+protected function ${1:methodName}($2)
+{
+
+}
+endsnippet
+
+snippet private "A protected method" !b
+private function ${1:methodName}($2)
+{
+
+}
+endsnippet
+
+snippet try "Try / Catch Block" !b
+try {
+	$1
+} catch (Exception $e) {
+    $e->getMessage();
+}
+endsnippet
+
+snippet foreach "Foreach Loop" !b
+foreach (${1:var} as $v) {
+}
+endsnippet
+
+
+snippet if "If Conditional" !b
+if ($1) {
 }
 endsnippet
