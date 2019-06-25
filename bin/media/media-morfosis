@@ -97,8 +97,8 @@ function conv_mp4_mp3()
 ##################################################################
 function conv_flac_mp3()
 {
-    conv_requires ffmpeg
-    ffmpeg -i ${1} -vn -ab 196k -ac 2 -ar 48000 ${1/.flac/}.mp3
+    conv_requires flac lame
+    flac -cd "${1}" | lame -b 320 - "${1/.flac/}".mp3
     conv_restore ${1/.flac/}.mp3
 }
 
