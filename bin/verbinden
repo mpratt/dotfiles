@@ -37,6 +37,7 @@ WD="${HOME}/Projects"
 ##################################################################
 if [ "${#}" -lt 1 ]; then
     echo "Usage: $(basename ${0})  "
+    echo "Usage: $(basename ${0}) [project-dir] show "
     exit 0
 fi
 
@@ -51,13 +52,20 @@ if ! [ -e "${WD}/${1}" ]; then
 fi
 
 if [ -e "${WD}/${1}/verbinden" ]; then
-    COMMAND="bash ${WD}/${1}/verbinden"
+    FILE="${WD}/${1}/verbinden"
 elif [ -e "${WD}/${1}/connect" ]; then
-    COMMAND="bash ${WD}/${1}/connect"
+    FILE="${WD}/${1}/connect"
 else
     echo "Could not find command in ${WD}/${1}"
     exit 1
 fi
 
 shift
-${COMMAND} ${@}
+
+if [[ "${1}" == "show" ]]; then
+    cat ${FILE}
+else
+    bash ${FILE} ${@}
+fi
+
+
