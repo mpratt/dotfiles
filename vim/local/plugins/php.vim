@@ -1,1 +1,0 @@
-Plug 'StanAngeloff/php.vim'
