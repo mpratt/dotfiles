@@ -183,7 +183,7 @@ set ttimeoutlen=10
 
 " Better Completion
 set completeopt=longest,menuone,noinsert
-set complete=.,w,b,u,t,i " Scan the current buffer, buffers from other windows, buffers from the buffer list, Scan buffers that have been unloaded from the buffer list, Tag completion and the current and included files
+set complete=.,b,u,t,i,w " Scan the current buffer, buffers from other windows, buffers from the buffer list, Scan buffers that have been unloaded from the buffer list, Tag completion and the current and included files
 "set shortmess+=c   " Shut off completion messages
 
 " Show end of command visually when editing text
