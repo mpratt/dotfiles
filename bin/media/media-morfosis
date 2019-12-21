@@ -113,6 +113,16 @@ function conv_mp4_avi()
 }
 
 ##################################################################
+# Converts mpeg to mp3
+##################################################################
+function conv_mpeg_mp3()
+{
+    conv_requires ffmpeg
+    ffmpeg -i ${1} -vn -ac 2 ${1/.mpeg/}.mp3
+    conv_restore ${1/.mpeg/}.mp3
+}
+
+##################################################################
 # Converts mov to avi
 ##################################################################
 function conv_mov_avi()
@@ -299,7 +309,8 @@ ${DIALOG} --clear --title "$APPNAME - $VERSION" \
     "11"  "Converts MP4 to AVI" \
     "12"  "Converts FLV to MP4" \
     "13"  "Converts FLAC to MP3" \
-    "14"  "Converts MP3 to AAC" 2> ${TMPDIR}/choice
+    "14"  "Converts MPEG to MP3" \
+    "15"  "Converts MP3 to AAC" 2> ${TMPDIR}/choice
 
 module=""
 loop=1
@@ -355,7 +366,10 @@ case $(cat ${TMPDIR}/choice) in
 13)	conv_look_extension flac
     module="conv_flac_mp3" ;;
 
-14)	conv_look_extension mp3
+14)	conv_look_extension mpeg
+    module="conv_mpeg_mp3" ;;
+
+15)	conv_look_extension mp3
     module="conv_mp3_aac" ;;
 
 *) conv_alert "Unknown choice - Ending..." ;;

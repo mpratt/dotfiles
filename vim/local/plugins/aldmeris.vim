@@ -1,1 +1,0 @@
-Plug 'veloce/vim-aldmeris'

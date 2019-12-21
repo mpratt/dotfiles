@@ -7,7 +7,7 @@
 set -e
 CONFIGFOLDER="${HOME}/.config/wallpaper_script"
 SUBREDDITS=("/r/EarthPorn" "/r/wallpapers" "/r/wallpaper" )
-UA="Mozilla / Mpratt Wallpaper Grabber 1.0"
+UA="Mozilla / Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36 / Mpratt Wallpaper Grabber 1.0"
 USEPREVIOUS=0
 USEREDDIT=0
 USEEARTHVIEW=0
@@ -72,7 +72,7 @@ wallpaper_usage() {
 #######################################################
 check_internet() {
     echo "Checking Internet Access ...."
-    wget --user-agent="${UA}" -q --spider https://google.com
+    wget --user-agent="${UA}" -q --spider https://eltiempo.com
     if [ $? -ne 0 ]; then
         echo "ERROR: No Internet Access found"
         exit 1

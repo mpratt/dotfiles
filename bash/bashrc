@@ -68,6 +68,11 @@ if [ -e "$HOME/.slackware.sh" ]; then
    . $HOME/.slackware.sh
 fi
 
+# Source archlinux stuff
+if [ -e "$HOME/.archlinux.sh" ]; then
+   . $HOME/.archlinux.sh
+fi
+
 # Source custom bashrc for a specific host
 if [ -e "$HOME/.bashrc.${HOSTNAME}" ]; then
    . $HOME/.bashrc.${HOSTNAME}
@@ -78,4 +83,6 @@ if [ -e "$HOME/.bashrc.local" ]; then
    . $HOME/.bashrc.local
 fi
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [ -e "${HOME}/.fzf.bash" ]; then  
+    . ${HOME}/.fzf.bash
+fi

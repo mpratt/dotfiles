@@ -38,8 +38,8 @@ if has("gui_running")
         colorscheme molokai
     endif
 else
-    if filereadable(expand('~/.vim/plugged/vim/colors/dracula.vim'))
-        colorscheme dracula
+    if filereadable(expand('~/.vim/plugged/molokai/colors/molokai.vim'))
+        colorscheme molokai
     endif
 endif
 
@@ -78,7 +78,7 @@ set autoread           " auto read when file is changed from outside
 set bs=2               " allow backspacing over everything in insert mode
 set backspace=indent,eol,start  " make backspaces more powerfull
 set history=100        " keep 100 lines of command line history
-set hidden             " Switch between buffers without saving
+set hidden             " Switch between buffers without saving (needed by coc)
 set showcmd            " Show command in bottom right portion of the screen
 set number             " Show lines numbers
 set showmatch          " Cursor shows matching ) and }
@@ -97,6 +97,12 @@ set gdefault           " Add the g flag to search/replace by default
 set laststatus=2       " Might be needed for vim-airline
 set wildmenu           " Use bash-like tab completion in Vim command line
 set wildmode=list:longest,full
+
+" Better display for messages
+set cmdheight=2
+
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
 
 " Stuff to ignore when tab completing
 set wildignore+=.hg,.git,.svn
@@ -140,7 +146,8 @@ set incsearch          " Set incremental searching
 set fileignorecase     " Ignore case while searching for a file.
 
 " Backup and Undo Settings
-set backup             " enable backups
+set nobackup
+set nowritebackup
 set noswapfile         " it's 2015+, Vim.
 set undolevels=1000    " use many levels of undo
 set fillchars+=vert:│  "vertical splits less gap between bars
@@ -184,7 +191,7 @@ set ttimeoutlen=10
 " Better Completion
 set completeopt=longest,menuone,noinsert
 set complete=.,b,u,t,i,w " Scan the current buffer, buffers from other windows, buffers from the buffer list, Scan buffers that have been unloaded from the buffer list, Tag completion and the current and included files
-"set shortmess+=c   " Shut off completion messages
+set shortmess+=c   " don't give |ins-completion-menu| messages.
 
 " Show end of command visually when editing text
 set cpoptions+=$
@@ -233,8 +240,11 @@ endif
 " See: https://stackoverflow.com/questions/36519864/the-way-to-improve-vimdiff-similarity-searching-mechanism
 set diffopt=internal,filler,vertical,context:5,foldcolumn:1,indent-heuristic,algorithm:patience
 
+
+" Always show signcolumns
+set signcolumn=yes
 " Better color to the Debug Gutter, since it normally displays errors
-highlight SignColumn guibg=red
+"highlight SignColumn guibg=red 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Common Functions
@@ -247,6 +257,27 @@ function! Preserve(command)
     execute a:command
     let @/=_s         " Reset search history.
     call cursor(l, c) " Reset cursor position.
+endfunction
+
+" Search and open a testfile based on the given Input
+function! FindTestFile()
+    let filename = expand('%:r')
+    let extension = expand('%:e')
+    let fullpath = expand('%:p:h')
+    for p in split(fullpath, '/')
+        let files = [ substitute(fullpath, '/' . p . '/', '/tests/', '') . '/' . filename . 'Test.' . extension, substitute(fullpath, '/' . p . '/', '/tests/', '') . '/' . filename . '.' . extension ]
+
+        for f in files
+            if filereadable(f)
+                echo f . ' exists'
+                execute ':edit ' . f
+                return 1
+            endif
+        endfor
+
+    endfor
+
+    echo 'No testing file was found'
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -302,10 +333,11 @@ command! -bang WA wa<bang>
 command! -bang Wq wq<bang>
 command! -bang WQ wq<bang>
 
-" Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp.
+" Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp. Except on normal mode
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
-nnoremap <silent> p p`]
+vnoremap <silent> p p^
+" nnoremap <silent> p p`]
 
 " This turns off Vim’s crazy default regex characters and makes searches use normal regexes
 nnoremap / /\v
@@ -349,7 +381,7 @@ noremap <leader>y "+y
 noremap <leader>p "+p
 
 " Create a new line below the cursor in normal mode
-noremap <leader>o o<ESC>k
+noremap <leader>o :only<CR>
 
 " Clear current search highlight
 noremap <leader>h :nohlsearch<CR>
@@ -361,7 +393,7 @@ nnoremap <leader>b ggVG
 noremap <leader>l :e ~/buffer.md<cr>
 
 " Go to first error
-noremap <leader>e :lfirst<CR>
+nnoremap <leader>e :lfirst<CR>
 
 " <leader>= Reindent all the file
 nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
@@ -369,8 +401,8 @@ nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
 " Map <leader> + 1-9 to jump to respective buffer
 let i = 1
 while i < 10
-  execute ":nmap <leader>" . i . " :buffer " . i . "<CR>"
-  let i += 1
+    execute ":nmap <leader>" . i . " :buffer " . i . "<CR>"
+    let i += 1
 endwhile
 
 " Made D and Y behave
@@ -390,6 +422,10 @@ nnoremap <f9> mzggg?G`z
 " Move lines up / down
 nmap <C-Up> ddkP
 nmap <C-Down> ddp
+
+" Find Test Files
+nnoremap <Leader>t :call FindTestFile()<CR>
+nnoremap <Leader>j :call search("''")<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Auto Commands
@@ -424,6 +460,7 @@ au InsertLeave * if pumvisible() == 0|pclose|endif
 
 " Resize splits when the window is resized
 au VimResized * :wincmd =
+
 
 " Only show cursorline in the current window and in normal mode.
 augroup cline

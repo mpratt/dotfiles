@@ -7,8 +7,8 @@
 #set -e
 APPNAME=$(basename ${0})
 VERSION="0.1"
-OUTPUTDIR="/mnt/storage/Archive"
-SPECIALDIR="/mnt/storage"
+SPECIALDIR="/run/media/pratt/storage"
+OUTPUTDIR="${SPECIALDIR}/Archive"
 MOUNTPOINT="1"
 DIALOG=${DIALOG:- dialog}
 
@@ -25,11 +25,13 @@ DATE=$(date +%Y-%m-%d)
 YEAR=$(date +%Y)
 MONTH=$(date +%m)
 HOURMINUTE=$(date +%H_%M_%S)
-TMPDIR=$(mktemp -d -t ${APPNAME}.XXXXXX)
 FOLDERS=()
 FILES=()
 ONOROFF="off"
 SHOWHIDDEN="1"
+
+[ ! -e "${HOME}/tmp" ] && mkdir -p "${HOME}/tmp"
+TMPDIR=$(mktemp -d --tmpdir="${HOME}/tmp" -t ${APPNAME}.XXXXXX)
 trap "rm -rf ${TMPDIR} && exit" 0 1 2 9 15
 
 ##################################################################
