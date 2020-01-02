@@ -65,6 +65,7 @@
     "prettier.tslintIntegration": true,
     "prettier.stylelintIntegration": true,
     "emmet.includeLanguages": {"vue-html": "html", "javascript": "javascriptreact"},
+    "coc.preferences.snippetStatusText": "Ⓢ ",
     "coc.preferences.formatOnSaveFiletypes": ["css","markdown"],
     "coc.preferences.colorSupport": false
 }
