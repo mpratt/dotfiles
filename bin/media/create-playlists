@@ -107,7 +107,7 @@ def correct_playlist_names(text):
     r = '(' + ')|('.join(regexes) + ')'
     regex = re.compile(r, re.IGNORECASE)
     if re.match(regex, text):
-        print '*** Ignoring comment {}'.format(text)
+        print('*** Ignoring comment {}'.format(text))
         return ''
 
     return text
@@ -156,6 +156,9 @@ def find_album_playlist(data):
     :returns: string with the playlist
     """
 
+    if re.findall('Single$', data['album'].lower()) :
+        return 
+
     return data['album'].lower() + '.m3u'
 
 def find_artist_playlist(data):
@@ -202,12 +205,12 @@ def add_to_playlist(file, list, data = None):
 
     if data:
         metadata = u"#EXTINF: {}, {} - {} \n".format(data['time'], data['artist'], data['title'])
-        playlist.write(metadata.encode('utf8'))
+        playlist.write(str(metadata))
 
     playlist.write(file + "\n")
     playlist.close()
     try:
-        print 'Added to {}'.format(os.path.basename(list))
+        print('Added to {}'.format(os.path.basename(list)))
     except:
         pass
 
@@ -227,7 +230,7 @@ def playlist_path(folder, listname):
         listname = listname.replace(char, '-')
 
 
-    listname = strip_accents(unicode(listname))
+    listname = strip_accents(str(listname))
     listname = re.sub('-+', '-', listname)
     listname = re.sub('\.+', '.', listname)
     listname = listname.strip('-,.')
@@ -291,14 +294,19 @@ if __name__ == "__main__":
     delete_playlists_in(ARTIST_PLAYLIST_FOLDER)
 
     for file in get_mp3_files(AUDIOPATH):
+
         short_name = str(os.path.basename(file)).replace('.mp3', '')
-        print "Analizing {}".format(short_name)
 
         try:
+            print("Analizing {}".format(short_name))
             audioData = get_audio_data(file)
             genre_playlists = find_genre_playlists(audioData)
-        except Exception, e:
-            print "Error processing {} - {}".format(short_name, str(e))
+        except UnicodeEncodeError as e:
+            print("Error processing file - {}".format(e))
+            add_to_playlist(file, playlist_path(PLAYLIST_FOLDER, '00-unknown-errors.m3u'))
+            continue
+        except Exception as e:
+            print("Error processing {} - {}".format(short_name, str(e)))
             add_to_playlist(file, playlist_path(PLAYLIST_FOLDER, '00-unknown-errors.m3u'))
             continue
 
@@ -326,4 +334,4 @@ if __name__ == "__main__":
         add_to_playlist(file, playlist_path(ARTIST_PLAYLIST_FOLDER, find_artist_playlist(audioData)), audioData)
         add_to_playlist(file, playlist_path(YEARLY_PLAYLIST_FOLDER, find_yearly_playlist(audioData)), audioData)
 
-        print "Done with {}".format(short_name)
+        print("Done with {}".format(short_name))
