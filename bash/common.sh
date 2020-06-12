@@ -1,4 +1,4 @@
-# Michael Pratt <pratt@hablarmierda.net>
+# Michael Pratt
 # $HOME/.common.sh
 
 # Define some options
@@ -15,6 +15,7 @@ fi
 
 [ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
 [ -e "${HOME}/.config/composer/vendor/bin" ] && PATH=${PATH}:${HOME}/.config/composer/vendor/bin
+[ -x "$(command -v npm)" ] && mkdir -p "${HOME}/.config/npm-packages" && npm config set prefix "${HOME}/.config/npm-packages" && PATH=${PATH}:${HOME}/.config/npm-packages/bin
 
 # Allow root to use DISPLAY
 xhost + &> /dev/null
