@@ -2,13 +2,18 @@
 Plug 'junegunn/fzf.vim'
 
 fun! FzfOmniFiles()
-  let is_git = system('git status')
-  if v:shell_error
-    :Files
-  else
-    :GitFiles
-  endif
+    let is_git = system('git status')
+    if v:shell_error
+        :Files
+    else
+        :GitFiles
+    endif
 endfun
 
+let g:fzf_buffers_jump = 1
 nnoremap <C-p> :call FzfOmniFiles()<CR>
-nmap <silent><A-a> :Ag<CR>
+nnoremap <C-l> :Lines<CR>
+nnoremap <C-k> :Files<CR>
+nnoremap <C-j> :Buffers<CR>
+nnoremap <C-h> :History<CR>
+nnoremap <C-a> :Ag<CR>

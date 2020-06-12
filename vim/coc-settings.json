@@ -45,7 +45,7 @@
     "diagnostic.displayByAle": true,
     "diagnostic.refreshOnInsertMode": true,
     "diagnostic.refreshAfterSave": true,
-    "git.enableGutters": true,
+    "git.enableGutters": false,
     "git.branchCharacter":"\uf408",
     "git.addGBlameToBufferVar": true,
     "git.addGBlameToVirtualText": true,
@@ -64,7 +64,7 @@
     "prettier.eslintIntegration": true,
     "prettier.tslintIntegration": true,
     "prettier.stylelintIntegration": true,
-    "emmet.includeLanguages": {"vue-html": "html", "javascript": "javascriptreact"},
+    "emmet.includeLanguages": {"vue-html": "html", "javascript": "javascriptreact", "tpl": "html"},
     "coc.preferences.snippetStatusText": "Ⓢ ",
     "coc.preferences.formatOnSaveFiletypes": ["css","markdown"],
     "coc.preferences.colorSupport": false
