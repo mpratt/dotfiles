@@ -96,7 +96,6 @@ echo ""
 
 echo "Linking User Profile Stuff (openbox, i3, gmrun etc)"
 symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
-#symlinkIt ${LOCATION}/openbox/obshutdown.rc ~/.obshutdown.rc
 symlinkIt ${LOCATION}/gmrun/gmrunrc ~/.gmrunrc
 symlinkIt ${LOCATION}/xmodmap/xmodmap ~/.xmodmap
 symlinkIt ${LOCATION}/i3/ ~/.i3
@@ -105,17 +104,6 @@ echo ""
 echo "Copy Custom Actions to Thunar"
 [ -e "${HOME}/.config/Thunar/" ] && symlinkIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
 echo ""
-
-if ! [ -e "${HOME}/.kde/share/config/kresources/kxkbrc" ]; then
-    echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
-    mkdir -p ${HOME}/.kde/share/config/kresources/
-    cp ${LOCATION}/vim/local/layout/kxkbrc ${HOME}/.kde/share/config/kresources/kxkbrc
-elif ! [ -e "${HOME}/.kde/share/config/kxkbrc" ]; then
-    echo "Change KDE keyboard to us (alt-intl) and CAPS key into ESC"
-    mkdir -p ${HOME}/.kde/share/config/
-    cp ${LOCATION}/vim/local/layout/kxkbrc ${HOME}/.kde/share/config/kxkbrc
-    echo ""
-fi
 
 echo "Setting up Default XDG Home folders"
 symlinkIt ${LOCATION}/xdg/user-dirs.dirs ~/.config/user-dirs.dirs
