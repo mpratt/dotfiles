@@ -27,7 +27,7 @@ wallpaper_usage() {
     echo "                      [--use-bing]"
     echo ""
     echo "Requirements: feh, curl, wget"
-    echo "Author: Michael Pratt <pratt@hablarmierda.net>"
+    echo "Author: Michael Pratt <yo@michael-pratt.com>"
     echo ""
     echo "DESCRIPTION"
     echo "  Wallpaper managment script, requires feh"
@@ -129,6 +129,10 @@ set_download_image() {
 
     local filename=$(basename ${img} | tr '[:upper:]' '[:lower:]')
     local extension="${filename##*.}"
+    if [ -z "${extension}" ]; then
+        extension="jpg"
+    fi
+
     local out=$(echo "${CONFIGFOLDER}/img/$(date +"%m-%d-%Y")_${filename}.${extension}" | sed 's/?.*//g' )
 
     echo "Downloading ${img} to ${out}"
