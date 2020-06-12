@@ -141,6 +141,19 @@ function iman_rotate()
 }
 
 #################################################################
+# Resizes the image list from percent
+#################################################################
+function iman_resize_percent()
+{
+    local img=${1}
+    local ratio=${2}
+    local name=$(basename ${img})
+
+    ! [ -d "${CWD}/resized/" ] && mkdir "${CWD}/resized/"
+    convert -resize ${ratio}% ${img} "${CWD}/resized/${ratio}_percent_${name}"
+}
+
+#################################################################
 # Run this shit
 #################################################################
 iman_requires ${DIALOG} convert mogrify
@@ -189,7 +202,8 @@ if [ "$#" -lt "2" ]; then
         "3"  "Le pone un borde a las imagenes" \
         "4"  "Rota una imagen en los grados especificados" \
         "5"  "Voltea una imagen de izquierda a derecha" \
-        "6"  "Voltea una imagen de arriba a abajo" 2> ${TMPDIR}/choice
+        "6"  "Voltea una imagen de arriba a abajo" \
+        "7"  "Ajustar tamano a en porcentaje" 2> ${TMPDIR}/choice
     clear
     if [ "$(stat -c%s $TMPDIR/choice)" -eq 0 ]; then
         iman_alert "Cancelado! - Adios!"
@@ -216,9 +230,13 @@ if [ "$#" -lt "2" ]; then
            read -p "Degrees: " degrees
            args+=( "${degrees}" ) ;;
 
-        5) odule="iman_flop" ;;
+        5) module="iman_flop" ;;
 
-        6) odule="iman_flip" ;;
+        6) module="iman_flip" ;;
+
+        7) module="iman_resize_percent"
+            read -p "Resize ratio percent (50):" ratio
+            args+=( ${ratio} ) ;;
     esac
 
     [ -z "${module}" ] && exit 0
