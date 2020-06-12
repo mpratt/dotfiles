@@ -1,7 +1,7 @@
 " .vimrc
 " Michael Pratt
 " http://www.michael-pratt.com
-
+"
 set nocompatible " Forget compatibility with Vi. Who cares. - Required by Vundle
 filetype off     " required by Vundle
 
@@ -30,19 +30,6 @@ call plug#end()
 filetype plugin indent on
 syntax on
 
-" Load stuff only when the gui is running
-if has("gui_running")
-    if filereadable(expand('~/.vim/plugged/onedark.vim/colors/onedark.vim'))
-        colorscheme onedark
-    elseif filereadable(expand('~/.vim/plugged/molokai/colors/molokai.vim'))
-        colorscheme molokai
-    endif
-else
-    if filereadable(expand('~/.vim/plugged/molokai/colors/molokai.vim'))
-        colorscheme molokai
-    endif
-endif
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -53,6 +40,9 @@ set fileencoding=utf-8
 " Terminal Stuff
 set t_Co=256
 set term=xterm-256color
+if (has("termguicolors"))
+    set termguicolors
+endif
 
 " Disable Background Color Erase so that color scheme work properly
 " when vim is used inside tmux and GNU screen
@@ -94,15 +84,14 @@ set formatoptions+=1   " When wrapping paragraphs, don't end lines with 1-letter
 set pastetoggle=<F11>  " When in insert mode, press <F11> to go to paste mode, where you can paste mass data that wont be autoindented
 set ttyfast            " Optimize for fast terminal connections
 set gdefault           " Add the g flag to search/replace by default
-set laststatus=2       " Might be needed for vim-airline
 set wildmenu           " Use bash-like tab completion in Vim command line
 set wildmode=list:longest,full
 
 " Better display for messages
 set cmdheight=2
 
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable delays and poor user experience.
+set updatetime=50
 
 " Stuff to ignore when tab completing
 set wildignore+=.hg,.git,.svn
@@ -123,8 +112,8 @@ set wildignore+=*.orig
 set wildignore+=node_modules/**
 
 " keep some context when moving
-set scrolloff=15
-set sidescrolloff=15
+"set scrolloff=15
+"set sidescrolloff=15
 
 " make plugins smoother (don't redraw while executing macros)
 set lazyredraw
@@ -247,6 +236,77 @@ set signcolumn=yes
 "highlight SignColumn guibg=red 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Colorschemes - Random color scheme depending on gui/terminal
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if has("gui_running")
+    let mycolorschemes = [ 'ayu', 'onedark', 'gruvbox' ]
+else
+    let mycolorschemes = [ 'molokai', 'dracula' ]
+endif
+
+try 
+    set background=dark
+    let ayucolor="mirage"
+    exe 'colorscheme ' . mycolorschemes[localtime() % len(mycolorschemes)]
+catch
+endtry
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" My Status Line
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:currentmode={
+            \ 'n'  : 'Normal',
+            \ 'no' : 'Normal·Operator Pending',
+            \ 'v'  : 'Visual',
+            \ 'V'  : 'V·Line',
+            \ '^V' : 'V·Block',
+            \ 's'  : 'Select',
+            \ 'S'  : 'S·Line',
+            \ '^S' : 'S·Block',
+            \ 'i'  : 'Insert',
+            \ 'R'  : 'Replace',
+            \ 'Rv' : 'V·Replace',
+            \ 'c'  : 'Command',
+            \ 'cv' : 'Vim Ex',
+            \ 'ce' : 'Ex',
+            \ 'r'  : 'Prompt',
+            \ 'rm' : 'More',
+            \ 'r?' : 'Confirm',
+            \ '!'  : 'Shell',
+            \ 't'  : 'Terminal'
+            \}
+
+" Function: return current mode
+" abort -> function will abort soon as error detected
+function! ModeCurrent() abort
+    let l:modecurrent = mode()
+    " use get() -> fails safely, since ^V doesn't seem to register
+    " 3rd arg is used when return of mode() == 0, which is case with ^V
+    " thus, ^V fails -> returns 0 -> replaced with 'V Block'
+    let l:modelist = toupper(get(g:currentmode, l:modecurrent, 'V·Block '))
+    let l:current_status_mode = l:modelist
+    return l:current_status_mode
+endfunction
+
+set laststatus=2
+set statusline=
+set statusline+=%#PmenuSel#
+set statusline+=\ %{ModeCurrent()}
+set statusline+=\ 
+set statusline+=%#LineNr#
+set statusline+=%#Function#\ %f\ %m
+set statusline+=\ 
+set statusline+=%#LineNr#
+set statusline+=%#Warnings#
+set statusline+=%=
+set statusline+=%#CursorColumn#
+set statusline+=\ %y
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\[%{&fileformat}\]
+set statusline+=\ %p%%
+set statusline+=\ %l:%c
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Common Functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" Execute a command while preserving cursor position and history.
@@ -259,33 +319,13 @@ function! Preserve(command)
     call cursor(l, c) " Reset cursor position.
 endfunction
 
-" Search and open a testfile based on the given Input
-function! FindTestFile()
-    let filename = expand('%:r')
-    let extension = expand('%:e')
-    let fullpath = expand('%:p:h')
-    for p in split(fullpath, '/')
-        let files = [ substitute(fullpath, '/' . p . '/', '/tests/', '') . '/' . filename . 'Test.' . extension, substitute(fullpath, '/' . p . '/', '/tests/', '') . '/' . filename . '.' . extension ]
-
-        for f in files
-            if filereadable(f)
-                echo f . ' exists'
-                execute ':edit ' . f
-                return 1
-            endif
-        endfor
-
-    endfor
-
-    echo 'No testing file was found'
-endfunction
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Common abbreviations
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-iabbrev lenght length
-iabbrev llorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam lacus ligula, accumsan id imperdiet rhoncus, dapibus vitae arcu.  Nulla non quam erat, luctus consequat nisi
-
+" Get current syntax/color properties for vim
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The following mappings change/overwrite the normal behaviour of some keys
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -298,21 +338,20 @@ vno <up> <Nop>
 vno <down> <Nop>
 vno <left> <Nop>
 vno <right> <Nop>
-
 " This makes the cursor move to the next visual line when navigating wrapped text, rather than the next actual line.
 nnoremap j gj
 nnoremap k gk
 vnoremap j gj
 vnoremap k gk
-
 " Visual Mode Indenting
 vmap > >gv
 vmap < <gv
-
 " I really hate that things don't auto-center
 nmap G Gzz
 nmap }dd }zz
 nmap { {ddzz
+nmap ]] ]]zz
+nmap [[ [[zz
 
 " Keep search matches in the middle of the window.
 nnoremap n nzzzv
@@ -346,12 +385,8 @@ vnoremap / /\v
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Other Mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " Want a different map leader than \
 let mapleader = "\<Space>"
-
-" Use jj to escape insert mode
-inoremap jj <ESC>
 
 " Switch between windows easily with alt and arrow keys
 nmap <silent><A-Up> :wincmd k<CR>
@@ -368,10 +403,7 @@ vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 nnoremap <C-r> :%s/<c-r><c-w>//gc<left><left><left>
 
 " Source selection with <leader>+s on visual mode
-vnoremap <leader>r y:execute @@<cr>:echo 'Sourced selection.'<cr>
-
-" Use <leader>+s for saving on normal mode
-noremap <leader>s :update<CR>
+vnoremap <leader>s y:execute @@<cr>:echo 'Sourced selection.'<cr>
 
 " Make <leader>w write and close the buffer
 noremap <leader>w :w<CR>:bd<CR> 
@@ -389,29 +421,20 @@ noremap <leader>h :nohlsearch<CR>
 " Select entire buffer
 nnoremap <leader>b ggVG
 
-"Quickly open a markdown buffer for scribble
-noremap <leader>l :e ~/buffer.md<cr>
-
-" Go to first error
-nnoremap <leader>e :lfirst<CR>
-
 " <leader>= Reindent all the file
 nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
-
-" Map <leader> + 1-9 to jump to respective buffer
-let i = 1
-while i < 10
-    execute ":nmap <leader>" . i . " :buffer " . i . "<CR>"
-    let i += 1
-endwhile
 
 " Made D and Y behave
 nnoremap D d$
 nnoremap Y y$
 
 " Use H and L to navigate to start/finish of line
-noremap H ^
-noremap L $
+nnoremap H ^
+nnoremap L $
+
+" Navigate PageDown/PageUp
+nmap <Enter> <PageUp>
+nmap <leader><leader> <PageDown>
 
 " Map U to redo (since u undo's)
 nnoremap U <c-r>
@@ -423,16 +446,18 @@ nnoremap <f9> mzggg?G`z
 nmap <C-Up> ddkP
 nmap <C-Down> ddp
 
-" Find Test Files
-nnoremap <Leader>t :call FindTestFile()<CR>
-nnoremap <Leader>j :call search("''")<CR>
+" Go to next ''/""/[]/{}
+nnoremap <Leader>j :call search('""\\|[]\\|{}\\|''''')<CR>
+
+" Jump to Error List
+nnoremap <leader>sp :call <SID>SynStack()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Auto Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Correct some filetypes
 au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn,txt} setf markdown
-au BufRead,BufNewFile *.ejs,*.mustache setfiletype html
+au BufRead,BufNewFile *.ejs,*.mustache,*.tpl setfiletype html
 au BufNewFile,BufRead *.json set ft=javascript
 au BufRead,BufNewFile *.json.* setfiletype json
 
@@ -461,7 +486,6 @@ au InsertLeave * if pumvisible() == 0|pclose|endif
 " Resize splits when the window is resized
 au VimResized * :wincmd =
 
-
 " Only show cursorline in the current window and in normal mode.
 augroup cline
     au!
@@ -476,9 +500,6 @@ augroup trailing
     au InsertLeave * :set listchars+=trail:•
 augroup END
 
-" Reload vimrc when edited
-" autocmd BufWritePost .vimrc,_vimrc,vimrc so $MYVIMRC
-"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Source ~/.vimrc.after if it exists. In order to allow overriding
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
