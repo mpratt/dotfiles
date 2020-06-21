@@ -1,7 +1,6 @@
 #!/bin/bash
 ##################################################################
 #  This scripts bootstraps all the installation stuff
-#  Michael Pratt <pratt@hablarmierda.net>
 ##################################################################
 set -e
 LOCATION=$(realpath $(dirname $0))
@@ -44,11 +43,9 @@ function symlinkIt()
 # The logic
 ##################################################################
 # Create .config directory
-if [ -e "${HOME}/.config" ]; then
-    echo "Config dir exists!"
-else
-    mkdir -p ~/.config/
+if ! [ -e "${HOME}/.config" ]; then
     echo "Creating ~/.config directory"
+    mkdir -p ~/.config/
 fi
 
 echo "Linking Bash stuff"
@@ -56,19 +53,6 @@ symlinkIt ${LOCATION}/bash/bashrc ~/.bashrc
 symlinkIt ${LOCATION}/bash/bash_profile ~/.bash_profile
 symlinkIt ${LOCATION}/bash/aliases.sh ~/.aliases.sh
 symlinkIt ${LOCATION}/bash/common.sh ~/.common.sh
-echo ""
-
-echo "Linking ZSH stuff"
-symlinkIt ${LOCATION}/zsh/zshrc ~/.zshrc
-echo ""
-
-echo "Linking environment stuff into ${HOME}"
-symlinkIt ${LOCATION}/ack/ackrc ~/.ackrc
-symlinkIt ${LOCATION}/ctags/ctags ~/.ctags
-symlinkIt ${LOCATION}/xserver/xserverrc ~/.xserverrc
-
-mkdir -p ~/.config/xfce4/terminal/
-symlinkIt ${LOCATION}/terminal/terminalrc ~/.config/xfce4/terminal/terminalrc
 echo ""
 
 echo "Linking GTK Stuff into ${HOME}"
@@ -83,22 +67,11 @@ symlinkIt ${LOCATION}/git/gitconfig ~/.gitconfig
 symlinkIt ${LOCATION}/git/gitk ~/.gitk
 echo ""
 
-echo "Linking Vim Stuff into ${HOME}"
+echo "Linking Vim/Neovim/Terminal Stuff into ${HOME}"
+symlinkIt ${LOCATION}/alacritty ~/.config/alacritty
 symlinkIt ${LOCATION}/vim ~/.vim
-symlinkIt ${HOME}/.vim/vimrc ~/.vimrc
-mkdir -p ${HOME}/.local/share/pixmaps/ && cp ${LOCATION}/vim/local/shortcuts/gvim.png ${HOME}/.local/share/pixmaps/gvim.png
-mkdir -p ${HOME}/.local/share/icons/hicolor/256x256/apps && cp ${LOCATION}/vim/local/shortcuts/gvim.png ${HOME}/.local/share/icons/hicolor/256x256/apps/gvim.png
-mkdir -p ${HOME}/.local/share/applications && cp ${LOCATION}/vim/local/shortcuts/gvim.desktop ${HOME}/.local/share/applications/gvim.desktop
-
-mkdir -p ${HOME}/.config/vifm/
-symlinkIt ${LOCATION}/vifm/vifmrc ~/.config/vifm/vifmrc
-echo ""
-
-echo "Linking User Profile Stuff (openbox, i3, gmrun etc)"
-symlinkIt ${LOCATION}/openbox/ ~/.config/openbox
-symlinkIt ${LOCATION}/gmrun/gmrunrc ~/.gmrunrc
-symlinkIt ${LOCATION}/xmodmap/xmodmap ~/.xmodmap
-symlinkIt ${LOCATION}/i3/ ~/.i3
+symlinkIt ${LOCATION}/nvim ~/.config/nvim
+mkdir -p ${HOME}/.config/vifm/ && symlinkIt ${LOCATION}/vifm/vifmrc ~/.config/vifm/vifmrc
 echo ""
 
 echo "Copy Custom Actions to Thunar"
@@ -121,7 +94,7 @@ for i in ${NOTUSEDDIRECTORIES[@]}; do
     fi
 done
 
-CREATEDIRECTORIES=('Audio' 'Documents' '.templates' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
+CREATEDIRECTORIES=('Audio' 'Documents' 'Templates' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
 for i in ${CREATEDIRECTORIES[@]}; do
     DP="${HOME}/${i}"
     if ! [ -e "${DP}" ]; then
@@ -132,8 +105,8 @@ for i in ${CREATEDIRECTORIES[@]}; do
     fi
 done
 
-echo "Copying file templates into ~/.templates"
-cp -r ${LOCATION}/templates/* ${HOME}/.templates
+echo "Copying file templates into ~/Templates"
+cp -r ${LOCATION}/templates/* ${HOME}/Templates
 
 echo "Copying fonts to ${HOME}/.fonts"
 mkdir -p ~/.fonts
