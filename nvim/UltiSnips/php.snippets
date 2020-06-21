@@ -1,0 +1,59 @@
+snippet docb "Simple Dockblock" !b
+/**
+ * ${1:Description}
+ *
+ * @param 
+ * @return
+ */
+endsnippet
+
+snippet docb_inherit "Inheritance docblock" !b
+/** inline {@inheritdoc} */
+endsnippet
+
+snippet funct "function shortcut" !b
+function ${1:functionName}($2)
+{
+
+}
+endsnippet
+
+snippet publicmet "A public method" !b
+public function ${1:methodName}($2)
+{
+
+}
+endsnippet
+
+snippet protectedmet "A protected method" !b
+protected function ${1:methodName}($2)
+{
+
+}
+endsnippet
+
+snippet privatemet "A protected method" !b
+private function ${1:methodName}($2)
+{
+
+}
+endsnippet
+
+snippet try "Try / Catch Block" !b
+try {
+	$1
+} catch (Exception $e) {
+    $e->getMessage();
+}
+endsnippet
+
+snippet foreach "Foreach Loop" !b
+foreach (${1:var} as $v) {
+}
+endsnippet
+
+
+snippet if "If Conditional" !b
+if ($1) {
+}
+endsnippet

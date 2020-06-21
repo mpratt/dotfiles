@@ -1,0 +1,56 @@
+# Functions
+# prototype
+snippet proto
+	${1:class_name}.prototype.${2:method_name} = function(${3}) {
+		${0:${VISUAL}}
+	};
+# Function
+snippet fun "function"
+	function ${1:function_name}(${2}) {
+		${0:${VISUAL}}
+	}
+
+# Flow control
+# if
+snippet if "if (condition) { ... }"
+	if (${1:true}) {
+		${0:${VISUAL}}
+	}
+# if ... else
+snippet ife "if (condition) { ... } else { ... }"
+	if (${1:true}) {
+		${0:${VISUAL}}
+	} else {
+		${2}
+	}
+
+# switch
+snippet switch
+	switch (${1:expression}) {
+		case '${3:case}':
+			${4}
+			break;
+		${0}
+		default:
+			${2}
+	}
+
+snippet try "try { ... } catch(e) { ... }"
+	try {
+		${0:${VISUAL}}
+	} catch (${1:e}) {
+		${2:/* handle error */}
+	}
+snippet for "for (...) {...}"
+	for (var ${1:i} = 0, ${2:len} = ${3:Things.length}; $1 < $2; $1++) {
+		${0:${VISUAL}}
+	}
+
+# Object Method
+snippet :f
+	${1:method_name}: function (${2:attribute}) {
+		${0:${VISUAL}}
+	},
+# hasOwnProperty
+snippet has
+	hasOwnProperty(${0})
