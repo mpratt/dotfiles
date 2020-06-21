@@ -1,4 +1,0 @@
-#!/bin/sh
-# Michael Pratt <pratt@hablarmierda.net>
-# $HOME/xserverrc
-exec /usr/bin/X -nolisten tcp
