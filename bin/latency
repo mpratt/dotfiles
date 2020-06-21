@@ -1,40 +1,52 @@
 #!/bin/bash
-REGIONS=(
-    "ap-southeast-2"
-    "eu-west-2"
-    "eu-central-1"
-    "ap-south-1"
-    "us-east-1"
-    "ap-northeast-2"
-    "us-west-1"
-    "us-east-2"
-    "eu-west-1"
-    "ap-northeast-1"
-    "us-west-2"
-    "ap-southeast-1"
-)
-
-if [[ "$1" == "" ]]; then
-    echo "Usage: ${SCRIPT} [website]"
-    exit 2
+if [ $# -eq 0 ]; then
+    echo "Usage: $(basename ${0}) WEBSITE"
 fi
 
-WEBSITE="$1"
+WEBSITE="${1}"
+REGIONS=(
+    "us-west-2"
+    "us-west-1"
+    "us-east-2"
+    "us-east-1"
+    "eu-west-1"
+    "eu-central-1"
+    "eu-west-2"
+    "ap-south-1"
+    "ap-southeast-1"
+    "ap-northeast-2"
+    "ap-northeast-1"
+    "ap-southeast-2"
+    "sa-east-1"
+)
 
+echo "Analyzing ${WEBSITE}"
 if ! echo "$WEBSITE" | grep -q "://"; then
     echo "The protocol must be specified"
     exit 1
 fi
 
+curl "${WEBSITE}" -w "
+HTTP Code: %{http_code}
+Connection: %{time_connect} secs
+Time to First Byte: %{time_starttransfer} secs
+Total Time: %{time_total} secs
+DNS Lookup: %{time_namelookup} secs
+Download Speed: %{speed_download}
+" -o /dev/null -s
+
+echo "Checking Latency:"
 for REGION in "${REGIONS[@]}"; do
     echo -n "${REGION}: "
+
     curl -XPOST \
-    -H "Accept: */*" \
-    -H "Content-Type: application/json" \
-    -H "Origin: https://latency.apex.sh" \
-    -H "Referer: https://latency.apex.sh/" \
-    -H "User-Agent: Mozilla/5.0 (KHTML, like Gecko) Safari/537.36" \
-    --data-binary "{\"url\":\"${WEBSITE}\",\"region\":\"${REGION}\"}" \
-    "https://e3jbut7jza.execute-api.us-west-2.amazonaws.com/production/trace"
-    echo
+        -H "Accept: */*" \
+        -H "Content-Type: application/json" \
+        -H "Origin: https://latency.apex.sh" \
+        -H "Referer: https://latency.apex.sh/" \
+        -H "User-Agent: Mozilla/5.0 (KHTML, like Gecko) Safari/537.36" \
+        --data-binary "{\"url\":\"${WEBSITE}\",\"region\":\"${REGION}\"}" \
+        "https://e3jbut7jza.execute-api.us-west-2.amazonaws.com/production/trace"
+
+    echo ""
 done
