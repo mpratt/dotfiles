@@ -15,21 +15,32 @@ alias getip="curl -s http://wtfismyip.com/text"
 # Overwrite common commands
 alias phpunit="phpunit --verbose"
 alias cat="cat -v" # Cat show-nonprinting
-alias gvim="gvim-single-instance"
 alias diff='colordiff -u'
 
-# Serve current directory
-alias servephp="php -S localhost:8000"
-alias servepython="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+# Color Aliases
+alias ls="ls --color=auto"
+alias diff="diff --color=auto"
+alias grep="grep --color=auto"
+alias ip="ip --color=auto"
 
-# Other alias
+# Serve current directory
+alias serve-php="php -S localhost:8000"
+alias serve-python="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'"
+
+# Custom aliases
 alias :q="exit"
 alias lsoctal="stat -c '%a %n'"
 alias nocomment="grep -Ev '^\s*(#|//|$)'"
 alias screenoff="xset dpms force off"
-alias ytb2mp3="youtube-dl --extract-audio --audio-format mp3 --audio-quality 0"
-alias regrep="egrep -R -iH -n"
+alias regrep="egrep -R -iH -n --color=auto"
 alias ducks="du -cks * | sort -rn | head -11" #
 alias voyeur="lsof -i -P +c 0 +M"
 alias tulpan="netstat -tulpan"
 alias ddos='hping3 -c 10000 -d 120 -S -w 64 -p 21 --flood --rand-source'
+alias calculate='calc'
+
+# Vim/Nvim
+if [ -x "$(command -v nvim)" ]; then
+    alias gvim="gnvim --disable-ext-cmdline"
+    alias vim="nvim"
+fi

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Michael Pratt <pratt@hablarmierda.net>
+# Michael Pratt
 # $HOME/.bashrc
 
 # Configuration vars
@@ -83,6 +83,6 @@ if [ -e "$HOME/.bashrc.local" ]; then
    . $HOME/.bashrc.local
 fi
 
-if [ -e "${HOME}/.fzf.bash" ]; then  
-    . ${HOME}/.fzf.bash
+if [ -e "${HOME}/.fzf.local" ]; then  
+    . ${HOME}/.fzf.local
 fi

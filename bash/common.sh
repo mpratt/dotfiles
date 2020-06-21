@@ -2,8 +2,13 @@
 # $HOME/.common.sh
 
 # Define some options
-export EDITOR="vim"
-export VISUAL="vim"
+if [ -x "$(command -v nvim)" ]; then
+    export EDITOR="nvim"
+    export VISUAL="nvim"
+else
+    export EDITOR="vim"
+    export VISUAL="vim"
+fi
 
 # Append custom PATH
 if [ -e "${HOME}/.dotfiles/bin" ]; then
