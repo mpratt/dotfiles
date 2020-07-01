@@ -1,5 +1,5 @@
 " Vim php syntax file
-" File: ~/.vim/after/ftplugin/php.vim
+" File: $VIMCONFIG/after/ftplugin/php.vim
 " Author: Michael Pratt
 
 " Avoid function redefinition error

@@ -119,15 +119,13 @@ set signcolumn=yes
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Colorschemes - Random color scheme depending on gui/terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if exists("g:gnvim") || exists("gui_running")
-    let mycolorschemes = [ 'ayu', 'onedark', 'gruvbox' ]
-else
-    let mycolorschemes = [ 'molokai', 'dracula' ]
-endif
-
 try 
-    set background=dark
+let mycolorschemes = [ 'molokai', 'dracula', 'gruvbox', 'ayu' ]
+    let g:gruvbox_contrast_dark = 'hard'
+    let g:gruvbox_invert_selection='0'
     let ayucolor="mirage"
+
+    set background=dark
     exe 'colorscheme ' . mycolorschemes[localtime() % len(mycolorschemes)]
 catch
 endtry
@@ -231,8 +229,8 @@ vmap < <gv
 
 " I really hate that things don't auto-center
 nmap G Gzz
-nmap }dd }zz
-nmap { {ddzz
+nmap } }zz
+nmap { {zz
 nmap ]] ]]zz
 nmap [[ [[zz
 
@@ -271,7 +269,7 @@ vnoremap / /\v
 " Want a different map leader than \
 let mapleader = "\<Space>"
 
-" Switch between windows easily with alt and arrow keys
+" Window Navigation
 nmap <silent><A-Up> :wincmd k<CR>
 nmap <silent><A-Down> :wincmd j<CR>
 nmap <silent><A-Left> :wincmd h<CR>
@@ -307,14 +305,6 @@ nnoremap <leader>b ggVG
 " <leader>= Reindent all the file
 nnoremap <Leader>= :call Preserve("normal gg=Gzz")<CR>
 
-" Made D and Y behave
-nnoremap D d$
-nnoremap Y y$
-
-" Navigate PageDown/PageUp
-nmap <leader><leader> <C-d>
-nmap <Enter> <C-u>
-
 " Map U to redo (since u undo's)
 nnoremap U <c-r>
 
@@ -325,9 +315,19 @@ nnoremap <f9> mzggg?G`z
 nmap <C-Up> ddkP
 nmap <C-Down> ddp
 
+" Vertical Navigation
+nmap <A-j> }
+nmap <A-k> {
+
+nmap <A-S-j> ]m
+nmap <A-S-k> [m
+            
 " Go to next ''/""/[]/{}
 nnoremap <Leader>j :call search('""\\|()\\|[]\\|{}\\|''''')<CR>
-nnoremap <Leader>k :call search('"\\|(\\|[\\|{\\|''')<CR>
+nnoremap <Leader>k :call search('""\\|()\\|[]\\|{}\\|''''', 'b')<CR>
+
+" File Navigation
+nnoremap <Leader><Leader> <C-^>
 
 " Show syntax highlight group
 nnoremap <leader>sp :call <SID>SynStack()<CR>
@@ -373,3 +373,53 @@ augroup trailing
     au InsertEnter * :set listchars-=trail:•
     au InsertLeave * :set listchars+=trail:•
 augroup END
+
+" Highlight text on yank
+augroup highlight_yank
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
+augroup END
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Coc Mappings / Settings They need to be outside of the plugin file :(
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Add status line support, for integration with other plugin, checkout `:h coc-status`
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+    else
+        call CocAction('doHover')
+    endif
+endfunction
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+            \ pumvisible() ? "\<C-n>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" GoTo code navigation.
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gy <Plug>(coc-type-definition)
+nmap <leader>gi <Plug>(coc-implementation)
+nmap <leader>gr <Plug>(coc-references)
+nmap <leader>gr <Plug>(coc-rename)
+nmap <leader>g[ <Plug>(coc-diagnostic-prev)
+nmap <leader>g] <Plug>(coc-diagnostic-next)
+nmap <leader>gp <Plug>(coc-diagnostic-prev-error)
+nmap <leader>ge <Plug>(coc-diagnostic-next-error)

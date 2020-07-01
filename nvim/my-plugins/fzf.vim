@@ -14,6 +14,5 @@ let g:fzf_buffers_jump = 1
 nnoremap <C-p> :call FzfOmniFiles()<CR>
 nnoremap <C-l> :Lines<CR>
 nnoremap <C-k> :Files<CR>
-nnoremap <C-j> :Buffers<CR>
+nnoremap <C-j> :Ag<CR>
 nnoremap <C-h> :History<CR>
-nnoremap <C-a> :Ag<CR>
