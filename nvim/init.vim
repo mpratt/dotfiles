@@ -192,6 +192,15 @@ function! <SID>SynStack()
     endif
     echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
+
+" Small terminal
+function! s:small_terminal() abort
+    new
+    wincmd J
+    call nvim_win_set_height(0, 18)
+    term
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " The following mappings change/overwrite the normal behaviour of some keys
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -250,12 +259,6 @@ vnoremap / /\v
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Want a different map leader than \
 let mapleader = "\<Space>"
-
-" Window Navigation
-nmap <silent><A-Up> :wincmd k<CR>
-nmap <silent><A-Down> :wincmd j<CR>
-nmap <silent><A-Left> :wincmd h<CR>
-nmap <silent><A-Right> :wincmd l<CR>
 
 " Tab Navigation
 nmap <C-Tab> :bn<CR>
@@ -317,9 +320,25 @@ nnoremap <Leader><Leader> <C-^>
 " Show syntax highlight group
 nnoremap <leader>sp :call <SID>SynStack()<CR>
 
-" Resize
-nnoremap <Leader>+ :vertical resize +5<CR>
-nnoremap <Leader>- :vertical resize -5<CR>
+" Make a small terminal at the bottom of the screen.
+nnoremap <leader>tt :call <SID>small_terminal()<CR>
+
+" Resize Windows
+nnoremap <Leader>< :vertical resize +5<CR>
+nnoremap <Leader>> :vertical resize -5<CR>
+nnoremap <Leader>, :resize +5<CR>
+nnoremap <Leader>. :resize -5<CR>
+
+" Window Navigation
+nmap <A-Up> :wincmd k<CR>
+nmap <A-Down> :wincmd j<CR>
+nmap <A-Left> :wincmd h<CR>
+nmap <A-Right> :wincmd l<CR>
+tnoremap <A-Up> <C-\><C-n><C-w>k
+tnoremap <A-Down> <C-\><C-n><C-w>j
+tnoremap <A-Left> <C-\><C-n><C-w>h
+tnoremap <A-Right> <C-\><C-n><C-w>l
+tnoremap <leader><Esc> <C-\><C-n>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Auto Commands
