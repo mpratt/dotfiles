@@ -51,8 +51,6 @@ fi
 echo "Linking Bash stuff"
 symlinkIt ${LOCATION}/bash/bashrc ~/.bashrc
 symlinkIt ${LOCATION}/bash/bash_profile ~/.bash_profile
-symlinkIt ${LOCATION}/bash/aliases.sh ~/.aliases.sh
-symlinkIt ${LOCATION}/bash/common.sh ~/.common.sh
 echo ""
 
 echo "Linking GTK Stuff into ${HOME}"

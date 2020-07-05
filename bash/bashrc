@@ -13,12 +13,13 @@ export HISTCONTROL=ignoreboth # erasedups & ignorespace
 export LS_OPTIONS="-h --color=auto --group-directories-first"
 
 # Tweak Some Bash Stuff
-shopt -s cdspell # Correct the typos in the cd command 
-shopt -s dirspell # Attempts spelling correction on directory names during word completion
-shopt -s histappend # The history list is appended when the shell exits, rather than overwriting the file
-shopt -s extglob # Allow extended globs! For example 'rm !(*.jpg|*.gif|*.png)'
-shopt -s nocaseglob # Matches filenames in a case-insensitive fashion when performing filename expansion
-shopt -s checkwinsize # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
+shopt -s cdspell        # Correct the typos in the cd command 
+shopt -s dirspell       # Attempts spelling correction on directory names during word completion
+shopt -s histappend     # The history list is appended when the shell exits, rather than overwriting the file
+shopt -s extglob        # Allow extended globs! For example 'rm !(*.jpg|*.gif|*.png)'
+shopt -s nocaseglob     # Matches filenames in a case-insensitive fashion when performing filename expansion
+shopt -s checkwinsize   # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
+shopt -s autocd         # Switch automatically without using cd
 
 # GCC tweaks
 if [[ "$(uname -a | grep -i 'AMD A4')" ]]; then
@@ -54,13 +55,13 @@ if [ "$(whoami)" != "root" ]; then
 fi
 
 # Source common variables/settings
-if [ -e "$HOME/.common.sh" ]; then
-   . $HOME/.common.sh
+if [ -e "${HOME}/.dotfiles/bash/common.sh" ]; then
+    . ${HOME}/.dotfiles/bash/common.sh
 fi
 
 # Source local aliases
-if [ -e "$HOME/.aliases.sh" ]; then
-   . $HOME/.aliases.sh
+if [ -e "${HOME}/.dotfiles/bash/aliases.sh" ]; then
+    . ${HOME}/.dotfiles/bash/aliases.sh
 fi
 
 # Source slackware stuff

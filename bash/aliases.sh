@@ -29,6 +29,7 @@ alias serve-python="python -c 'import SimpleHTTPServer; SimpleHTTPServer.test()'
 
 # Custom aliases
 alias :q="exit"
+alias ll="ls -l --color=auto"
 alias lsoctal="stat -c '%a %n'"
 alias nocomment="grep -Ev '^\s*(#|//|$)'"
 alias screenoff="xset dpms force off"
