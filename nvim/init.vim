@@ -23,16 +23,12 @@ set fileencoding=utf-8
 " Terminal Stuff
 set termguicolors
 
-" Disable Background Color Erase so that color scheme work properly
-" when vim is used inside tmux and GNU screen
-
 " How my editor looks like
 set linespace=3                            " Prefer a slightly higher line height
 set guifont=Source\ Code\ Pro\ Medium:h10  " Font and Size
 set noerrorbells                           " disable sound on errors
 set novisualbell                           " disable sound on errors
 set nowrap                                 " Don't wrap lines
-set linebreak                              " Wrap lines at convenient points
 set title                                  " Show Title
 
 " General Settings
@@ -44,20 +40,16 @@ set showmatch           " Cursor shows matching ) and }
 set cursorline          " Show Cursor line
 set clipboard=unnamed   " yank to the system register (*) by default
 set confirm             " Y-N-C prompt if closing with unsaved changes.
-set selectmode+=mouse   " Enable selections with the mouse
-set mousehide           " Hide mouse when typing
-set synmaxcol=1000      " long lines syntax coloring/highlighting
-set formatoptions+=1    " When wrapping paragraphs, don't end lines with 1-letter words (looks stupid)
+set synmaxcol=500       " long lines syntax coloring/highlighting
 set gdefault            " Add the g flag to search/replace by default
 set scrolloff=10        " Setting 'scrolloff' to a large value causes the cursor to stay in the middle line when possible
-set updatetime=300       " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable delays and poor user experience.
+set updatetime=300      " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable delays and poor user experience.
 set cmdheight=2         " Better display for messages
 set wildmode=list:longest,full
 set wildignore=*.o,*~,*.pyc,*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 
 " Tab and Indenting Stuff
 set expandtab           " enter spaces when tab is pressed
-set textwidth=500       " break lines when line length increases
 set tabstop=4           " use 4 spaces to represent tab
 set shiftwidth=4        " number of spaces to use for auto indent
 set softtabstop=4
@@ -74,9 +66,6 @@ set nobackup
 set nowritebackup
 set noswapfile         " it's 2015+, Vim.
 set undolevels=1000    " use many levels of undo
-
-" Set sensible heights for splits
-set winheight=50
 
 " Open splits on the right
 set splitright
@@ -99,7 +88,7 @@ catch
 endtry
 
 if exists("g:gnvim") || exists("gui_running")
-    " " Display tabs and trailing spaces visually
+    " Display tabs and trailing spaces visually
     set list 
     set listchars=nbsp:¬,eol:↳,tab:└─,extends:»,precedes:«
 endif
@@ -110,7 +99,6 @@ endif
 " See: https://stackoverflow.com/questions/36519864/the-way-to-improve-vimdiff-similarity-searching-mechanism
 set diffopt=internal,filler,vertical,context:5,foldcolumn:1,indent-heuristic,algorithm:patience
 
-
 " Always show signcolumns
 set signcolumn=yes
 " Better color to the Debug Gutter, since it normally displays errors
@@ -120,7 +108,7 @@ set signcolumn=yes
 " Colorschemes - Random color scheme depending on gui/terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 try 
-let mycolorschemes = [ 'molokai', 'dracula', 'gruvbox', 'ayu' ]
+    let mycolorschemes = [ 'molokai', 'dracula', 'gruvbox', 'ayu' ]
     let g:gruvbox_contrast_dark = 'hard'
     let g:gruvbox_invert_selection='0'
     let ayucolor="mirage"
@@ -217,12 +205,6 @@ vno <down> <Nop>
 vno <left> <Nop>
 vno <right> <Nop>
 
-" This makes the cursor move to the next visual line when navigating wrapped text, rather than the next actual line.
-nnoremap j gj
-nnoremap k gk
-vnoremap j gj
-vnoremap k gk
-
 " Visual Mode Indenting
 vmap > >gv
 vmap < <gv
@@ -253,7 +235,7 @@ command! -bang WA wa<bang>
 command! -bang Wq wq<bang>
 command! -bang WQ wq<bang>
 
-" Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp. Except on normal mode
+" Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
 vnoremap <silent> p p^
@@ -289,6 +271,9 @@ vnoremap <leader>s y:execute @@<cr>:echo 'Sourced selection.'<cr>
 " Make <leader>w write and close the buffer
 noremap <leader>w :w<CR>:bd<CR> 
 
+" Make <leader>q Close buffer
+noremap <leader>q :bd<CR> 
+
 " System clipboard interaction
 noremap <leader>y "+y
 noremap <leader>p "+p
@@ -321,7 +306,7 @@ nmap <A-k> {
 
 nmap <A-S-j> ]m
 nmap <A-S-k> [m
-            
+
 " Go to next ''/""/[]/{}
 nnoremap <Leader>j :call search('""\\|()\\|[]\\|{}\\|''''')<CR>
 nnoremap <Leader>k :call search('""\\|()\\|[]\\|{}\\|''''', 'b')<CR>
@@ -331,6 +316,10 @@ nnoremap <Leader><Leader> <C-^>
 
 " Show syntax highlight group
 nnoremap <leader>sp :call <SID>SynStack()<CR>
+
+" Resize
+nnoremap <Leader>+ :vertical resize +5<CR>
+nnoremap <Leader>- :vertical resize -5<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Auto Commands
@@ -423,3 +412,4 @@ nmap <leader>g[ <Plug>(coc-diagnostic-prev)
 nmap <leader>g] <Plug>(coc-diagnostic-next)
 nmap <leader>gp <Plug>(coc-diagnostic-prev-error)
 nmap <leader>ge <Plug>(coc-diagnostic-next-error)
+nmap <leader>gt :CocSearch <C-R>=expand("<cword>")<CR><CR> " Search/Replace Word inside full project

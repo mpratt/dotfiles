@@ -16,3 +16,4 @@ nnoremap <C-l> :Lines<CR>
 nnoremap <C-k> :Files<CR>
 nnoremap <C-j> :Ag<CR>
 nnoremap <C-h> :History<CR>
+nnoremap <leader>rg :Rg <C-R>=expand("<cword>")<CR><CR>

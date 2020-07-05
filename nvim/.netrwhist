@@ -1,5 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =1
+let g:netrw_dirhistcnt =2
+let g:netrw_dirhist_2='/home/pratt/.dotfiles'
 let g:netrw_dirhist_1='/home'
 let g:netrw_dirhist_0='/home/pratt/.dotfiles/.git'
 let g:netrw_dirhist_9='/home/pratt/.dotfiles'
@@ -9,4 +10,3 @@ let g:netrw_dirhist_6='/home/pratt/Projects/embera/embera/tests/Embera'
 let g:netrw_dirhist_5='/home/pratt/Projects/embera/embera/tests'
 let g:netrw_dirhist_4='/home/pratt/Projects/embera/embera'
 let g:netrw_dirhist_3='/home/pratt/Projects/embera/embera/src'
-let g:netrw_dirhist_2='/home/pratt/Projects/embera/embera/src/Embera'
