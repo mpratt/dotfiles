@@ -306,7 +306,6 @@ nmap <C-Down> ddp
 " Vertical Navigation
 nmap <A-j> }
 nmap <A-k> {
-
 nmap <A-S-j> ]m
 nmap <A-S-k> [m
 
@@ -324,21 +323,23 @@ nnoremap <leader>sp :call <SID>SynStack()<CR>
 nnoremap <leader>tt :call <SID>small_terminal()<CR>
 
 " Resize Windows
-nnoremap <Leader>< :vertical resize +5<CR>
-nnoremap <Leader>> :vertical resize -5<CR>
-nnoremap <Leader>, :resize +5<CR>
-nnoremap <Leader>. :resize -5<CR>
+nnoremap <Leader>< :vertical resize +10<CR>
+nnoremap <Leader>> :vertical resize -1o<CR>
+nnoremap <Leader>, :resize +10<CR>
+nnoremap <Leader>. :resize -10<CR>
 
 " Window Navigation
 nmap <A-Up> :wincmd k<CR>
 nmap <A-Down> :wincmd j<CR>
 nmap <A-Left> :wincmd h<CR>
 nmap <A-Right> :wincmd l<CR>
+nmap <A-d> :wincmd w<CR>
 tnoremap <A-Up> <C-\><C-n><C-w>k
 tnoremap <A-Down> <C-\><C-n><C-w>j
 tnoremap <A-Left> <C-\><C-n><C-w>h
 tnoremap <A-Right> <C-\><C-n><C-w>l
 tnoremap <leader><Esc> <C-\><C-n>
+tnoremap <A-d> <C-\><C-n><C-w>w
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Auto Commands
