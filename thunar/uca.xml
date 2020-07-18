@@ -1,26 +1,26 @@
-<?xml encoding="UTF-8" version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <actions>
 <action>
 	<icon>utilities-terminal</icon>
 	<name>Open Terminal Here</name>
 	<unique-id>1389798894940920-1</unique-id>
-	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
-	<description>Example for a custom action</description>
+	<command>alacritty --working-directory %f</command>
+	<description>Opens a terminal window here</description>
 	<patterns>*</patterns>
 	<startup-notify/>
 	<directories/>
 </action>
 <action>
-	<icon>gvim</icon>
-	<name>Open Gvim Here</name>
+	<icon>nvim</icon>
+	<name>Open Nvim here</name>
 	<unique-id>1389735585522872-2</unique-id>
-	<command>gvim</command>
-	<description>Opens a Gvim on this path</description>
+	<command>alacritty --working-directory %f -e nvim</command>
+	<description>Opens Neovim in the current path</description>
 	<patterns>*</patterns>
 	<directories/>
 </action>
 <action>
-	<icon>git</icon>
+	<icon>git-gui</icon>
 	<name>Start Git Gui</name>
 	<unique-id>1389735585522885-3</unique-id>
 	<command>git gui</command>
@@ -34,23 +34,14 @@
 	<unique-id>1499621047815070-6</unique-id>
 	<command>xclip -selection c -i %f</command>
 	<description></description>
-	<patterns>*</patterns>
-	<text-files/>
-</action>
-<action>
-	<icon>emblem-generic-greyorange</icon>
-	<name>Edit as Root</name>
-	<unique-id>1389735585522907-4</unique-id>
-	<command>kdesu gvim %F</command>
-	<description></description>
-	<patterns>*</patterns>
+	<patterns>*.log,*.sql,*.json,*.html</patterns>
 	<text-files/>
 </action>
 <action>
 	<icon>gpicview</icon>
 	<name>Convert To JPG</name>
 	<unique-id>1499620374742509-1</unique-id>
-	<command>convert-to-jpg -f %f</command>
+	<command>mogrify -format jpg %f</command>
 	<description></description>
 	<patterns>*</patterns>
 	<image-files/>
@@ -59,7 +50,7 @@
 	<icon>gpicview</icon>
 	<name>Convert To PNG</name>
 	<unique-id>1499620381531425-2</unique-id>
-	<command>convert-to-png -f %f</command>
+	<command>mofrigy -format png %f</command>
 	<description></description>
 	<patterns>*</patterns>
 	<image-files/>
@@ -73,15 +64,5 @@
 	<patterns>*</patterns>
 	<audio-files/>
 	<image-files/>
-</action>
-<action>
-	<icon>kompare</icon>
-	<name>Compare Files</name>
-	<unique-id>1499621445560022-8</unique-id>
-	<command>meld %F</command>
-	<description></description>
-	<patterns>*</patterns>
-	<directories/>
-	<text-files/>
 </action>
 </actions>

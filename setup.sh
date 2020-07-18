@@ -72,9 +72,12 @@ symlinkIt ${LOCATION}/nvim ~/.config/nvim
 mkdir -p ${HOME}/.config/vifm/ && symlinkIt ${LOCATION}/vifm/vifmrc ~/.config/vifm/vifmrc
 echo ""
 
-echo "Copy Custom Actions to Thunar"
-[ -e "${HOME}/.config/Thunar/" ] && symlinkIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
-echo ""
+if [ -e "${HOME}/.config/Thunar/" ]; then
+    echo "Copy Custom Actions/Shortcuts to Thunar"
+    symlinkIt ${LOCATION}/thunar/uca.xml ${HOME}/.config/Thunar/uca.xml
+    symlinkIt ${LOCATION}/thunar/accels.scm ${HOME}/.config/Thunar/accels.scm
+    echo ""
+fi
 
 echo "Setting up Default XDG Home folders"
 symlinkIt ${LOCATION}/xdg/user-dirs.dirs ~/.config/user-dirs.dirs
