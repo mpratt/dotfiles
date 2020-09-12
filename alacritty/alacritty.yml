@@ -13,6 +13,10 @@
   #TERM: alacritty
 
 window:
+
+  # Allow terminal applications to change Alacritty's window title.
+  dynamic_title: true
+
   # Window dimensions (changes require restart)
   #
   # Specified in number of columns/lines, not pixels.
@@ -279,9 +283,6 @@ selection:
   # When set to `true`, selected text will be copied to the primary clipboard.
   #save_to_clipboard: false
 
-# Allow terminal applications to change Alacritty's window title.
-dynamic_title: true
-
 #cursor:
   # Cursor style
   #
@@ -500,6 +501,8 @@ key_bindings:
   - { key: Return, mods: Control|Shift, action: SpawnNewInstance }
   - { key: Tab,  mods: Control,        chars: "\x1b[27;5;9~" }
   - { key: Tab,  mods: Control|Shift,  chars: "\x1b[27;6;9~" }
+  - { key: PageUp,    mods: Shift,   mode: ~Alt, action: ScrollPageUp,  }
+  - { key: PageDown,  mods: Shift,   mode: ~Alt, action: ScrollPageDown }
 
 
 #debug:
