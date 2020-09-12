@@ -108,7 +108,7 @@ set signcolumn=yes
 " Colorschemes - Random color scheme depending on gui/terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 try 
-    let mycolorschemes = [ 'molokai', 'dracula', 'gruvbox', 'ayu' ]
+    let mycolorschemes = [ 'dracula', 'gruvbox', 'ayu' ]
     let g:gruvbox_contrast_dark = 'hard'
     let g:gruvbox_invert_selection='0'
     let ayucolor="mirage"
@@ -386,7 +386,7 @@ augroup END
 " Highlight text on yank
 augroup highlight_yank
     autocmd!
-    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 1000)
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("IncSearch", 50)
 augroup END
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
