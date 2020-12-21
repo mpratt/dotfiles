@@ -36,6 +36,7 @@ set ffs=unix,dos,mac
 set nofoldenable        " Disable Folding when opening files, use zi to enable manually
 set hidden              " Switch between buffers without saving (needed by coc)
 set number              " Show lines numbers
+set rnu                 " Show Relative Line Numbers
 set showmatch           " Cursor shows matching ) and }
 set cursorline          " Show Cursor line
 set clipboard=unnamed   " yank to the system register (*) by default
@@ -108,10 +109,9 @@ set signcolumn=yes
 " Colorschemes - Random color scheme depending on gui/terminal
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 try 
-    let mycolorschemes = [ 'dracula', 'gruvbox', 'ayu' ]
+    let mycolorschemes = [ 'dracula', 'gruvbox' ]
     let g:gruvbox_contrast_dark = 'hard'
     let g:gruvbox_invert_selection='0'
-    let ayucolor="mirage"
 
     set background=dark
     exe 'colorscheme ' . mycolorschemes[localtime() % len(mycolorschemes)]
