@@ -40,6 +40,7 @@ alias tulpan="netstat -tulpan"
 alias ddos='hping3 -c 10000 -d 120 -S -w 64 -p 21 --flood --rand-source'
 alias calculate='calc'
 alias clock="while true;do clear;echo "===========";date +"%r";echo "===========";sleep 1;done"
+alias cdp=". cdp"
 
 # Vim/Nvim
 if [ -x "$(command -v nvim)" ]; then
