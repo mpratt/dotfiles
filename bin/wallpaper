@@ -7,11 +7,13 @@
 set -e
 CONFIGFOLDER="${HOME}/.config/wallpaper_script"
 SUBREDDITS=("/r/EarthPorn" "/r/wallpapers" "/r/wallpaper" )
-UA="Mozilla / Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36 / Mpratt Wallpaper Grabber 1.0"
+UA="Mozilla / Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36 / mpratt Wallpaper Grabber 1.0"
 USEPREVIOUS=0
 USEREDDIT=0
 USEEARTHVIEW=0
 USEBING=0
+VERBOSE=0
+FULLHELP=0
 mkdir -p "${CONFIGFOLDER}/cache"
 mkdir -p "${CONFIGFOLDER}/img"
 #######################################################
@@ -20,50 +22,56 @@ mkdir -p "${CONFIGFOLDER}/img"
 wallpaper_usage() {
     clear
     echo "Wallpaper"
-    echo "Usage: $(basename $0) [--folder [folder]][ --file [file]][--use-previous]"
-    echo "                      [--random]"
-    echo "                      [--use-random-subreddit][--use-subreddit [subreddit]]"
-    echo "                      [--use-earthview]"
-    echo "                      [--use-bing]"
+    echo "Usage: wallpaper [--folder [folder]][ --file [file]][--use-previous]"
+    echo "                 [--random][--verbose][--clean]"
+    echo "                 [--use-random-subreddit][--use-subreddit [subreddit]]"
+    echo "                 [--use-earthview]"
+    echo "                 [--use-bing]"
     echo ""
-    echo "Requirements: feh, curl, wget"
-    echo "Author: Michael Pratt <yo@michael-pratt.com>"
-    echo ""
-    echo "DESCRIPTION"
-    echo "  Wallpaper managment script, requires feh"
-    echo ""
-    echo "PARAMS"
-    echo "--folder [folder]"
-    echo "  A folder with jpg, png or gif files. Used to fetch a random wallpapers from it"
-    echo ""
-    echo "--file [file]"
-    echo "  Path to an image file to be used as a wallpaper"
-    echo ""
-    echo "--random"
-    echo "  Pick a random wallpaper from earthview, bing, folder and reddit"
-    echo ""
-    echo "--use-previous"
-    echo "  Checks the home folder for a .fehbg file and runs it"
-    echo ""
-    echo "--use-random-subreddit"
-    echo "  Fetches a random image file from reddit"
-    echo ""
-    echo "--use-subreddit"
-    echo "  Fetches images from the given subreddit. No need to add the /r/ prefix."
-    echo ""
-    echo "--use-earthview"
-    echo "  Fetches a Random earthview Image"
-    echo ""
-    echo "--use-bing"
-    echo "  Fetches a Random bing Image"
-    echo ""
-    echo "--clean"
-    echo "  Cleans cached responses"
-    echo ""
-    echo "AUTHOR"
-    echo "  Michael Pratt <yo@michael-pratt.com>"
-    echo "  http://www.michael-pratt.com"
-    echo ""
+
+    if [ "${FULLHELP}" -eq 1 ]; then
+        echo "Requirements: feh, curl, wget"
+        echo "Author: Michael Pratt <yo@michael-pratt.com>"
+        echo ""
+        echo "DESCRIPTION"
+        echo "  Wallpaper managment script, requires feh"
+        echo ""
+        echo "PARAMS"
+        echo "--folder [folder]"
+        echo "  A folder with jpg, png or gif files. Used to fetch a random wallpapers from it"
+        echo ""
+        echo "--file [file]"
+        echo "  Path to an image file to be used as a wallpaper"
+        echo ""
+        echo "--random"
+        echo "  Pick a random wallpaper from earthview, bing, folder and reddit"
+        echo ""
+        echo "--use-previous"
+        echo "  Checks the home folder for a .fehbg file and runs it"
+        echo ""
+        echo "--use-random-subreddit"
+        echo "  Fetches a random image file from reddit"
+        echo ""
+        echo "--use-subreddit"
+        echo "  Fetches images from the given subreddit. No need to add the /r/ prefix."
+        echo ""
+        echo "--use-earthview"
+        echo "  Fetches a Random earthview Image"
+        echo ""
+        echo "--use-bing"
+        echo "  Fetches a Random bing Image"
+        echo ""
+        echo "--clean"
+        echo "  Cleans cached responses"
+        echo ""
+        echo "--verbose"
+        echo "  Verbose Output"
+        echo ""
+        echo "AUTHOR"
+        echo "  Michael Pratt <yo@michael-pratt.com>"
+        echo "  http://www.michael-pratt.com"
+        echo ""
+    fi
     exit 0
 }
 
@@ -101,18 +109,18 @@ set_wallpaper() {
             dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
             var Desktops = desktops();
             for (i=0;i<Desktops.length;i++) {
-                    d = Desktops[i];
-                    d.wallpaperPlugin = "org.kde.image";
-                    d.currentConfigGroup = Array("Wallpaper",
-                                                "org.kde.image",
-                                                "General");
-                    d.writeConfig("Image", "'${file}'");
+                d = Desktops[i];
+                d.wallpaperPlugin = "org.kde.image";
+                d.currentConfigGroup = Array("Wallpaper",
+                "org.kde.image",
+                "General");
+                d.writeConfig("Image", "'${file}'");
             }' ;;
 
-        *) feh --bg-scale "${file}" ;;
-    esac
+    *) feh --bg-scale "${file}" ;;
+esac
 
-    echo "${file}" > "${CONFIGFOLDER}/last-image"
+echo "${file}" > "${CONFIGFOLDER}/last-image"
 }
 
 #######################################################
@@ -131,11 +139,19 @@ set_download_image() {
     local extension="${filename##*.}"
     if [ -z "${extension}" ]; then
         extension="jpg"
+    else
+        extension=$(echo ${extension%&*} | sed 's/?.*//g')
     fi
 
-    local out=$(echo "${CONFIGFOLDER}/img/$(date +"%m-%d-%Y")_${filename}.${extension}" | sed 's/?.*//g' )
+    local out="$(echo "${CONFIGFOLDER}/img/$(date +"%m-%d-%Y")_${filename}" | sed 's/?.*//g').${extension}"
+    out="${out/png.png/png}"
+    out="${out/jpg.jpg/jpg}"
+    out="${out/gif.gif/gif}"
 
-    echo "Downloading ${img} to ${out}"
+    if [ "${VERBOSE}" -eq 1 ]; then
+        echo "Downloading ${img} to ${out} - Ext: ${extension}"
+    fi
+
     wget -q --user-agent="${UA}" ${img} -O ${out}
     if [ "$?" -eq "0" ]; then
         set_wallpaper ${out}
@@ -153,9 +169,12 @@ download_from_reddit() {
     local list=()
     check_internet
 
-    echo "Fetching subreddit API list ${url}"
+    if [ "${VERBOSE}" -eq 1 ]; then
+        echo "Fetching subreddit API list ${url}"
+    fi
+
     for im in $(make_http_request ${url} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+' | grep -v 'external-'); do
-        if [ -n "$(echo ${im} | egrep -i '(png|jpg|gif|s\=(.*?))$')" ]; then
+        if [ -n "$(echo ${im} | egrep -i '(png|gif|gif|s\=(.*?))$')" ]; then
             list+=( "${im/preview/i}" )
         fi
     done
@@ -191,7 +210,11 @@ download_from_earthview() {
     local url="https://earthview.withgoogle.com"
 
     check_internet
-    echo "Making Request to ${url}"
+
+    if [ "${VERBOSE}" -eq 1 ]; then
+        echo "Making Request to ${url}"
+    fi
+
     local src=$(make_http_request ${url})
     local images="$(echo ${src} | egrep -o 'https://www.gstatic.com/prettyearth/assets/full/[0-9]+.jpg' | uniq)"
 
@@ -207,7 +230,11 @@ download_from_bing() {
     local url="http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10&mkt=en-US"
 
     check_internet
-    echo "Making Request to ${url}"
+
+    if [ "${VERBOSE}" -eq 1 ]; then
+        echo "Making Request to ${url}"
+    fi
+
     local src=$(make_http_request ${url})
     local images="$(echo ${src} | tr "," "\n" | egrep '"url"' | egrep -o '"/(.+)"' | tr -d '"')"
     local list=()
@@ -226,8 +253,33 @@ download_from_bing() {
     set_download_image ${list[$RANDOM % ${#list[@]}]}
 }
 
+
 #######################################################
-# Yo DJ! Spin that wheel! spin that Wheel!
+# ACleanup process
+#######################################################
+cleanup() {
+    echo "Cleaning up..."
+    if [ -z "$(ls -A "${CONFIGFOLDER}/img/")" ]; then
+        echo "Empty Image Folder.."
+    else
+
+        if [ "${VERBOSE}" -eq 1 ]; then
+            echo "Checking for duplicate images..."
+        fi
+
+        cd "${CONFIGFOLDER}/img/"
+        for f in $(md5sum * | sort | awk 'BEGIN{lasthash = ""} $1 == lasthash {print $2} {lasthash = $1}'); do
+            if [ "${VERBOSE}" -eq 1 ]; then
+                echo "Removing Duplicate: ${f}"
+            fi
+
+            rm -rf "${f}"
+        done
+    fi
+}
+
+#######################################################
+# Yo DJ! Spin that wheel!
 #######################################################
 if [ "$#" -eq "0" ]; then
     wallpaper_usage
@@ -236,42 +288,46 @@ fi
 
 while [ -n "$1" ]; do
     case ${1} in
+        --verbose)
+            shift
+            VERBOSE="1"
+            ;;
         --folder)
             shift
             set_wallpaper "$(find ${1} -type f -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | shuf -n1)"
             shift
-        ;;
+            ;;
         --file)
             shift
             set_wallpaper "${1}"
             shift
-        ;;
+            ;;
         --use-previous)
             shift
             USEPREVIOUS="1"
-        ;;
+            ;;
         --use-random-subreddit)
             shift
             USEREDDIT="1"
-        ;;
+            ;;
         --use-earthview)
             shift
             USEEARTHVIEW="1"
-        ;;
+            ;;
         --use-bing)
             shift
             USEBING="1"
-        ;;
+            ;;
         --clean)
             shift
             rm -rf ${CONFIGFOLDER}/cache/*.cache
-        ;;
+            ;;
         --use-subreddit)
             shift
             USEREDDIT="1"
             SUBREDDITS=( "/r/${1}" )
             shift
-        ;;
+            ;;
         --random)
             shift
             POSIBILITIES=( "REDDIT" "BING"  "EARTHVIEW" )
@@ -283,11 +339,12 @@ while [ -n "$1" ]; do
             else
                 USEREDDIT=1
             fi
-        ;;
+            ;;
         -h|--help)
+            FULLHELP=1
             wallpaper_usage
             exit 0
-        ;;
+            ;;
         *) shift ;;
     esac
 done
@@ -317,3 +374,5 @@ if [ "${USEREDDIT}" -eq "1" ] && [ "${#SUBREDDITS[@]}" -gt "0" ]; then
     URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}.json?limit=100"
     download_from_reddit ${URL}
 fi
+
+cleanup

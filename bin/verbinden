@@ -37,7 +37,7 @@ WD="${HOME}/Projects"
 ##################################################################
 if [ "${#}" -lt 1 ]; then
     echo "Usage: $(basename ${0})  "
-    echo "Usage: $(basename ${0}) [project-dir] show "
+    echo "Usage: $(basename ${0}) [project-dir] show|edit "
     exit 0
 fi
 
@@ -63,9 +63,9 @@ fi
 shift
 
 if [[ "${1}" == "show" ]]; then
-    cat ${FILE}
+    cat ${FILE} | less
+elif [[ "${1}" == "edit" ]]; then
+    vim ${FILE}
 else
     bash ${FILE} ${@}
 fi
-
-

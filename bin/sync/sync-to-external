@@ -75,7 +75,8 @@ function backup_add_folder() {
 ##################################################################
 function backup_search_home_folder() {
     local user=${1}
-    local homedir="/home/${1}"
+    local homedir="/mnt/data"
+    #local homedir="/home/${1}"
     local file=""
     local ignore=0
 
@@ -206,7 +207,7 @@ function backup_cp_special_case() {
     if  [[ -n "${gdrive}" ]] && [[ "$(type gdrive)" ]] ; then
         backup_log "** Syncing ${foldername} to Google Drive"
         backup_log "*** Command: gdrive sync upload /home/pratt/${foldername}/ ${gdrive}"
-        gdrive sync upload /home/pratt/${foldername}/ ${gdrive}
+        #gdrive sync upload /home/pratt/${foldername}/ ${gdrive}
     fi
 }
 
