@@ -1,4 +1,4 @@
-gtk-icon-theme-name = "areao43-icon-theme"
+gtk-icon-theme-name = "oxygen"
 gtk-fallback-icon-theme = "gnome"
 gtk-print-preview-command="xpdf -q %f"
 gtk-cursor-theme-name = "Oxygen-White"
