@@ -82,6 +82,9 @@ set shortmess+=c   " don't give |ins-completion-menu| messages.
 " Show end of command visually when editing text
 set cpoptions+=$
 
+" Python version
+set pyx=3
+
 " Spell checking stuff
 try
     lang en_us

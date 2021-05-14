@@ -78,3 +78,9 @@
     default = current
 [merge]
 	tool = vimdiff
+[pull]
+	rebase = true
+[fetch]
+	prune = true
+[diff]
+	colorMoved = zebra

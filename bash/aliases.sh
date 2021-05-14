@@ -41,6 +41,7 @@ alias ddos='hping3 -c 10000 -d 120 -S -w 64 -p 21 --flood --rand-source'
 alias calculate='calc'
 alias clock="while true;do clear;echo "===========";date +"%r";echo "===========";sleep 1;done"
 alias cdp=". cdp"
+alias docker-ip="docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
 
 # Vim/Nvim
 if [ -x "$(command -v nvim)" ]; then

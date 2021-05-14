@@ -148,6 +148,7 @@ set_download_image() {
     out="${out/jpg.jpg/jpg}"
     out="${out/gif.gif/gif}"
 
+    echo "$(date) : Downloading ${img} to ${out} - Ext: ${extension}" >> ${CONFIGFOLDER}/app.log
     if [ "${VERBOSE}" -eq 1 ]; then
         echo "Downloading ${img} to ${out} - Ext: ${extension}"
     fi
@@ -173,7 +174,7 @@ download_from_reddit() {
         echo "Fetching subreddit API list ${url}"
     fi
 
-    for im in $(make_http_request ${url} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+' | grep -v 'external-'); do
+    for im in $(make_http_request ${url} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+' | grep -v 'external-' | grep -v 'award_image' | grep -v '/award'); do
         if [ -n "$(echo ${im} | egrep -i '(png|gif|gif|s\=(.*?))$')" ]; then
             list+=( "${im/preview/i}" )
         fi
