@@ -1,6 +1,7 @@
 #!/bin/bash
 ##################################################################
-# This script helps me change directories
+# This script helps me to my project directories
+# Requires: fzf
 #
 # Michael Pratt
 # http://www.michael-pratt.com
@@ -29,40 +30,28 @@
 APPNAME="CD to Project"
 VERSION="1.0"
 WD="${HOME}/Projects"
+LEVELS=3
 
 ##################################################################
 # Run script
 ##################################################################
 if [ "${#}" -lt 1 ]; then
     echo "${APPNAME}"
-    echo "Usage: $(basename ${0}) [project-name]"
+    echo "Usage: $(basename ${0}) [folder]"
     return 0
 fi
 
 if ! [ -e "${WD}" ]; then
     echo "Directory ${WD} doesnt exist"
-    return 1
+    return 0
 fi
 
-if ! [ -e "${WD}/${1}" ]; then
-    echo "Could not find selector ${1}"
-    return 1
-fi
-
-if [ -e "${WD}/${1}" ]; then
-    echo "Going to: ${WD}/${1}"
-    cd "${WD}/${1}/"
-    
-    if [ -n "${2}" ]; then
-        SUBDIR="$(find -maxdepth 3  -type d -iname "${2}*" -print | head -n 1)" 
-        if [ -n "${SUBDIR}" ]; then
-            echo "Going to: ${SUBDIR}"
-            cd "${SUBDIR}"
-        fi
-    fi
-
+cd "${WD}"
+TARGETDIR="${WD}/$(find . -maxdepth ${LEVELS} \( ! -regex '.*/\..*' \) -type d -print | find . -maxdepth ${LEVELS} -type d | fzf --query "${1}")"
+if [ -e "${TARGETDIR}" ]; then
+    echo "Going to: ${TARGETDIR}"
+    cd "${TARGETDIR}";
     ls -la --color=auto
 else
-    echo "Could not find project in ${WD}/${1}"
-    return 1
+    echo "Could not find project in ${TARGETDIR}"
 fi
