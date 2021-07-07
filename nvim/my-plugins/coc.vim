@@ -10,7 +10,6 @@ let g:coc_global_extensions = [
             \ 'coc-json',
             \ 'coc-markdownlint',
             \ 'coc-marketplace',
-            \ 'coc-pairs',
             \ 'coc-phpls',
             \ 'coc-prettier',
             \ 'coc-snippets',
@@ -25,4 +24,5 @@ let g:coc_global_extensions = [
 " \ 'coc-tslint-plugin',
 " \ 'coc-eslint', 
 " \ 'coc-docker',
+" \ 'coc-pairs',
 
