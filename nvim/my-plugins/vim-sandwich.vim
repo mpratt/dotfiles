@@ -1,1 +1,0 @@
-Plug 'machakann/vim-sandwich'
