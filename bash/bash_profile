@@ -1,7 +1,0 @@
-#!/bin/bash
-# Michael Pratt <pratt@hablarmierda.net>
-# $HOME/.bash_profile
-
-if [ -e "$HOME/.bashrc" ]; then
-   . $HOME/.bashrc
-fi

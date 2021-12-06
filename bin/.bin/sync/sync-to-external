@@ -1,0 +1,368 @@
+#!/bin/bash
+##################################################################
+#  Backup script
+#  Author Michael Pratt
+#  Url: http://michael-pratt.com
+##################################################################
+#set -e
+APPNAME=$(basename ${0})
+VERSION="0.1"
+SPECIALDIR="/run/media/pratt/storage"
+OUTPUTDIR="${SPECIALDIR}/Archive"
+MOUNTPOINT="1"
+DIALOG=${DIALOG:- dialog}
+
+# EXclude this files
+EXCLUDE=( ".esd_auth" ".ICEauthority" ".gmrun_history" ".xfce4-session.verbose-log" ".xsession-errors" "${APPNAME}" ".Xauthority" ".pki" ".wget-hsts" ".xwmconfig" ".wallpaper-image.jpg" ".wallpaper-image.png" ".xsession" ".adobe" ".cache" ".dmrc" ".rnd" ".macromedia" ".bash_history" ".dbus" ".xfce4-session.verbose-log.last" "Desktop" ".thumbnails" ".gimp-2.8" ".gvfs" ".hplip" ".putty" ".pylint.d" ".scim" ".xine" ".mplayer" ".oracle_jre_usage" ".p7zip" ".xinitrc" ".viminfo" ".xscreensaver-getimage.cache" ".screenrc" ".fehbg" ".gtk-bookmarks" )
+SPECIALFOLDERS=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Games' 'Videos')
+
+# Constants
+HOST=$(hostname)
+CURRENTUSER=$(whoami)
+MAINUSER="pratt"
+MAINHOST="amalthea"
+DATE=$(date +%Y-%m-%d)
+YEAR=$(date +%Y)
+MONTH=$(date +%m)
+HOURMINUTE=$(date +%H_%M_%S)
+FOLDERS=()
+FILES=()
+ONOROFF="off"
+SHOWHIDDEN="1"
+
+[ ! -e "${HOME}/tmp" ] && mkdir -p "${HOME}/tmp"
+TMPDIR=$(mktemp -d --tmpdir="${HOME}/tmp" -t ${APPNAME}.XXXXXX)
+trap "rm -rf ${TMPDIR} && exit" 0 1 2 9 15
+
+##################################################################
+# Log actions
+##################################################################
+function backup_log() {
+    echo "$(date +%H:%M:%S)# ${1}" >> ${OUTPUTDIR}/${APPNAME}-${DATE}.log;
+}
+
+##################################################################
+# Add a folder/files to the backup queue
+##################################################################
+function backup_add_folder() {
+    local folder=${1}
+    local ignore=0
+    local i key name
+
+    echo "Searching for data in ${folder}"
+    if [ -d "${folder}" ]; then
+        backup_log "** Searching for data in: ${folder}"
+        for i in $(find ${folder} -maxdepth 1 -type d); do
+            name=$(basename ${i})
+            [[ ${i} == ${folder} ]] && ignore=1 || ignore=0
+            for key in "${EXCLUDE[@]}"; do
+                if [[ ${key} == ${name} ]]; then
+                    ignore=1
+                    backup_log "*** Ignore ${i}"
+                fi
+            done
+
+            [[ ${ignore} == 0 ]] && FOLDERS+=( "${i}" ) && backup_log "** Added: ${i}"
+        done
+    else
+        echo "Folder ${folder} doesnt exist."
+        backup_log "!!! Folder ${folder} doesnt exist."
+    fi
+}
+
+##################################################################
+# Adds home folder data into the backup queue
+##################################################################
+function backup_search_home_folder() {
+    local user=${1}
+    local homedir="/mnt/data/pratt"
+    #local homedir="/home/${1}"
+    local file=""
+    local ignore=0
+
+    [[ "${user}" == "root" ]] && homedir="/root"
+    backup_add_folder ${homedir}
+
+    if [ -d "${homedir}" ]; then
+        for file in $(find ${homedir}/ -maxdepth 1 -type f); do
+            fname=$(basename ${file})
+            ignore=0
+            for key in "${EXCLUDE[@]}"; do
+                if [[ ${key} == ${fname} ]]; then
+                    ignore=1
+                    backup_log "*** Ignore ${file}"
+                    break
+                fi
+            done
+            [[ ${ignore} == 0 ]] && FILES+=( "${file}" ) && backup_log "** Added: ${file}"
+        done
+    fi
+}
+
+##################################################################
+# Backup the Database
+#################################################################
+function backup_db() {
+    read -p "Enter Password for MySQL Database: " -s DBPASS
+    echo ""
+
+    if [ -n "${DBPASS}" ]; then
+        backup_log "Performing Database Backups"
+        mysqldump -u root -p${DBPASS} --all-databases > ${OUTPUTDIR}/full-database-backup-${DATE}.sql
+        echo "DB backup done"
+    else
+        backup_log "Error Performing Database Backup (no password given)"
+    fi
+}
+
+##################################################################
+# Backups a folder
+##################################################################
+function backup_cp_folder() {
+    local folder=${1}
+    local foldername=$(basename ${1})
+    local foldersafe=$(echo ${1} | tr '/' '-' | tr '.' '_')
+    local extraflags=""
+    local special=0
+
+    for bfo in "${SPECIALFOLDERS[@]}"; do
+        special=0
+        if [[ ${foldername} == ${bfo} ]]; then
+            special=1
+            break
+        fi
+    done
+
+    if [[ ${special} == 1 ]]; then
+        backup_cp_special_case ${folder}
+        return 0
+    fi
+
+    if [[ "${folder}" == "/var" ]]; then
+        extraflags="--no-links --exclude /var/lib/docker/ --exclude /var/cache --exclude /var/lock"
+    fi
+
+    echo "Backing up ${folder}"
+    backup_log "** Backing up ${folder}"
+
+    mkdir -p ${TMPDIR}/backup/${HOST}${foldersafe}/
+    rsync -artz ${extraflags} --exclude .git --progress "${folder}" "${TMPDIR}/backup/${HOST}${foldersafe}/"
+
+    cd ${TMPDIR}/backup/${HOST}${foldersafe}/
+    for i in $(ls -A | egrep '^\.'); do
+        local name=$(basename $i | sed 's/\./_/g')
+        mv ${i} ${name}
+        backup_log "Renaming $i to $name"
+    done
+}
+
+##################################################################
+# Backups a special folder
+##################################################################
+function backup_cp_special_case() {
+    local folder=${1}
+    local foldername=$(basename ${1})
+    local bkdir="${TMPDIR}/backup/${foldername}-bk-${DATE}-${HOURMINUTE}"
+    local rsyncflags="-artz --progress"
+    local gdrive=""
+
+    if [[ "${CURRENTUSER}" != "${MAINUSER}" || "${HOST}" != "${MAINHOST}" ]]; then
+        echo "!!! Cannot Backup ${foldername} because you are not ${MAINUSER} or not on ${MAINHOST}"
+        backup_log "!!! Cannot Backup ${foldername} because you are not ${MAINUSER} (${CURRENTUSER}) or not on ${MAINHOST} (${HOST})"
+        return 1
+    fi
+
+    case ${foldername} in
+        Audio)
+            rsyncflags="${rsyncflags} --exclude .git --exclude Playlists --delete --backup --backup-dir=${bkdir}"
+            ;;
+        Documents)
+            rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
+            gdrive="0B9U2MofcmhRQR0YteDJpOHFTS3M"
+            ;;
+        Public)
+            rsyncflags="${rsyncflags} --exclude .git --delete"
+            gdrive="0B9U2MofcmhRQcEtQdHBQSEZhTlE"
+            ;;
+        Projects|Downloads|Games)
+            rsyncflags="${rsyncflags} --delete --backup --backup-dir=${bkdir}"
+            ;;
+        Pictures)
+            rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
+            ;;
+        Videos)
+            rsyncflags="${rsyncflags} --exclude .git --exclude Movies --exclude Series --exclude movies --exclude series --delete --backup --backup-dir=${bkdir}"
+            ;;
+        *)
+            backup_log "!!! No special matches for ${foldername}"
+            return 0
+            ;;
+    esac
+
+    echo "** Syncing ${foldername} to ${SPECIALDIR}/${foldername}"
+    backup_log "** Syncing ${foldername} to ${SPECIALDIR}/${foldername}"
+    backup_log "*** Command Used: rsync ${rsyncflags} ${folder} ${SPECIALDIR}"
+    rsync ${rsyncflags} "${folder}" "${SPECIALDIR}"
+
+    if  [[ -n "${gdrive}" ]] && [[ "$(type gdrive)" ]] ; then
+        backup_log "** Syncing ${foldername} to Google Drive"
+        backup_log "*** Command: gdrive sync upload /home/pratt/${foldername}/ ${gdrive}"
+        #gdrive sync upload /home/pratt/${foldername}/ ${gdrive}
+    fi
+}
+
+##################################################################
+# Backups a file in the main home directory
+##################################################################
+function backup_cp_file() {
+    local file=${1}
+    local uname="$(basename $(echo $1 | egrep -o '(/home/([a-zA-Z0-9]+)|/root)'))"
+
+    echo "Backing up ${file} ...."
+    backup_log "Backing up ${file} to ${TMPDIR}/backup/${uname}-files-${HOST}"
+
+    mkdir -p ${TMPDIR}/backup/${HOST}-${uname}-files/
+    cp ${file} ${TMPDIR}/backup/${HOST}-${uname}-files/$(basename ${file} | tr '.' '_')
+}
+
+##################################################################
+# Compress all backed up files
+##################################################################
+function backup_compress_to_output() {
+    local folder=${1}
+    local parentfolder=$(dirname ${folder})
+    local foldername=$(basename ${folder})
+    local tarfile="${foldername}-${DATE}.tar.gz"
+
+    echo "Compressing ${folder} to ${OUTPUTDIR}/${tarfile}"
+    backup_log "Compressing ${folder} to ${OUTPUTDIR}/${tarfile}"
+
+    cd "${parentfolder}"
+    tar cvzf "${tarfile}" "${foldername}"
+
+    echo "Moving ${tarfile} to ${OUTPUTDIR}"
+    backup_log "Moving ${tarfile} to ${OUTPUTDIR}"
+    mv ${tarfile} ${OUTPUTDIR}
+}
+
+#################################################################
+# Generates the list of directories/files that should be backed up
+#################################################################
+backup_generate_dialog_list() {
+    local f
+    echo "Generating dialog list"
+    for f in ${FOLDERS[@]}; do
+        if [ -e "${f}" ]; then
+
+            if [ "${SHOWHIDDEN}" -eq 0 ] && [ -z "$(echo "${f}" | egrep -v '^\.|/\.')" ]; then
+                continue
+            fi
+
+            printf "\"%s\" \"%s\" ${ONOROFF} \\ \n" $(echo ${f}) $(echo ${f}) >> $TMPDIR/folder_list
+        fi
+    done
+}
+
+#################################################################
+# Shows the usage
+#################################################################
+backup_usage() {
+    clear
+    echo "$APPNAME - $VERSION"
+    echo "Script that helps me backup my stuff in an external drive"
+    echo ""
+    echo "Requirements: ${DIALOG}, tar, rsync"
+    echo "Author: Michael Pratt <pratt@hablarmierda.net>"
+    echo ""
+    echo "Usage: $(basename $0) [OPTIONS]"
+    echo "    -f | --folder      Name folder you want to backup"
+    echo "    -o | --output-dir  Output directory where stuff is going to stored"
+    echo "    --select-yes       Folders are selected by default when prompting the selection dialog"
+    echo "    --not-mount-point  Do not check if the output directory is a mount point"
+    echo ""
+}
+
+##################################################################
+# Get options and perform minor checks before running
+##################################################################
+while [ -n "$1" ]; do
+    case ${1} in
+        -f|--folder) shift; FOLDERS+=( "${1}" ); shift ;;
+        --not-mount-point) shift; MOUNTPOINT="0"; shift ;;
+        --select-yes) shift; ONOROFF="on"; shift ;;
+        --ignore-hidden) shift; SHOWHIDDEN="0"; shift ;;
+        -h|--help) backup_usage; exit 0 ;;
+        -o|--output-dir)
+            shift
+            if [ -d "${1}" ]; then
+                OUTPUTDIR="${1}"
+            else
+                echo "The output dir ${1} doesnt exist"
+                exit 0
+            fi
+            shift
+        ;;
+    esac
+done
+
+if [[ "${MOUNTPOINT}" == "1" && "$(mountpoint -q "${OUTPUTDIR}")" ]]; then
+    echo "Error: ${OUTPUTDIR} is not a mountpoint! If that was intended use the '--not-mount-point' parameter"
+    exit 1
+fi
+
+##################################################################
+# Mi buenos aires se ve tan suceptible...
+##################################################################
+echo "Warming up..."
+[ ! -e "${OUTPUTDIR}/${YEAR}-${MONTH}/${DATE}" ] && mkdir -p "${OUTPUTDIR}/${YEAR}-${MONTH}/${DATE}"
+OUTPUTDIR="${OUTPUTDIR}/${YEAR}-${MONTH}/${DATE}"
+
+if [[ "${CURRENTUSER}" == "root" ]]; then
+    FOLDERS+=( "/boot" "/etc" "/var" )
+    backup_search_home_folder ${CURRENTUSER}
+    for u in $(ls /home/); do
+        backup_search_home_folder $(basename $u)
+    done
+else
+    backup_search_home_folder ${CURRENTUSER}
+fi
+
+backup_generate_dialog_list
+
+echo "Showing dialog options"
+cat ${TMPDIR}/folder_list | uniq | sort | xargs ${DIALOG} --clear --title "${APPNAME} ${VERSION}" --backtitle "${APPNAME} ${VERSION}" --item-help --separate-output --checklist "Choose the folders/files" 15 70 10 2> ${TMPDIR}/tmp_selection
+rm -rf ${TMPDIR}/folder_list
+
+TIMER_START=$(date +%s)
+if [ "$(stat -c%s ${TMPDIR}/tmp_selection)" -eq 0 ]; then
+    ${DIALOG} --clear --title "${APPNAME} ${VERSION}" --backtitle "${APPNAME} ${VERSION}" --msgbox "No folders selected" 15 110
+    exit 1
+fi
+
+clear
+backup_log "========================================================================"
+backup_log "[${APPNAME} - ${CURRENTUSER}@${HOST}] $(date)"
+backup_log "Resetting Outputdir to ${OUTPUTDIR}"
+
+TSTART=$(date +%s)
+backup_log "** Backing up Folders"
+for fo in $(cat ${TMPDIR}/tmp_selection); do
+    backup_cp_folder ${fo}
+done
+
+backup_log "** Backing up Files"
+for f in ${FILES[@]}; do
+    backup_cp_file ${f}
+done
+
+backup_log "** Compressing ..."
+for bk in $(find ${TMPDIR}/backup/ -type d -maxdepth 1 ); do
+    if [[ ${bk} != "${TMPDIR}/backup/" ]]; then
+        backup_compress_to_output ${bk}
+    fi
+done
+TSTOP=$(date +%s)
+
+backup_log "Done. Total Time: $(echo "($TSTOP - $TSTART)/60" | bc) minutes"
+backup_log "========================================================================"
+echo "Done!"

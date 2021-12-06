@@ -1,0 +1,6 @@
+#!/bin/bash
+# Michael Pratt
+# $HOME/.bash_profile
+if [ -e "$HOME/.bashrc" ]; then
+   . $HOME/.bashrc
+fi

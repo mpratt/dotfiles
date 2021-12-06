@@ -1,0 +1,146 @@
+#!/bin/bash
+# Michael Pratt
+# $HOME/.bashrc
+
+# Configuration vars
+unset GREP_OPTIONS
+export TERM=xterm-256color
+export HISTSIZE=40000
+export HISTFILESIZE=40000
+export HISTTIMEFORMAT="%Y/%m/%d %H:%M "
+export HISTIGNORE="&:ls:su:cat:man:cd:cp:mv:exit:clear:history"
+export HISTCONTROL=ignoreboth # erasedups & ignorespace
+export LS_OPTIONS="-h --color=auto --group-directories-first"
+export FZF_DEFAULT_OPTS='--height 80% --layout=reverse --border'
+export LC_ALL="en_US.UTF-8"
+
+if [ -x "$(command -v nvim)" ]; then
+    export EDITOR="nvim"
+    export VISUAL="nvim"
+else
+    export EDITOR="vim"
+    export VISUAL="vim"
+fi
+
+# Tweak Some Bash Stuff
+shopt -s cdspell        # Correct the typos in the cd command
+shopt -s dirspell       # Attempts spelling correction on directory names during word completion
+shopt -s histappend     # The history list is appended when the shell exits, rather than overwriting the file
+shopt -s extglob        # Allow extended globs! For example 'rm !(*.jpg|*.gif|*.png)'
+shopt -s nocaseglob     # Matches filenames in a case-insensitive fashion when performing filename expansion
+shopt -s checkwinsize   # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
+shopt -s autocd         # Switch automatically without using cd
+
+# Prompt
+function __exit_prompt_status {
+    EXITSTATUS="$?"
+    BOLD="\e[\033[1m\]"
+    RED="\e[\033[0;31m\]"
+    OFF="\e[\033[m\]"
+    if [ "${EXITSTATUS}" -ne 0 ]; then
+        echo -ne "[$(tput bold && tput setaf 1):/$(tput sgr0)]"
+    fi
+}
+
+PROMPT_COMMAND=__exit_prompt_status
+[ "$(whoami)" = "root" ] && PS1="\u@\h:\w\$ " || PS1="[\u@\h \W]⚡ "
+
+# Append custom PATH
+[ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
+[ -e "${HOME}/.local/share/gem/ruby/3.0.0/bin" ] && PATH=${PATH}:${HOME}/.local/share/gem/ruby/3.0.0/bin
+
+
+PATH=${PATH}:${HOME}/.bin
+for p in $(find ${HOME}/.bin -type d); do
+    PATH="${PATH}:${p}"
+done
+
+# Allow root to use DISPLAY
+xhost + &> /dev/null
+
+####################################################################
+# Aliases
+####################################################################
+# Directory management
+alias cd..="cd .."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+# Get current external ip
+alias getip="curl -s http://wtfismyip.com/text"
+
+# Overwrite common commands
+alias phpunit="phpunit --verbose"
+alias cat="cat -v" # Cat show-nonprinting
+alias diff='colordiff -u'
+
+# Color Aliases
+alias ls="ls --color=auto"
+alias diff="diff --color=auto"
+alias grep="grep --color=auto"
+alias ip="ip --color=auto"
+
+# Serve current directory
+alias serve-php="php -S localhost:9930"
+alias serve-python="python -m http.server 9930 --bind 127.0.0.1"
+alias serve-live="live-server --port=9930"
+
+# Custom aliases
+alias :q="exit"
+alias ll="ls -l --color=auto"
+alias lsoctal="stat -c '%a %n'"
+alias nocomment="grep -Ev '^\s*(#|//|$)'"
+alias screenoff="xset dpms force off"
+alias regrep="egrep -R -iH -n --color=auto"
+alias ducks="du -cks * | sort -rn | head -11" #
+alias voyeur="lsof -i -P +c 0 +M"
+alias tulpan="netstat -tulpan"
+alias ddos='hping3 -c 10000 -d 120 -S -w 64 -p 21 --flood --rand-source'
+alias calculate='calc'
+alias clock="while true;do clear;echo "===========";date +"%r";echo "===========";sleep 1;done"
+alias cdp=". cdp"
+alias docker-ip="docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
+
+# Vim/Nvim
+if [ -x "$(command -v nvim)" ]; then
+    alias gvim="gnvim --disable-ext-cmdline"
+    alias vim="nvim"
+fi
+
+# Non root alias
+if [ "$(whoami)" != "root" ]; then
+   alias su="su -l"
+fi
+
+####################################################################
+# Includes
+####################################################################
+# FZF
+if [ -e "/usr/share/fzf/key-bindings.bash" ]; then
+    . /usr/share/fzf/key-bindings.bash
+fi
+
+if [ -e "/usr/share/fzf/completion.bash" ]; then
+    . /usr/share/fzf/completion.bash
+fi
+
+# Source custom bashrc for a specific host
+if [ -e "$HOME/.bashrc.${HOSTNAME}" ]; then
+   . $HOME/.bashrc.${HOSTNAME}
+fi
+
+# Source local stuff
+if [ -e "$HOME/.bashrc.local" ]; then
+   . $HOME/.bashrc.local
+fi
+
+if [ -e "${HOME}/.fzf.local" ]; then
+    . ${HOME}/.fzf.local
+fi
+
+if [ -e "/usr/bin/fortune" ]; then
+    fortune
+    echo ""
+fi
