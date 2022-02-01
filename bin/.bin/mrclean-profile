@@ -1,0 +1,106 @@
+#!/bin/bash
+########################################################################
+# Clean Current user Profile
+# Clean old files on the profile cache
+# Clean hidden files starting with .~ on some folders
+# Google Chrome and Firefox history/sessions
+########################################################################
+FIREFOXPROFILE="${HOME}/.mozilla/firefox"
+CHROMEPROFILE="${HOME}/.config/google-chrome/Default"
+
+########################################################################
+# Helpers
+########################################################################
+emptyDir() {
+    local dir="${1}"
+    local days="${2:-5}"
+
+    if [ -d "${dir}" ]; then
+        echo "Cleaning dir: ${dir}"
+        if [ "${days}" -gt 0 ]; then
+            find ${dir}/ -mtime +${days} -type f -delete
+        else
+            find ${dir}/ -type f -delete
+        fi
+
+        find ${dir}/ -empty -type d -delete
+    fi
+}
+
+findAndDelete() {
+    local dir="${1}"
+    local pattern="${2}"
+    local result=$(find "${dir}" -type f -print | grep "${pattern}")
+
+    find "${dir}" -type f -name "* *" | while read file; do
+        if [ -n "$(echo ${file} | grep "${pattern}")" ]; then
+            echo "Removing ${file}"
+            rm -rf "${file}"
+        fi
+    done
+}
+
+########################################################################
+# Spin that Wheel
+########################################################################
+echo "Cleaning up home directories..."
+emptyDir "${HOME}/.cache"
+findAndDelete "${HOME}/Downloads/" ".~"
+findAndDelete "${HOME}/Documents/" ".~"
+findAndDelete "${HOME}/Pictures/" ".~"
+
+if [ -d "${CHROMEPROFILE}" ]; then
+
+    echo "Cleaning Google Chrome data ....."
+    pgrep -u ${USER} chrome > /dev/null
+    if [[ $? -eq 0 ]]; then
+        kill -1 $( pgrep -u ${USER} chrome | head -n 1)
+        sleep 10
+    fi
+
+    if [ -f "${CHROMEPROFILE}/History" ]; then
+        echo "Deleting chrome history ...."
+        sqlite3 "${CHROMEPROFILE}/History" "delete from urls;" | sed 's/^/ /'
+        sqlite3 "${CHROMEPROFILE}/History" "delete from visits;" | sed 's/^/ /'
+    fi
+
+    if [ -f "${CHROMEPROFILE}/Visited Links" ]; then
+        rm -rf "${CHROMEPROFILE}/Visited Links"
+    fi
+
+    if [ -f "${CHROMEPROFILE}/Top Sites" ]; then
+        rm -rf "${CHROMEPROFILE}/Top Sites"
+    fi
+
+    emptyDir "${CHROMEPROFILE}/Sessions" "0"
+fi
+
+if [ -e "${FIREFOXPROFILE}/profiles.ini" ]; then
+    echo "Cleaning Firefox data ....."
+    pgrep -u ${USER} firefox > /dev/null
+    if [[ $? -eq 0 ]]; then
+        kill -1 $( pgrep -u ${USER} firefox | head -n 1)
+        sleep 10
+    fi
+
+    FIREFOXPROFILEDIR=$(grep -E 'Default\=.{2,}' ${FIREFOXPROFILE}/profiles.ini | cut -d"=" -f2)
+    if [ -d "${FIREFOXPROFILE}/${FIREFOXPROFILEDIR}" ]; then
+        FFPROF="${FIREFOXPROFILE}/${FIREFOXPROFILEDIR}"
+
+        if [ -f "${FFPROF}/places.sqlite" ]; then
+            echo "Deleting Firefox History ...."
+            sqlite3 "${FFPROF}/places.sqlite" "delete from moz_historyvisits;"
+        fi
+
+        if [ -f "${FFPROF}/cookies.sqlite" ]; then
+            echo "Deleting Firefox Cookies ...."
+            sqlite3 "${FFPROF}/cookies.sqlite" "select datetime(creationTime/1000000,'unixepoch'),host from moz_cookies; delete from moz_cookies;" | sed 's/^/ /'
+        fi
+
+        emptyDir  "${FFPROF}/storage/default" "0"
+    else
+        echo "!!! ERROR: Could not find directory: ${FIREFOXPROFILE}/${FIREFOXPROFILEDIR}"
+    fi
+fi
+
+echo "Cleanup finished"
