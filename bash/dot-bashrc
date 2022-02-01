@@ -51,7 +51,7 @@ PROMPT_COMMAND=__exit_prompt_status
 
 
 PATH=${PATH}:${HOME}/.bin
-for p in $(find ${HOME}/.bin -type d); do
+for p in $(find ${HOME}/.bin/ -type d); do
     PATH="${PATH}:${p}"
 done
 

@@ -1,24 +1,20 @@
 " .vimrc
 " Michael Pratt
 " http://www.michael-pratt.com
-"
+
 filetype off
 
 " Load custom settings/plugins
 call plug#begin(stdpath('data') . '/plugged')
     Plug 'gruvbox-community/gruvbox',
     Plug 'tpope/vim-fugitive',
-    Plug 'junegunn/gv.vim',
     Plug 'neovim/nvim-lspconfig',
     Plug 'williamboman/nvim-lsp-installer'
     Plug 'hrsh7th/nvim-cmp',
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/cmp-path'
-    Plug 'hrsh7th/cmp-cmdline'
-    Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
-    Plug 'nvim-treesitter/nvim-treesitter', {'branch': '0.5-compat', 'do': ':TSUpdate'}
-    Plug 'nvim-treesitter/nvim-treesitter-textobjects', {'branch' : '0.5-compat'}
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -26,6 +22,8 @@ call plug#begin(stdpath('data') . '/plugged')
     Plug 'ap/vim-buftabline'
     Plug 'machakann/vim-sandwich'
     Plug 'numToStr/Comment.nvim'
+    Plug 'windwp/nvim-autopairs'
+    Plug 'windwp/nvim-ts-autotag'
 call plug#end()
 
 for fpath in split(globpath('~/.config/nvim/config', '*.vim'), '\n')
@@ -78,6 +76,8 @@ set tabstop=4           " use 4 spaces to represent tab
 set shiftwidth=4        " number of spaces to use for auto indent
 set softtabstop=4
 set smartindent
+set cindent
+set cinkeys=0{,0},!^F,o,O,e
 
 " Search Settings
 set ignorecase         " case insensitive search
