@@ -8,8 +8,6 @@ filetype off
 call plug#begin(stdpath('data') . '/plugged')
     Plug 'gruvbox-community/gruvbox',
     Plug 'tpope/vim-fugitive',
-    Plug 'neovim/nvim-lspconfig',
-    Plug 'williamboman/nvim-lsp-installer'
     Plug 'hrsh7th/nvim-cmp',
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
@@ -26,9 +24,14 @@ call plug#begin(stdpath('data') . '/plugged')
     Plug 'windwp/nvim-ts-autotag'
     Plug 'L3MON4D3/LuaSnip'
     Plug 'saadparwaiz1/cmp_luasnip'
+    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'neovim/nvim-lspconfig'
 call plug#end()
 
 lua require('lsp')
+lua require('autocompletion')
+lua require('snippets')
 
 for fpath in split(globpath('~/.config/nvim/config', '*.vim'), '\n')
     exe 'source' fpath
@@ -249,68 +252,68 @@ nmap <A-S-k> [m
 nmap <A-j> }
 nmap <A-k> {
 
-" Go to next ''/""/[]/{}
-nnoremap <Leader>j :call search('""\\|()\\|[]\\|{}\\|''''')<CR>
-nnoremap <Leader>k :call search('""\\|()\\|[]\\|{}\\|''''', 'b')<CR>
+    " Go to next ''/""/[]/{}
+    nnoremap <Leader>j :call search('""\\|()\\|[]\\|{}\\|''''')<CR>
+        nnoremap <Leader>k :call search('""\\|()\\|[]\\|{}\\|''''', 'b')<CR>
 
-" File Navigation
-nnoremap <Leader><Leader> <C-^>
+            " File Navigation
+            nnoremap <Leader><Leader> <C-^>
 
-" Make a small terminal at the bottom of the screen.
-nnoremap <leader>tt :call <SID>small_terminal()<CR>
+            " Make a small terminal at the bottom of the screen.
+            nnoremap <leader>tt :call <SID>small_terminal()<CR>
 
-" Resize Windows
-nnoremap <Leader>< :vertical resize +10<CR>
-nnoremap <Leader>> :vertical resize -1o<CR>
-nnoremap <Leader>, :resize +10<CR>
-nnoremap <Leader>. :resize -10<CR>
+            " Resize Windows
+            nnoremap <Leader>< :vertical resize +10<CR>
+            nnoremap <Leader>> :vertical resize -1o<CR>
+            nnoremap <Leader>, :resize +10<CR>
+            nnoremap <Leader>. :resize -10<CR>
 
-" Window Navigation
-nmap <A-Up> :wincmd k<CR>
-nmap <A-Down> :wincmd j<CR>
-nmap <A-Left> :wincmd h<CR>
-nmap <A-Right> :wincmd l<CR>
-nmap <A-d> :wincmd w<CR>
-tnoremap <A-Up> <C-\><C-n><C-w>k
-tnoremap <A-Down> <C-\><C-n><C-w>j
-tnoremap <A-Left> <C-\><C-n><C-w>h
-tnoremap <A-Right> <C-\><C-n><C-w>l
-tnoremap <leader><Esc> <C-\><C-n>
-tnoremap <A-d> <C-\><C-n><C-w>w
+            " Window Navigation
+            nmap <A-Up> :wincmd k<CR>
+            nmap <A-Down> :wincmd j<CR>
+            nmap <A-Left> :wincmd h<CR>
+            nmap <A-Right> :wincmd l<CR>
+            nmap <A-d> :wincmd w<CR>
+            tnoremap <A-Up> <C-\><C-n><C-w>k
+            tnoremap <A-Down> <C-\><C-n><C-w>j
+            tnoremap <A-Left> <C-\><C-n><C-w>h
+            tnoremap <A-Right> <C-\><C-n><C-w>l
+            tnoremap <leader><Esc> <C-\><C-n>
+            tnoremap <A-d> <C-\><C-n><C-w>w
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Auto Commands
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Change cwd to file we are currently editing
-autocmd BufEnter * silent! lcd %:p:h
+            """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+            " Auto Commands
+            """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+            " Change cwd to file we are currently editing
+            autocmd BufEnter * silent! lcd %:p:h
 
-" Saves when focus lost.
-au FocusLost * silent! wa
+            " Saves when focus lost.
+            au FocusLost * silent! wa
 
-" Resize splits when the window is resized
-au VimResized * :wincmd =
+            " Resize splits when the window is resized
+            au VimResized * :wincmd =
 
-" Only show cursorline in the current window and in normal mode.
-augroup cline
-au!
-au WinLeave,InsertEnter * set nocursorline
-au WinEnter,InsertLeave * set cursorline
-augroup END
+            " Only show cursorline in the current window and in normal mode.
+            augroup cline
+                au!
+                au WinLeave,InsertEnter * set nocursorline
+                au WinEnter,InsertLeave * set cursorline
+            augroup END
 
-" Only show trailing whitespace when not in insert mode
-augroup trailing
-au!
-au InsertEnter * :set listchars-=trail:•
-au InsertLeave * :set listchars+=trail:•
-augroup END
+            " Only show trailing whitespace when not in insert mode
+            augroup trailing
+                au!
+                au InsertEnter * :set listchars-=trail:•
+                au InsertLeave * :set listchars+=trail:•
+            augroup END
 
-augroup highlight_yank
-autocmd!
-autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 40})
-augroup END
+            augroup highlight_yank
+                autocmd!
+                autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank({timeout = 40})
+            augroup END
 
-augroup mpratt
-    autocmd!
-    " Remove trailing whitespace on save for a bunch of filetypes on save
-    autocmd BufWritePre * call Preserve("%s/\\s\\+$//e")
-augroup END
+            augroup mpratt
+                autocmd!
+                " Remove trailing whitespace on save for a bunch of filetypes on save
+                autocmd BufWritePre * call Preserve("%s/\\s\\+$//e")
+            augroup END
