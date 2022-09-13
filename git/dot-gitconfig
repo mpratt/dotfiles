@@ -84,3 +84,5 @@
 	prune = true
 [diff]
 	colorMoved = zebra
+[init]
+	defaultBranch = master
