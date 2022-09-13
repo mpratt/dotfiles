@@ -174,24 +174,22 @@ function backup_cp_special_case() {
 
     case ${foldername} in
         Audio)
-            rsyncflags="${rsyncflags} --exclude .git --exclude Playlists --delete --backup --backup-dir=${bkdir}"
+            rsyncflags="${rsyncflags} --exclude .git --exclude Playlists --delete"
             ;;
         Documents)
-            rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
-            gdrive="0B9U2MofcmhRQR0YteDJpOHFTS3M"
+            rsyncflags="${rsyncflags} --exclude .git --delete"
             ;;
         Public)
             rsyncflags="${rsyncflags} --exclude .git --delete"
-            gdrive="0B9U2MofcmhRQcEtQdHBQSEZhTlE"
             ;;
         Projects|Downloads|Games)
-            rsyncflags="${rsyncflags} --delete --backup --backup-dir=${bkdir}"
+            rsyncflags="${rsyncflags} --delete"
             ;;
         Pictures)
-            rsyncflags="${rsyncflags} --exclude .git --delete --backup --backup-dir=${bkdir}"
+            rsyncflags="${rsyncflags} --exclude .git --delete"
             ;;
         Videos)
-            rsyncflags="${rsyncflags} --exclude .git --exclude Movies --exclude Series --exclude movies --exclude series --delete --backup --backup-dir=${bkdir}"
+            rsyncflags="${rsyncflags} --exclude .git --exclude Movies --exclude Series --exclude movies --exclude series --delete"
             ;;
         *)
             backup_log "!!! No special matches for ${foldername}"
