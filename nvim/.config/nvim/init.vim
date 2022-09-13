@@ -24,13 +24,16 @@ call plug#begin(stdpath('data') . '/plugged')
     Plug 'numToStr/Comment.nvim'
     Plug 'windwp/nvim-autopairs'
     Plug 'windwp/nvim-ts-autotag'
+    Plug 'L3MON4D3/LuaSnip'
+    Plug 'saadparwaiz1/cmp_luasnip'
 call plug#end()
+
+lua require('lsp')
 
 for fpath in split(globpath('~/.config/nvim/config', '*.vim'), '\n')
     exe 'source' fpath
 endfor
 
-lua require('lsp')
 
 filetype plugin indent on
 syntax on
