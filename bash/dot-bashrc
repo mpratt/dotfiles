@@ -47,6 +47,7 @@ PROMPT_COMMAND=__exit_prompt_status
 
 # Append custom PATH
 [ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
+[ -e "${HOME}/.local/bin" ] && PATH=${PATH}:${HOME}/.local/bin
 [ -e "${HOME}/.local/share/gem/ruby/3.0.0/bin" ] && PATH=${PATH}:${HOME}/.local/share/gem/ruby/3.0.0/bin
 
 

@@ -5,6 +5,18 @@
 # Clean hidden files starting with .~ on some folders
 # Google Chrome and Firefox history/sessions
 ########################################################################
+echo "Cleaning Google Chrome data ....."
+pgrep -u ${USER} chrome > /dev/null
+if [[ $? -eq 0 ]]; then
+    kill -1 $( pgrep -u ${USER} chrome | head -n 1)
+    sleep 10
+fi
+
+bleachbit --clean google_chrome.cache google_chrome.session google_chrome.history google_chrome.form_history
+
+exit 0
+
+
 FIREFOXPROFILE="${HOME}/.mozilla/firefox"
 CHROMEPROFILE="${HOME}/.config/google-chrome/Default"
 
@@ -33,11 +45,11 @@ findAndDelete() {
     local result=$(find "${dir}" -type f -print | grep "${pattern}")
 
     find "${dir}" -type f -name "* *" | while read file; do
-        if [ -n "$(echo ${file} | grep "${pattern}")" ]; then
-            echo "Removing ${file}"
-            rm -rf "${file}"
-        fi
-    done
+    if [ -n "$(echo ${file} | grep "${pattern}")" ]; then
+        echo "Removing ${file}"
+        rm -rf "${file}"
+    fi
+done
 }
 
 ########################################################################
@@ -51,12 +63,6 @@ findAndDelete "${HOME}/Pictures/" ".~"
 
 if [ -d "${CHROMEPROFILE}" ]; then
 
-    echo "Cleaning Google Chrome data ....."
-    pgrep -u ${USER} chrome > /dev/null
-    if [[ $? -eq 0 ]]; then
-        kill -1 $( pgrep -u ${USER} chrome | head -n 1)
-        sleep 10
-    fi
 
     if [ -f "${CHROMEPROFILE}/History" ]; then
         echo "Deleting chrome history ...."
