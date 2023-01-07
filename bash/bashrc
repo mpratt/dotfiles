@@ -101,7 +101,7 @@ alias tulpan="netstat -tulpan"
 alias ddos='hping3 -c 10000 -d 120 -S -w 64 -p 21 --flood --rand-source'
 alias cdp=". cdp"
 alias docker-ip="docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
-alias export-arch-packages="sudo pacman -Qe > ${HOME}/.dotfiles/env/arch_packages.list && cat ${HOME}/.dotfiles/env/arch_packages.list"
+alias export-arch-packages="sudo pacman -Qe | awk '{print \$1}' > ${HOME}/.dotfiles/env/arch_packages.list && cat ${HOME}/.dotfiles/env/arch_packages.list"
 
 # Vim/Nvim
 if [ -x "$(command -v nvim)" ]; then
