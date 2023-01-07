@@ -2,6 +2,7 @@
 /vim/plugged/*
 /vim/.netrwhist
 /vim/local/tmp/*
+/vim/undodir/*
 /nvim/.netrwhist
 *.mp4
 tags
