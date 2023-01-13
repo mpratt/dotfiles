@@ -15,6 +15,8 @@ vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 vim.keymap.set('n', 'g;', 'g;zz', opts)
 vim.keymap.set('n', 'g,', 'g,zz', opts)
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
 
 -- Common Typos
 vim.api.nvim_create_user_command('Wq', 'wq', {bang = true})
@@ -23,6 +25,7 @@ vim.api.nvim_create_user_command('Wa', 'wa', {bang = true})
 vim.api.nvim_create_user_command('WA', 'wa', {bang = true})
 vim.api.nvim_create_user_command('Q', 'q', {bang = true})
 vim.api.nvim_create_user_command('W', 'w', {bang = true})
+vim.keymap.set('n', 'Q', '<nop>', opts)
 
 -- Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp
 vim.keymap.set('v', 'y', 'y`]', opts)
@@ -43,7 +46,8 @@ vim.keymap.set('n', '<A-Right>', '<cmd>wincmd l<CR>', opts)
 vim.keymap.set('n', '<A-d>', '<cmd>wincmd w<CR>', opts)
 
 -- Visual Mode Replace
-vim.keymap.set('v', '<C-r>', '"hy:%s/<C-r>h//gc<left><left><left>', opts)
+vim.keymap.set("v", "<C-r>", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<C-r>", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- Make <leader>w write and close the buffer
 vim.keymap.set('n', '<leader>w', '<cmd>w<CR><cmd>bd<CR>', opts)
@@ -64,5 +68,12 @@ vim.keymap.set('n', 'U', '<C-r>', opts)
 vim.keymap.set('n', '<C-Up>', 'ddkP', opts)
 vim.keymap.set('n', '<C-Down>', 'ddp', opts)
 
+-- Yanking and pasting
+vim.keymap.set('n', '<leader>y', '"+y', opts)
+vim.keymap.set('v', '<leader>y', '"+y', opts)
 
+vim.keymap.set('n', '<leader>p', '"+p', opts)
+vim.keymap.set('v', '<leader>p', '"+p', opts)
 
+vim.keymap.set('n', '<leader>d', '"_d', opts)
+vim.keymap.set('v', '<leader>d', '"_d', opts)
