@@ -49,8 +49,9 @@ vim.keymap.set('n', '<A-d>', '<cmd>wincmd w<CR>', opts)
 vim.keymap.set("v", "<C-r>", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<C-r>", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
--- Make <leader>w write and close the buffer
+-- Make <leader>w write and close the buffer, <leader>q just to close
 vim.keymap.set('n', '<leader>w', '<cmd>w<CR><cmd>bd<CR>', opts)
+vim.keymap.set('n', '<leader>q', '<cmd>bd<CR>', opts)
 
 -- Reset all panels
 vim.keymap.set('n', '<leader>o', '<cmd>only<CR>', opts)
@@ -58,8 +59,8 @@ vim.keymap.set('n', '<leader>o', '<cmd>only<CR>', opts)
 -- Select entire buffer
 vim.keymap.set('n', '<leader>b', 'ggVG$', opts)
 
--- Reindent all the file
-vim.keymap.set('n', '<leader>=', 'gg=Gzz', opts)
+-- Reindent all the file with LSP
+vim.keymap.set('n', '<leader>=', function() vim.lsp.buf.format() end, opts)
 
 -- Map U to redo (since u undo's)
 vim.keymap.set('n', 'U', '<C-r>', opts)
