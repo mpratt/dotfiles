@@ -23,6 +23,7 @@ return require('packer').startup(function(use)
 
     use 'gruvbox-community/gruvbox'
     use 'rose-pine/neovim'
+    use 'github/copilot.vim'
 
     use {
         'VonHeikemen/lsp-zero.nvim',
