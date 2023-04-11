@@ -27,6 +27,7 @@ return require('packer').startup(function(use)
 
     use {
         'VonHeikemen/lsp-zero.nvim',
+        branch = 'v2.x',
         requires = {
             -- LSP Support
             {'neovim/nvim-lspconfig'},
@@ -56,9 +57,15 @@ return require('packer').startup(function(use)
     use 'ap/vim-buftabline'
     use 'machakann/vim-sandwich'
     use 'numToStr/Comment.nvim'
+    use 'JoosepAlviste/nvim-ts-context-commentstring'
     use 'windwp/nvim-autopairs'
     use 'windwp/nvim-ts-autotag'
     use 'mbbill/undotree'
+
+    use {
+        "cbochs/grapple.nvim",
+        requires = { "nvim-lua/plenary.nvim" },
+    }
 
     use {
         'nvim-lualine/lualine.nvim',

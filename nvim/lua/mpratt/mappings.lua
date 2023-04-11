@@ -27,6 +27,10 @@ vim.api.nvim_create_user_command('Q', 'q', {bang = true})
 vim.api.nvim_create_user_command('W', 'w', {bang = true})
 vim.keymap.set('n', 'Q', '<nop>', opts)
 
+-- H to move to the first non-blank char and L to move to the last non-blank char
+vim.keymap.set('n', 'H', '^', opts)
+vim.keymap.set('n', 'L', '$', opts)
+
 -- Automatically jump to end of text you pasted - Paste multiple lines multiple times with simple ppppp
 vim.keymap.set('v', 'y', 'y`]', opts)
 vim.keymap.set({ 'v', 'n' }, 'p', 'p`]', opts)

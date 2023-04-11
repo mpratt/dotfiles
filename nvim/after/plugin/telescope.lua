@@ -11,7 +11,7 @@ local project_files = function()
   end
 end
 
-vim.keymap.set('n', '<C-l>', builtin.find_files)
 vim.keymap.set('n', '<C-p>', project_files)
+vim.keymap.set('n', '<C-f>', builtin.find_files)
 vim.keymap.set('n', '<C-h>', builtin.oldfiles)
 vim.keymap.set('n', '<C-g>', builtin.live_grep)
