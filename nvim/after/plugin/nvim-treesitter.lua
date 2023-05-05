@@ -1,10 +1,11 @@
+require('orgmode').setup_ts_grammar()
 require 'nvim-treesitter.configs'.setup {
     ensure_installed = "all",
     sync_install = false,
     auto_install = true,
     highlight = {
         enable = true,
-        additional_vim_regex_highlighting = false,
+        additional_vim_regex_highlighting = {'org'},
     },
     indent = { enable = true },
 }

@@ -1,6 +1,6 @@
 vim.g.mapleader = " "
-
 local opts = { noremap = true }
+
 -- Visual Mode Indenting
 vim.keymap.set('v', '>', '>gv', opts)
 vim.keymap.set('v', '<', '<gv', opts)
