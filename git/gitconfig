@@ -22,6 +22,7 @@
     quotepath = false
     editor = vim
     pager = less -XRMSI
+	autocrlf = false
 [apply]
     whitespace = fix
 [alias]
