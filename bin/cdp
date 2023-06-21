@@ -30,7 +30,7 @@
 APPNAME="CD to Project"
 VERSION="1.0"
 WD="${HOME}/Projects"
-LEVELS=3
+LEVELS=4
 
 ##################################################################
 # Run script
