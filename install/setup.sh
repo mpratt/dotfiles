@@ -79,6 +79,7 @@ echo "Adding Git configuration"
 symlink "git/gitconfig" "${HOME}/.gitconfig"
 symlink "git/gitignore_global" "${HOME}/.gitignore_global"
 symlink "git/gitk" "${HOME}/.gitk"
+symlink "git/gitmessage" "${HOME}/.gitmessage"
 
 echo "Adding vim/nvim configuration"
 mkdir -p "${HOME}/.config/nvim"

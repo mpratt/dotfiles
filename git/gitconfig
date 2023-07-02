@@ -87,3 +87,5 @@
 	colorMoved = zebra
 [init]
 	defaultBranch = master
+[commit]
+	template = /home/pratt/.gitmessage
