@@ -494,11 +494,12 @@ key_bindings:
   - { key: C, mods: Control|Shift, action: Copy }
   - { key: Insert, mods: Shift,         action: PasteSelection }
   - { key: Return, mods: Control|Shift, action: SpawnNewInstance }
+  - { key: N,  mods: Shift|Control, action: SpawnNewInstance }
   - { key: Tab,  mods: Control,        chars: "\x1b[27;5;9~" }
   - { key: Tab,  mods: Control|Shift,  chars: "\x1b[27;6;9~" }
   - { key: PageUp,    mods: Shift,   mode: ~Alt, action: ScrollPageUp,  }
   - { key: L, mods: Control, command: {program: "/usr/bin/fzf", args: [""]}     }
-    #:Whitespace- { key: PageDown,  mods: Shift,   mode: ~Alt, action: ScrollPageDown }
+  #:Whitespace- { key: PageDown,  mods: Shift,   mode: ~Alt, action: ScrollPageDown }
 
 
 #debug:
