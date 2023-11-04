@@ -88,6 +88,8 @@ return require('packer').startup(function(use)
         end
     }
 
+    use 'folke/trouble.nvim'
+
     if packer_bootstrap then
         require('packer').sync()
     end
