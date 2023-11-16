@@ -1,0 +1,46 @@
+format = """\
+[](fg:#219ebc)\
+$directory\
+[](fg:#219ebc bg:#023047)\
+$git_branch\
+$git_status\
+$git_metrics\
+[](fg:#023047 bg:#ffb703)\
+[](fg:#ffb703)\
+$character\
+"""
+"$schema" = 'https://starship.rs/config-schema.json'
+
+[directory]
+format = "[󰉋 $path ]($style)"
+style = "fg:#E4E4E4 bg:#219ebc"
+truncation_length = 2
+truncation_symbol = "…/"
+read_only = " "
+
+[git_branch]
+format = '[ $symbol$branch(:$remote_branch) ]($style)'
+symbol = "  "
+style = "fg:#8ecae6 bg:#023047"
+
+[git_status]
+format = '[$all_status]($style)'
+style = "fg:#8ecae6 bg:#023047"
+
+[git_metrics]
+format = "([+$added]($added_style))[]($added_style)"
+added_style = "fg:#8ecae6 bg:#023047"
+deleted_style = "fg:bright-red bg:235"
+disabled = false
+
+[hg_branch]
+format = "[ $symbol$branch ]($style)"
+symbol = " "
+
+[cmd_duration]
+format = "[  $duration ]($style)"
+style = "fg:bright-white bg:18"
+
+[character]
+success_symbol = '[ ➜](#fb8500) '
+error_symbol = '[ ✗](#E84D44) '

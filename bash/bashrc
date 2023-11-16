@@ -50,6 +50,9 @@ PROMPT_COMMAND=__exit_prompt_status
 [ -e "${HOME}/.local/bin" ] && PATH=${PATH}:${HOME}/.local/bin
 [ -e "${HOME}/.local/share/gem/ruby/3.0.0/bin" ] && PATH=${PATH}:${HOME}/.local/share/gem/ruby/3.0.0/bin
 
+export ANDROID_HOME=${HOME}/Android/Sdk
+[ -e "${HOME}/Library/Android/Sdk/emulator" ] && PATH=${PATH}:${HOME}/Library/Android/Sdk/emulator
+[ -e "${HOME}/Library/Android/Sdk/platform-tools" ] && PATH=${PATH}:${HOME}/Library/Android/Sdk/platform-tools
 
 PATH=${PATH}:${HOME}/.bin
 for p in $(find ${HOME}/.bin/ -type d); do
@@ -144,3 +147,5 @@ if [ -e "/usr/bin/fortune" ]; then
     fortune
     echo ""
 fi
+
+ eval "$(starship init bash)"

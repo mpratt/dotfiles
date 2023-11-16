@@ -22,6 +22,9 @@ remove_symlink "${HOME}/.config/vifm/vifmrc"
 echo "Removing Alacritty configuration"
 remove_symlink "${HOME}/.config/alacritty/alacritty.yml"
 
+echo "Removing starship configuration"
+remove_symlink "${HOME}/.config/starship.toml"
+
 echo "Removing Tmux configuration"
 remove_symlink "${HOME}/.tmux.conf"
 

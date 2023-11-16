@@ -65,6 +65,9 @@ echo "Adding Alacritty configuration"
 mkdir -p "${HOME}/.config/alacritty"
 symlink "alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml"
 
+echo "Adding starship configuration"
+symlink "starship/starship.toml" "${HOME}/.config/starship.toml"
+
 echo "Adding Tmux configuration"
 symlink "tmux/tmux.conf" "${HOME}/.tmux.conf"
 
