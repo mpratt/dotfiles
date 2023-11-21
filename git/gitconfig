@@ -20,9 +20,9 @@
     untracked = cyan
 [core]
     quotepath = false
-    editor = vim
+    editor = nvim
     pager = less -XRMSI
-	autocrlf = false
+    autocrlf = false
 [apply]
     whitespace = fix
 [alias]
@@ -38,7 +38,7 @@
     # Unstage any files that have been added to the staging area
     unstage = reset HEAD
 
-    # Delete any branches that have been merged into maste
+    # Delete any branches that have been merged into master
     #delete-merged-branches = "git branch -d `git branch --merged | grep -v '^*' | tr -d '\n'`"
     delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
@@ -78,14 +78,14 @@
 [push]
     default = current
 [merge]
-	tool = vimdiff
+    tool = vimdiff
 [pull]
-	rebase = true
+    rebase = true
 [fetch]
-	prune = true
+    prune = true
 [diff]
-	colorMoved = zebra
+    colorMoved = zebra
 [init]
-	defaultBranch = master
+    defaultBranch = master
 [commit]
-	template = /home/pratt/.gitmessage
+    template = ~/.gitmessage
