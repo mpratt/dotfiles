@@ -4,6 +4,7 @@
 #  Author Michael Pratt
 #  Url: http://michael-pratt.com
 ##################################################################
+#shellcheck disable=SC2086,SC2046,SC2010,SC2006,SC2181
 APPNAME=$(basename ${0})
 VERSION="0.2"
 MOUNT="/run/media/pratt/storage"
@@ -12,7 +13,7 @@ MOUNTPOINT="1"
 DIALOG=${DIALOG:- dialog}
 
 # Backup Modes
-HOME_FOLDERS=('Archive' 'Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
+HOME_FOLDERS=('Audio' 'Documents' 'Downloads' 'Pictures' 'Projects' 'Public' 'Videos')
 HOME_CONFIG_FOLDERS=('.config' '.aws' '.serverless' '.ssh' '.bin'  )
 SYSTEM_FOLDERS=( '/etc' )
 
@@ -41,7 +42,7 @@ function backup_log() {
 # Backup Main Home Folders
 ##################################################################
 function backup_home_folders() {
-    local rsyncflags="-artzL --progress --delete"
+    local rsyncflags="-atzL --delete --progress"
     for folder in "${HOME_FOLDERS[@]}"; do
         if ! [ -e "${HOME}/${folder}" ]; then
             echo "!!! ${HOME}/${folder} doesnt exist."
@@ -51,7 +52,7 @@ function backup_home_folders() {
 
         echo "** Syncing ${folder} to ${OUTPUTDIR}/${folder}"
         backup_log "** Syncing ${folder} to ${OUTPUTDIR}/${folder}"
-        backup_log "*** Command Used: rsync ${rsyncflags} ${HOME}/${folder} ${SPECIALDIR}"
+        backup_log "*** Command Used: rsync ${rsyncflags} ${HOME}/${folder} ${OUTPUTDIR}"
         rsync ${rsyncflags} "${HOME}/${folder}" "${OUTPUTDIR}"
     done
 }
@@ -60,10 +61,10 @@ function backup_home_folders() {
 # Backup Main Home Folders
 ##################################################################
 function backup_sync_archive() {
-    local rsyncflags="-artzL --progress --delete"
+    local rsyncflags="-atzL --delete --progress"
     echo "** Syncing Archive to ${OUTPUTDIR}/Archive"
     backup_log "** Syncing Archive to ${OUTPUTDIR}/Archive"
-    backup_log "*** Command Used: rsync ${rsyncflags} Archive ${OUTPUTDIR}"
+    backup_log "*** Command Used: rsync ${rsyncflags} ${HOME}/Archive ${OUTPUTDIR}"
     rsync ${rsyncflags} "${HOME}/Archive" "${OUTPUTDIR}"
 }
 
