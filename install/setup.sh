@@ -30,7 +30,7 @@ symlink()
 
     if [ -e "${dst}" ]; then
         backup "${dst}"
-        rm -rf ${dst}
+        rm -rf "${dst}"
     fi
 
     if [ -e "${src}" ]; then
