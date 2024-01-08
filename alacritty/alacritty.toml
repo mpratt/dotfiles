@@ -118,7 +118,7 @@ semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
 decorations = "full"
 dynamic_title = true
 opacity = 0.96
-startup_mode = "Windowed"
+startup_mode = "Maximized"
 
 [window.dimensions]
 columns = 100
