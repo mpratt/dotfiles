@@ -1,0 +1,129 @@
+[colors]
+draw_bold_text_with_bright_colors = false
+indexed_colors = []
+
+[colors.bright]
+black = "0x4d4d4d"
+blue = "0xcaa9fa"
+cyan = "0x9aedfe"
+green = "0x5af78e"
+magenta = "0xff92d0"
+red = "0xff6e67"
+white = "0xe6e6e6"
+yellow = "0xf4f99d"
+
+[colors.cursor]
+cursor = "0xf8f8f2"
+text = "0x44475a"
+
+[colors.dim]
+black = "0x14151b"
+blue = "0x4d5b86"
+cyan = "0x59dffc"
+green = "0x1ef956"
+magenta = "0xff46b0"
+red = "0xff2222"
+white = "0xe6e6d1"
+yellow = "0xebf85b"
+
+[colors.normal]
+black = "0x000000"
+blue = "0xbd93f9"
+cyan = "0x8be9fd"
+green = "0x50fa7b"
+magenta = "0xff79c6"
+red = "0xff5555"
+white = "0xbfbfbf"
+yellow = "0xf1fa8c"
+
+[colors.primary]
+background = "0x282a36"
+foreground = "0xf8f8f2"
+
+[font]
+size = 10.5
+
+[font.bold]
+family = "DroidSansM Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "DroidSansM Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "DroidSansM Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "DroidSansM Nerd Font Mono"
+style = "Regular"
+
+[[keyboard.bindings]]
+action = "Paste"
+key = "V"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "Copy"
+key = "C"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "PasteSelection"
+key = "Insert"
+mods = "Shift"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "Return"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "N"
+mods = "Shift|Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[27;5;9~"
+key = "Tab"
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\u001B[27;6;9~"
+key = "Tab"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "PageUp"
+mode = "~Alt"
+mods = "Shift"
+
+[[keyboard.bindings]]
+key = "L"
+mods = "Control"
+
+[keyboard.bindings.command]
+args = [""]
+program = "/usr/bin/fzf"
+
+[scrolling]
+history = 100000
+
+[selection]
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+[window]
+decorations = "full"
+dynamic_title = true
+opacity = 0.96
+startup_mode = "Windowed"
+
+[window.dimensions]
+columns = 100
+lines = 30
+
+[window.padding]
+x = 5
+y = 5

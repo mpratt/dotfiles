@@ -63,7 +63,7 @@ symlink "vifm/vifmrc" "${HOME}/.config/vifm/vifmrc"
 
 echo "Adding Alacritty configuration"
 mkdir -p "${HOME}/.config/alacritty"
-symlink "alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml"
+symlink "alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
 
 echo "Adding starship configuration"
 symlink "starship/starship.toml" "${HOME}/.config/starship.toml"

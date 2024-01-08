@@ -20,7 +20,7 @@ echo "Removing Vifm configuration"
 remove_symlink "${HOME}/.config/vifm/vifmrc"
 
 echo "Removing Alacritty configuration"
-remove_symlink "${HOME}/.config/alacritty/alacritty.yml"
+remove_symlink "${HOME}/.config/alacritty/alacritty.toml"
 
 echo "Removing starship configuration"
 remove_symlink "${HOME}/.config/starship.toml"
