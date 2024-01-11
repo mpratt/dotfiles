@@ -1,0 +1,8 @@
+Protocol 2
+AddKeysToAgent  yes
+HashKnownHosts yes
+IdentitiesOnly yes
+VisualHostKey yes
+StrictHostKeyChecking ask
+Compression yes
+UseRoaming no

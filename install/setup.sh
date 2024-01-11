@@ -93,6 +93,13 @@ symlink "vim" "${HOME}/.vim"
 echo "Adding home bin dir"
 symlink "bin" "${HOME}/.bin"
 
+echo "Adding SSH configuration"
+mkdir -p "${HOME}/.ssh"
+symlink "ssh/config.d" "${HOME}/.ssh/config.d"
+if [[ -e "${HOME}/.ssh/config" && -z "$(grep 'Include ~/.ssh/config.d' ${HOME}/.ssh/config)" ]]; then
+    echo -e "\nInclude ~/.ssh/config.d/*" >> "${HOME}/.ssh/config"
+fi
+
 echo "Running font cache..."
 symlink "fonts" "${HOME}/.fonts"
 fc-cache -vf ~/.fonts
