@@ -63,9 +63,6 @@ vim.keymap.set('n', '<leader>o', '<cmd>only<CR>', opts)
 -- Select entire buffer
 vim.keymap.set('n', '<leader>b', 'ggVG$', opts)
 
--- Reindent all the file with LSP
-vim.keymap.set('n', '<leader>=', function() vim.lsp.buf.format() end, opts)
-
 -- Map U to redo (since u undo's)
 vim.keymap.set('n', 'U', '<C-r>', opts)
 
