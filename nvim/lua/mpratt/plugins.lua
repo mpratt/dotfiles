@@ -22,10 +22,12 @@ return require('packer').startup(function(use)
     }
 
     use {
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        after = "nvim-treesitter",
-        requires = "nvim-treesitter/nvim-treesitter",
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        after = 'nvim-treesitter',
+        requires = 'nvim-treesitter/nvim-treesitter',
     }
+
+    use 'nvim-treesitter/nvim-treesitter-context';
 
     use 'gruvbox-community/gruvbox'
     use 'rose-pine/neovim'
@@ -50,9 +52,17 @@ return require('packer').startup(function(use)
 
             -- Snippets
             { 'L3MON4D3/LuaSnip' },
-            -- Snippet Collection (Optional)
             { 'rafamadriz/friendly-snippets' },
         }
+    }
+
+    use {
+        "folke/which-key.nvim",
+        config = function()
+            -- vim.o.timeout = true
+            -- vim.o.timeoutlen = 300
+            require("which-key").setup {}
+        end
     }
 
     use 'tpope/vim-fugitive'
@@ -67,18 +77,11 @@ return require('packer').startup(function(use)
     use 'windwp/nvim-autopairs'
     use 'windwp/nvim-ts-autotag'
     use 'mbbill/undotree'
+    use 'NvChad/nvim-colorizer.lua'
 
     use {
         "cbochs/grapple.nvim",
         requires = { "nvim-lua/plenary.nvim" },
-    }
-
-    use { 'nvim-orgmode/orgmode', config = function()
-        require('orgmode').setup({
-            org_agenda_files = { '~/Documents/Planner/*' },
-            org_default_notes_file = '~/Documents/Planner/refile.org',
-        })
-    end
     }
 
     use {

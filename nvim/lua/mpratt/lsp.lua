@@ -71,3 +71,5 @@ cmp.setup({
         ['<S-Tab>'] = nil,
     })
 })
+
+require("luasnip.loaders.from_vscode").lazy_load()

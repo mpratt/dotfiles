@@ -3,11 +3,10 @@ require('Comment').setup({
     padding = true,
     ignore = "^$",
     mappings = {
-        basic = false,
+        basic = true,
         extra = false,
         extended = false,
     },
-
     pre_hook = ts.create_pre_hook(),
     post_hook = nil,
 })
