@@ -46,3 +46,12 @@ remove_symlink "${HOME}/.vim"
 
 echo "Removing font Dir..."
 remove_symlink "${HOME}/.fonts"
+
+echo "Removing Dolphin custom actions"
+remove_symlink "${HOME}/.local/share/kservices5/ServiceMenus/jpg-to-png.desktop"
+remove_symlink "${HOME}/.local/share/kservices5/ServiceMenus/png-to-jpg.desktop"
+remove_symlink "${HOME}/.local/share/kservices5/ServiceMenus/media-info.desktop"
+
+echo "Removing SSH configuration"
+remove_symlink "${HOME}/.ssh/config.d"
+sed -i 's#Include ~/.ssh/config.d/\*##g' "${HOME}/.ssh/config"

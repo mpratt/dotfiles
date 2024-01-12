@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+Actions=convertPNGtoJPG
+MimeType=image/png;
+
+[Desktop Action convertPNGtoJPG]
+Name="Convert to JPG"
+Icon=image-x-generic
+Exec=mogrify -format jpg %u
