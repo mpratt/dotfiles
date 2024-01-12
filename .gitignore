@@ -4,5 +4,6 @@
 /vim/local/tmp/*
 /vim/undodir/*
 /nvim/.netrwhist
+/nvim/plugin/packer_compiled.lua
 *.mp4
 tags
