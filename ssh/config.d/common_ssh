@@ -2,7 +2,7 @@ Protocol 2
 AddKeysToAgent  yes
 HashKnownHosts yes
 IdentitiesOnly yes
-VisualHostKey yes
+VisualHostKey no
 StrictHostKeyChecking ask
 Compression yes
 UseRoaming no
