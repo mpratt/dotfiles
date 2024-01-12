@@ -3,8 +3,8 @@ format = """\
 $directory\
 [](fg:#219ebc bg:#023047)\
 $git_branch\
-$git_status\
-$git_metrics\
+$python\
+$php\
 [](fg:#023047 bg:#ffb703)\
 [](fg:#ffb703)\
 $character\
@@ -23,16 +23,6 @@ format = '[ $symbol$branch(:$remote_branch) ]($style)'
 symbol = "  "
 style = "fg:#8ecae6 bg:#023047"
 
-[git_status]
-format = '[$all_status]($style)'
-style = "fg:#8ecae6 bg:#023047"
-
-[git_metrics]
-format = "([+$added]($added_style))[]($added_style)"
-added_style = "fg:#8ecae6 bg:#023047"
-deleted_style = "fg:bright-red bg:235"
-disabled = false
-
 [hg_branch]
 format = "[ $symbol$branch ]($style)"
 symbol = " "
@@ -44,3 +34,17 @@ style = "fg:bright-white bg:18"
 [character]
 success_symbol = '[ ➜](#fb8500) '
 error_symbol = '[ ✗](#E84D44) '
+
+[python]
+format = '[${symbol}(\($virtualenv\) )]($style)'
+symbol = "🐍 "
+style = "fg:#8ecae6 bg:#023047"
+pyenv_prefix = "venv "
+python_binary = ["./venv/bin/python", "python", "python3", "python2"]
+detect_extensions = ["py"]
+version_format = "v${raw}"
+
+[php]
+format = '[${symbol}]($style)'
+symbol = " "
+style = "fg:#8ecae6 bg:#023047"
