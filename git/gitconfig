@@ -78,7 +78,9 @@
 [push]
     default = current
 [merge]
-    tool = vimdiff
+    tool = nvim
+[mergetool "nvim"]
+    cmd = "nvim -d -c \"wincmd l\" -c \"norm ]c\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\""
 [pull]
     rebase = true
 [fetch]

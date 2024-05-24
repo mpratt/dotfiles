@@ -80,6 +80,18 @@ return require('packer').startup(function(use)
     use 'NvChad/nvim-colorizer.lua'
 
     use {
+        'michaelrommel/nvim-silicon',
+        cmd = 'Silicon',
+        opt = true,
+        config = function()
+            require("silicon").setup({
+                -- Configuration here, or leave empty to use defaults
+                font = "Source Code Pro Medium=25"
+            })
+        end
+    }
+
+    use {
         "cbochs/grapple.nvim",
         requires = { "nvim-lua/plenary.nvim" },
     }
@@ -98,6 +110,7 @@ return require('packer').startup(function(use)
     }
 
     use 'folke/trouble.nvim'
+    use 'nvim-tree/nvim-web-devicons'
 
     if packer_bootstrap then
         require('packer').sync()
