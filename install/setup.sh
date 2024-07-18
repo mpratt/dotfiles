@@ -68,9 +68,6 @@ symlink "alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
 echo "Adding starship configuration"
 symlink "starship/starship.toml" "${HOME}/.config/starship.toml"
 
-echo "Adding Tmux configuration"
-symlink "tmux/tmux.conf" "${HOME}/.tmux.conf"
-
 echo "Adding XDG users dirs configuration"
 copy_file "xdg/user-dirs.dirs" "${HOME}/.config/user-dirs.dirs"
 
@@ -84,9 +81,12 @@ symlink "git/gitignore_global" "${HOME}/.gitignore_global"
 symlink "git/gitk" "${HOME}/.gitk"
 symlink "git/gitmessage" "${HOME}/.gitmessage"
 
-echo "Adding vim/nvim configuration"
+echo "Adding tmux/vim/nvim configuration"
 mkdir -p "${HOME}/.config/nvim"
+mkdir -p "${HOME}/.config/tmux"
 mkdir -p "${HOME}/.vim"
+
+symlink "tmux" "${HOME}/.config/tmux"
 symlink "nvim" "${HOME}/.config/nvim"
 symlink "vim" "${HOME}/.vim"
 

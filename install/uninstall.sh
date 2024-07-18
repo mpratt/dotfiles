@@ -26,7 +26,7 @@ echo "Removing starship configuration"
 remove_symlink "${HOME}/.config/starship.toml"
 
 echo "Removing Tmux configuration"
-remove_symlink "${HOME}/.tmux.conf"
+remove_symlink "${HOME}/.config/tmux"
 
 echo "Removing XDG users dirs configuration"
 remove_symlink "${HOME}/.config/user-dirs.dirs"
