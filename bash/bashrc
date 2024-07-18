@@ -144,3 +144,7 @@ if [ -e "/usr/bin/fortune" ]; then
 fi
 
  eval "$(starship init bash)"
+
+if [ -e "/usr/bin/zoxide" ]; then
+    eval "$(zoxide init bash)"
+fi
