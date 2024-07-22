@@ -18,6 +18,9 @@ return {
     {
         'williamboman/mason-lspconfig.nvim',
         config = function()
+            local lsp_zero = require('lsp-zero')
+            lsp_zero.extend_lspconfig()
+
             require('mason-lspconfig').setup({
                 ensure_installed = {
                     'eslint',
@@ -31,7 +34,7 @@ return {
                     'rust_analyzer',
                 },
                 handlers = {
-                    require('lsp-zero').default_setup,
+                    lsp_zero.default_setup,
                     lua_ls = function()
                         require('lspconfig').lua_ls.setup({
                             settings = {
@@ -63,6 +66,8 @@ return {
             })
 
             local lsp = require('lsp-zero')
+            lsp.extend_lspconfig()
+
             lsp.on_attach(function(client, bufnr)
                 lsp.default_keymaps({ buffer = bufnr, preserve_mappings = false })
                 vim.keymap.set('n', '<leader>=', function() vim.lsp.buf.format() end, { buffer = bufnr })

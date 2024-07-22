@@ -39,3 +39,33 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 vim.opt.shortmess:append("c")
+
+-- Highlight background line on errors/warnings
+local diagnostic_lines_ns = vim.api.nvim_create_namespace("Diagnostic Lines")
+local orig_signs_handler = vim.diagnostic.handlers.signs
+local function severity_highlight(severity)
+    if severity == vim.diagnostic.severity.ERROR then
+        return 'DiffDelete'
+    end
+
+    return 'DiffText'
+end
+vim.diagnostic.handlers.signs = {
+    show = function(_, bufnr, _, opts)
+        -- Handle diagnostics for whole buffer for ns convenience
+        local diagnostics = vim.diagnostic.get(bufnr)
+        for _, diagnostic in ipairs(diagnostics) do
+            vim.api.nvim_buf_set_extmark(
+                diagnostic.bufnr,
+                diagnostic_lines_ns,
+                diagnostic.lnum, 0,
+                { line_hl_group = severity_highlight(diagnostic.severity) }
+            )
+        end
+        orig_signs_handler.show(diagnostic_lines_ns, bufnr, diagnostics, opts)
+    end,
+    hide = function(_, bufnr)
+        vim.api.nvim_buf_clear_namespace(bufnr, diagnostic_lines_ns, 0, -1)
+        orig_signs_handler.hide(diagnostic_lines_ns, bufnr)
+    end,
+}
