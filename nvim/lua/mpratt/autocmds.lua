@@ -21,12 +21,6 @@ autocmd({'BufWritePre'}, {
     command = '%s/\\s\\+$//e',
 })
 
--- Change cwd to file we are currently editing
-autocmd({"BufEnter"}, {
-    group = customGroup ,
-    command = 'silent! lcd %:p:h',
-})
-
 -- Save when focus is lost
 autocmd({"FocusLost"}, {
     group = customGroup ,

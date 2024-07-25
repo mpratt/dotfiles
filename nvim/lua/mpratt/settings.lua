@@ -50,6 +50,7 @@ local function severity_highlight(severity)
 
     return 'DiffText'
 end
+
 vim.diagnostic.handlers.signs = {
     show = function(_, bufnr, _, opts)
         -- Handle diagnostics for whole buffer for ns convenience
