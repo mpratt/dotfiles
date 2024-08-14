@@ -3,9 +3,17 @@ return {
     event = "VeryLazy",
     opts = {
         plugins = { spelling = true },
+        triggers = {
+            { "<leader>", mode = { "n", "v" } },
+        }
     },
-    config = function(_, opts)
-        local wk = require("which-key")
-        wk.setup(opts)
-    end,
+    keys = {
+        {
+            "<leader>?",
+            function()
+                require("which-key").show({ global = false })
+            end,
+            desc = "Buffer Local Keymaps (which-key)",
+        },
+    },
 }
