@@ -147,5 +147,5 @@ fi
  eval "$(starship init bash)"
 
 if [ -e "/usr/bin/zoxide" ]; then
-    eval "$(zoxide init bash --cmd cd)"
+    eval "$(zoxide init bash --cmd cdp)"
 fi
