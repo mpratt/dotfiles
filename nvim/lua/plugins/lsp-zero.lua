@@ -25,11 +25,10 @@ return {
                 ensure_installed = {
                     'eslint',
                     'volar',
-                    'tsserver',
+                    'ts_ls',
                     'cssls',
                     'html',
                     'intelephense',
-                    'tsserver',
                     'lua_ls',
                     'rust_analyzer',
                 },
