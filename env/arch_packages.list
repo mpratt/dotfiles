@@ -49,7 +49,7 @@ cmus
 code
 composer
 conky
-conky-manager
+conky-manager2
 couchdb
 cronie
 ctags
@@ -218,7 +218,6 @@ mousepad
 msodbcsql17
 mtpfs
 mupen64plus
-museeks-bin
 mysql-workbench
 nano
 nemo-fileroller
