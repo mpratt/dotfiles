@@ -49,6 +49,9 @@ PROMPT_COMMAND=__exit_prompt_status
 [ -e "${HOME}/.bin" ] && PATH=${PATH}:${HOME}/.bin
 [ -e "${HOME}/.local/bin" ] && PATH=${PATH}:${HOME}/.local/bin
 [ -e "${HOME}/.local/share/gem/ruby/3.0.0/bin" ] && PATH=${PATH}:${HOME}/.local/share/gem/ruby/3.0.0/bin
+[ -e "${HOME}/.yarn/bin" ] && PATH=${PATH}:${HOME}/.yarn/bin
+[ -e "${HOME}/.config/composer/vendor/bin" ] && PATH=${PATH}:${HOME}/.config/composer/vendor/bin
+[ -e "${HOME}/.cargo/bin" ] && PATH=${PATH}:${HOME}/.cargo/bin
 
 export ANDROID_HOME=${HOME}/Android/Sdk
 [ -e "${HOME}/Library/Android/Sdk/emulator" ] && PATH=${PATH}:${HOME}/Library/Android/Sdk/emulator
