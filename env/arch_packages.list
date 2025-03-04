@@ -88,6 +88,7 @@ faac
 faenza-icon-theme
 fakeroot
 fceux
+fcitx5-configtool
 fd
 feh
 filezilla
@@ -227,7 +228,6 @@ networkmanager
 networkmanager-l2tp
 networkmanager-openvpn
 nmap
-nodejs-lts-iron
 nodejs-neovim
 noto-fonts-emoji
 npm
@@ -290,6 +290,7 @@ python-eyed3
 python-numpy
 python-pip
 python-pynvim
+python-pypdf
 python-pyqt5
 python-virtualenv
 python39
