@@ -37,6 +37,7 @@ boost
 breeze-gtk
 breeze5
 bruno
+bun-bin
 calc
 camlp4
 cheese
@@ -61,6 +62,7 @@ dhcpcd
 dia
 dialog
 diffuse
+direnv
 discover
 dmenu
 dmidecode
@@ -83,6 +85,7 @@ enlightenment
 espeak
 evince
 exfat-utils
+exif
 expac
 faac
 faenza-icon-theme
@@ -105,7 +108,6 @@ galculator
 garcon
 gcc
 gimp
-gimp-plugin-resynthesizer-git
 git
 glade
 glib2-docs
@@ -288,6 +290,7 @@ playerctl
 postman-bin
 powerdevil
 prettier
+python-curl-cffi
 python-eyed3
 python-numpy
 python-pip
@@ -475,8 +478,9 @@ xsel
 xterm
 yarn
 yay
-yt-dlp-git
+yt-dlp
 zanshin
 zen-browser-bin
+zenmap
 zoom
 zoxide
