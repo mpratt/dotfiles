@@ -147,7 +147,9 @@ if [ -e "/usr/bin/fortune" ]; then
     echo ""
 fi
 
- eval "$(starship init bash)"
+if [ -e "/usr/bin/starship" ]; then
+    eval "$(starship init bash)"
+fi
 
 if [ -e "/usr/bin/zoxide" ]; then
     eval "$(zoxide init bash --cmd cdp)"
