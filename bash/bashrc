@@ -151,6 +151,10 @@ if [ -e "/usr/bin/starship" ]; then
     eval "$(starship init bash)"
 fi
 
+if [ -e "/usr/bin/direnv" ]; then
+    eval "$(direnv hook bash)"
+fi
+
 if [ -e "/usr/bin/zoxide" ]; then
     eval "$(zoxide init bash --cmd cdp)"
 fi
