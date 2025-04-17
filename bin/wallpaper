@@ -100,24 +100,14 @@ set_wallpaper() {
 
     echo "Setting Wallpaper ${file}"
     case ${DESKTOP_SESSION} in
-        xfce|XFCE) 
+        xfce|XFCE)
             for property in $(xfconf-query --channel xfce4-desktop --list | grep last-image); do
                 xfconf-query --channel xfce4-desktop --property ${property} --set "${file}"
             done ;;
 
-        *plasma) 
-            dbus-send --session --dest=org.kde.plasmashell --type=method_call /PlasmaShell org.kde.PlasmaShell.evaluateScript 'string:
-            var Desktops = desktops();
-            for (i=0;i<Desktops.length;i++) {
-                d = Desktops[i];
-                d.wallpaperPlugin = "org.kde.image";
-                d.currentConfigGroup = Array("Wallpaper",
-                "org.kde.image",
-                "General");
-                d.writeConfig("Image", "'${file}'");
-            }' ;;
-
-    *) feh --bg-scale "${file}" ;;
+        *plasma)
+            plasma-apply-wallpaperimage "${file}" ;;
+        *) feh --bg-scale "${file}" ;;
 esac
 
 echo "${file}" > "${CONFIGFOLDER}/last-image"
@@ -155,6 +145,7 @@ set_download_image() {
 
     wget -q --user-agent="${UA}" ${img} -O ${out}
     if [ "$?" -eq "0" ]; then
+        echo ${out}
         set_wallpaper ${out}
     else
         echo "ERROR: Could not download ${img}"
@@ -174,8 +165,8 @@ download_from_reddit() {
         echo "Fetching subreddit API list ${url}"
     fi
 
-    for im in $(make_http_request ${url} | tr "," "\n" | egrep '"url"' | egrep -o 'https?:[^"]+' | grep -v 'external-' | grep -v 'award_image' | grep -v '/award'); do
-        if [ -n "$(echo ${im} | egrep -i '(png|gif|gif|s\=(.*?))$')" ]; then
+    for im in $(make_http_request ${url} | tr "," "\n" | grep -E '"url"' | grep -E -o 'https?:[^"]+' | grep -v 'external-' | grep -v 'award_image' | grep -v '/award'); do
+        if [ -n "$(echo ${im} | grep -E -i '(png|gif|gif|s\=(.*?))$')" ]; then
             list+=( "${im/preview/i}" )
         fi
     done
@@ -208,7 +199,7 @@ make_http_request() {
 # Downloads from EarthView
 #######################################################
 download_from_earthview() {
-    local url="https://earthview.withgoogle.com"
+    local url="https://raw.githubusercontent.com/limhenry/earthview/refs/heads/master/earthview.json"
 
     check_internet
 
@@ -217,8 +208,9 @@ download_from_earthview() {
     fi
 
     local src=$(make_http_request ${url})
-    local images="$(echo ${src} | egrep -o 'https://www.gstatic.com/prettyearth/assets/full/[0-9]+.jpg' | uniq)"
+    local images="$(echo ${src} | grep -E -o 'https://www.gstatic.com/prettyearth/assets/full/[0-9]+.jpg' | uniq)"
 
+    echo "Found ${#images} images on Earthview"
     for i in ${images}; do
         set_download_image ${i}
     done
@@ -237,11 +229,11 @@ download_from_bing() {
     fi
 
     local src=$(make_http_request ${url})
-    local images="$(echo ${src} | tr "," "\n" | egrep '"url"' | egrep -o '"/(.+)"' | tr -d '"')"
+    local images="$(echo ${src} | tr "," "\n" | grep -E '"url"' | grep -E -o '"/(.+)"' | tr -d '"')"
     local list=()
 
     for im in ${images}; do
-        if [ -n "$(echo ${im} | egrep -i '\.(png|jpg|gif)')" ]; then
+        if [ -n "$(echo ${im} | grep -E -i '\.(png|jpg|gif)')" ]; then
             list+=( "https://bing.com${im}" )
         fi
     done
