@@ -1,371 +1,482 @@
-#!/bin/bash
-#######################################################
-# Wallpaper Management via feh
-# Michael Pratt
-# http://michael-pratt.com
-#######################################################
-set -e
-CONFIGFOLDER="${HOME}/.config/wallpaper_script"
-SUBREDDITS=("/r/EarthPorn" "/r/wallpapers" "/r/wallpaper" )
-UA="Mozilla / Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36 / mpratt Wallpaper Grabber 1.0"
-USEPREVIOUS=0
-USEREDDIT=0
-USEEARTHVIEW=0
-USEBING=0
-VERBOSE=0
-FULLHELP=0
-mkdir -p "${CONFIGFOLDER}/cache"
-mkdir -p "${CONFIGFOLDER}/img"
-#######################################################
-# Usage instructions
-#######################################################
-wallpaper_usage() {
-    clear
-    echo "Wallpaper"
-    echo "Usage: wallpaper [--folder [folder]][ --file [file]][--use-previous]"
-    echo "                 [--random][--verbose][--clean]"
-    echo "                 [--use-random-subreddit][--use-subreddit [subreddit]]"
-    echo "                 [--use-earthview]"
-    echo "                 [--use-bing]"
-    echo ""
+#!/usr/bin/env python
+"""
+Wallpaper Management Script
+Michael Pratt
+http://michael-pratt.com
+"""
 
-    if [ "${FULLHELP}" -eq 1 ]; then
-        echo "Requirements: feh, curl, wget"
-        echo "Author: Michael Pratt <yo@michael-pratt.com>"
-        echo ""
-        echo "DESCRIPTION"
-        echo "  Wallpaper managment script, requires feh"
-        echo ""
-        echo "PARAMS"
-        echo "--folder [folder]"
-        echo "  A folder with jpg, png or gif files. Used to fetch a random wallpapers from it"
-        echo ""
-        echo "--file [file]"
-        echo "  Path to an image file to be used as a wallpaper"
-        echo ""
-        echo "--random"
-        echo "  Pick a random wallpaper from earthview, bing, folder and reddit"
-        echo ""
-        echo "--use-previous"
-        echo "  Checks the home folder for a .fehbg file and runs it"
-        echo ""
-        echo "--use-random-subreddit"
-        echo "  Fetches a random image file from reddit"
-        echo ""
-        echo "--use-subreddit"
-        echo "  Fetches images from the given subreddit. No need to add the /r/ prefix."
-        echo ""
-        echo "--use-earthview"
-        echo "  Fetches a Random earthview Image"
-        echo ""
-        echo "--use-bing"
-        echo "  Fetches a Random bing Image"
-        echo ""
-        echo "--clean"
-        echo "  Cleans cached responses"
-        echo ""
-        echo "--verbose"
-        echo "  Verbose Output"
-        echo ""
-        echo "AUTHOR"
-        echo "  Michael Pratt <yo@michael-pratt.com>"
-        echo "  http://www.michael-pratt.com"
-        echo ""
-    fi
-    exit 0
-}
-
-#######################################################
-# Check for Internet Access
-#######################################################
-check_internet() {
-    echo "Checking Internet Access ...."
-    wget --user-agent="${UA}" -q --spider https://eltiempo.com
-    if [ $? -ne 0 ]; then
-        echo "ERROR: No Internet Access found"
-        exit 1
-    fi
-}
-
-#######################################################
-# Set Wallpaper
-#######################################################
-set_wallpaper() {
-    local file=${1}
-
-    if ! [ -e "${file}" ]; then
-        echo "ERROR: ${file} not found!"
-        exit 1
-    fi
-
-    echo "Setting Wallpaper ${file}"
-    case ${DESKTOP_SESSION} in
-        xfce|XFCE)
-            for property in $(xfconf-query --channel xfce4-desktop --list | grep last-image); do
-                xfconf-query --channel xfce4-desktop --property ${property} --set "${file}"
-            done ;;
-
-        *plasma)
-            plasma-apply-wallpaperimage "${file}" ;;
-        *) feh --bg-scale "${file}" ;;
-esac
-
-echo "${file}" > "${CONFIGFOLDER}/last-image"
-}
-
-#######################################################
-# Downloads an Image from a website
-#######################################################
-set_download_image() {
-    local img=${1}
-
-    # No stuff from
-    if [ -z "${img}" ]; then
-        echo "ERROR: No Image given"
-        exit 1
-    fi
-
-    local filename=$(basename ${img} | tr '[:upper:]' '[:lower:]')
-    local extension="${filename##*.}"
-    if [ -z "${extension}" ]; then
-        extension="jpg"
-    else
-        extension=$(echo ${extension%&*} | sed 's/?.*//g')
-    fi
-
-    local out="$(echo "${CONFIGFOLDER}/img/$(date +"%m-%d-%Y")_${filename}" | sed 's/?.*//g').${extension}"
-    out="${out/png.png/png}"
-    out="${out/jpg.jpg/jpg}"
-    out="${out/gif.gif/gif}"
-
-    echo "$(date) : Downloading ${img} to ${out} - Ext: ${extension}" >> ${CONFIGFOLDER}/app.log
-    if [ "${VERBOSE}" -eq 1 ]; then
-        echo "Downloading ${img} to ${out} - Ext: ${extension}"
-    fi
-
-    wget -q --user-agent="${UA}" ${img} -O ${out}
-    if [ "$?" -eq "0" ]; then
-        echo ${out}
-        set_wallpaper ${out}
-    else
-        echo "ERROR: Could not download ${img}"
-        exit 1
-    fi
-}
-
-#######################################################
-# Downloads from Reddit
-#######################################################
-download_from_reddit() {
-    local url="${1}"
-    local list=()
-    check_internet
-
-    if [ "${VERBOSE}" -eq 1 ]; then
-        echo "Fetching subreddit API list ${url}"
-    fi
-
-    for im in $(make_http_request ${url} | tr "," "\n" | grep -E '"url"' | grep -E -o 'https?:[^"]+' | grep -v 'external-' | grep -v 'award_image' | grep -v '/award'); do
-        if [ -n "$(echo ${im} | grep -E -i '(png|gif|gif|s\=(.*?))$')" ]; then
-            list+=( "${im/preview/i}" )
-        fi
-    done
-
-    if [ "${#list[@]}" -le 0 ]; then
-        echo "ERROR: No Images Found on ${1}"
-        exit 1
-    fi
-
-    set_download_image ${list[$RANDOM % ${#list[@]}]}
-}
-
-#######################################################
-# Makes an Http request and does some minor caching
-#######################################################
-make_http_request() {
-    local url="${1}"
-    local md5=$(echo $url | md5sum | tr -d '[:blank:]')
-    if ! [ -e "${CONFIGFOLDER}/cache/${md5}.cache" ]; then
-        wget -q --user-agent="${UA}" ${url} -O ${CONFIGFOLDER}/cache/${md5}.cache
-    fi
-
-    cat ${CONFIGFOLDER}/cache/${md5}.cache
-    if [ -n "$(find ${CONFIGFOLDER}/cache/${md5}.cache -mmin +60)" ]; then
-        rm ${CONFIGFOLDER}/cache/${md5}.cache
-    fi
-}
-
-#######################################################
-# Downloads from EarthView
-#######################################################
-download_from_earthview() {
-    local url="https://raw.githubusercontent.com/limhenry/earthview/refs/heads/master/earthview.json"
-
-    check_internet
-
-    if [ "${VERBOSE}" -eq 1 ]; then
-        echo "Making Request to ${url}"
-    fi
-
-    local src=$(make_http_request ${url})
-    local images="$(echo ${src} | grep -E -o 'https://www.gstatic.com/prettyearth/assets/full/[0-9]+.jpg' | uniq)"
-
-    echo "Found ${#images} images on Earthview"
-    for i in ${images}; do
-        set_download_image ${i}
-    done
-}
-
-#######################################################
-# Downloads from Bing
-#######################################################
-download_from_bing() {
-    local url="http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10&mkt=en-US"
-
-    check_internet
-
-    if [ "${VERBOSE}" -eq 1 ]; then
-        echo "Making Request to ${url}"
-    fi
-
-    local src=$(make_http_request ${url})
-    local images="$(echo ${src} | tr "," "\n" | grep -E '"url"' | grep -E -o '"/(.+)"' | tr -d '"')"
-    local list=()
-
-    for im in ${images}; do
-        if [ -n "$(echo ${im} | grep -E -i '\.(png|jpg|gif)')" ]; then
-            list+=( "https://bing.com${im}" )
-        fi
-    done
-
-    if [ "${#list[@]}" -le 0 ]; then
-        echo "ERROR: No Images Found on ${1}"
-        exit 1
-    fi
-
-    set_download_image ${list[$RANDOM % ${#list[@]}]}
-}
+import os
+import sys
+import random
+import argparse
+import subprocess
+import hashlib
+import json
+import re
+import time
+from pathlib import Path
+from datetime import datetime
+import urllib.request
+import urllib.parse
+import shutil
 
 
-#######################################################
-# ACleanup process
-#######################################################
-cleanup() {
-    echo "Cleaning up..."
-    if [ -z "$(ls -A "${CONFIGFOLDER}/img/")" ]; then
-        echo "Empty Image Folder.."
-    else
+class WallpaperManager:
+    def __init__(self):
+        self.home = os.environ.get("HOME")
+        self.desktop_session = os.environ.get("DESKTOP_SESSION", "").lower()
+        self.config_folder = f"{self.home}/.config/wallpaper_script"
+        self.cache_folder = f"{self.config_folder}/cache"
+        self.img_folder = f"{self.config_folder}/img"
+        self.log_file = f"{self.config_folder}/app.log"
+        self.last_image_file = f"{self.config_folder}/last-image"
+        self.subreddits = ["/r/EarthPorn", "/r/wallpapers", "/r/wallpaper"]
+        self.user_agent = "Mozilla / Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36 / mpratt Wallpaper Grabber 1.0"
+        self.verbose = False
 
-        if [ "${VERBOSE}" -eq 1 ]; then
-            echo "Checking for duplicate images..."
-        fi
+        # Create necessary directories
+        os.makedirs(self.cache_folder, exist_ok=True)
+        os.makedirs(self.img_folder, exist_ok=True)
 
-        cd "${CONFIGFOLDER}/img/"
-        for f in $(md5sum * | sort | awk 'BEGIN{lasthash = ""} $1 == lasthash {print $2} {lasthash = $1}'); do
-            if [ "${VERBOSE}" -eq 1 ]; then
-                echo "Removing Duplicate: ${f}"
-            fi
+    def log(self, message):
+        """Log a message if verbose mode is enabled"""
+        if self.verbose:
+            print(message)
 
-            rm -rf "${f}"
-        done
-    fi
-}
+        with open(self.log_file, "a") as f:
+            f.write(f"{datetime.now()}: {message}\n")
 
-#######################################################
-# Yo DJ! Spin that wheel!
-#######################################################
-if [ "$#" -eq "0" ]; then
-    wallpaper_usage
-    exit 0
-fi
+    def check_internet(self):
+        """Check for internet connectivity"""
+        self.log("Checking Internet Access...")
+        try:
+            req = urllib.request.Request(
+                "https://eltiempo.com", headers={"User-Agent": self.user_agent}
+            )
+            urllib.request.urlopen(req, timeout=5)
+            return True
+        except Exception as e:
+            print(f"ERROR: No Internet Access found: {e}")
+            return False
 
-while [ -n "$1" ]; do
-    case ${1} in
-        --verbose)
-            shift
-            VERBOSE="1"
-            ;;
-        --folder)
-            shift
-            set_wallpaper "$(find ${1} -type f -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | shuf -n1)"
-            shift
-            ;;
-        --file)
-            shift
-            set_wallpaper "${1}"
-            shift
-            ;;
-        --use-previous)
-            shift
-            USEPREVIOUS="1"
-            ;;
-        --use-random-subreddit)
-            shift
-            USEREDDIT="1"
-            ;;
-        --use-earthview)
-            shift
-            USEEARTHVIEW="1"
-            ;;
-        --use-bing)
-            shift
-            USEBING="1"
-            ;;
-        --clean)
-            shift
-            rm -rf ${CONFIGFOLDER}/cache/*.cache
-            ;;
-        --use-subreddit)
-            shift
-            USEREDDIT="1"
-            SUBREDDITS=( "/r/${1}" )
-            shift
-            ;;
-        --random)
-            shift
-            POSIBILITIES=( "REDDIT" "BING"  "EARTHVIEW" )
-            TERM="${POSIBILITIES[$RANDOM % ${#POSIBILITIES[@]}]}"
-            if [ "${TERM}" == "BING" ]; then
-                USEBING=1
-            elif [ "${TERM}" == "EARTHVIEW" ]; then
-                USEEARTHVIEW=1
-            else
-                USEREDDIT=1
-            fi
-            ;;
-        -h|--help)
-            FULLHELP=1
-            wallpaper_usage
-            exit 0
-            ;;
-        *) shift ;;
-    esac
-done
+    def set_wallpaper(self, file_path):
+        """Set the wallpaper using the appropriate method for the current desktop environment"""
+        if not os.path.exists(file_path):
+            print(f"ERROR: {file_path} not found!")
+            return False
 
-if [ "${USEPREVIOUS}" -eq "1" ]; then
-    echo "Using latest wallpaper from ${CONFIGFOLDER}/last-image"
-    if ! [ -e "${CONFIGFOLDER}/last-image" ]; then
-        echo "ERROR: No Previous wallpaper found"
-    else
-        set_wallpaper $(cat "${CONFIGFOLDER}/last-image")
-    fi
-fi
+        print(f"Setting Wallpaper {file_path}")
 
-if [ "${USEEARTHVIEW}" -eq "1" ]; then
-    echo "Using Earthview"
-    download_from_earthview
-fi
+        if "xfce" in self.desktop_session:
+            # XFCE desktop environment
+            try:
+                properties = (
+                    subprocess.check_output(
+                        ["xfconf-query", "--channel", "xfce4-desktop", "--list"],
+                        text=True,
+                    )
+                    .strip()
+                    .split("\n")
+                )
 
-if [ "${USEBING}" -eq "1" ]; then
-    echo "Using Bing"
-    download_from_bing
-fi
+                for prop in properties:
+                    if "last-image" in prop:
+                        subprocess.run(
+                            [
+                                "xfconf-query",
+                                "--channel",
+                                "xfce4-desktop",
+                                "--property",
+                                prop,
+                                "--set",
+                                file_path,
+                            ]
+                        )
+            except Exception as e:
+                print(f"Error setting XFCE wallpaper: {e}")
+                return False
 
-if [ "${USEREDDIT}" -eq "1" ] && [ "${#SUBREDDITS[@]}" -gt "0" ]; then
-    echo "Using Reddit"
-    #URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}/top.json?limit=100"
-    URL="http://www.reddit.com${SUBREDDITS[$RANDOM % ${#SUBREDDITS[@]}]}.json?limit=100"
-    download_from_reddit ${URL}
-fi
+        elif "plasma" in self.desktop_session:
+            # KDE Plasma desktop environment
+            try:
+                subprocess.run(["plasma-apply-wallpaperimage", file_path])
+            except Exception as e:
+                print(f"Error setting Plasma wallpaper: {e}")
+                return False
+        else:
+            # Default to feh for other environments
+            try:
+                subprocess.run(["feh", "--bg-scale", file_path])
+            except Exception as e:
+                print(f"Error setting wallpaper with feh: {e}")
+                return False
 
-cleanup
+        # Save the last used image
+        with open(self.last_image_file, "w") as f:
+            f.write(file_path)
+
+        return True
+
+    def download_image(self, image_url):
+        """Download an image from a URL and set it as wallpaper"""
+        if not image_url:
+            print("ERROR: No image URL provided")
+            return False
+
+        # Parse the filename and extension
+        parsed_url = urllib.parse.urlparse(image_url)
+        filename = os.path.basename(parsed_url.path).lower()
+
+        # Handle extension
+        if "." in filename:
+            extension = filename.split(".")[-1].split("&")[0].split("?")[0]
+        else:
+            extension = "jpg"
+
+        # Create output filename
+        date_str = datetime.now().strftime("%m-%d-%Y")
+        output_file = (
+            f"{self.img_folder}/{date_str}_{filename.split('?')[0]}.{extension}"
+        )
+        output_file = (
+            output_file.replace("png.png", "png")
+            .replace("jpg.jpg", "jpg")
+            .replace("gif.gif", "gif")
+        )
+
+        self.log(f"Downloading {image_url} to {output_file} - Ext: {extension}")
+
+        try:
+            req = urllib.request.Request(
+                image_url, headers={"User-Agent": self.user_agent}
+            )
+            with (
+                urllib.request.urlopen(req) as response,
+                open(output_file, "wb") as out_file,
+            ):
+                shutil.copyfileobj(response, out_file)
+
+            return self.set_wallpaper(output_file)
+        except Exception as e:
+            print(f"ERROR: Could not download {image_url}: {e}")
+            return False
+
+    def make_http_request(self, url):
+        """Make an HTTP request with caching"""
+        md5 = hashlib.md5(url.encode()).hexdigest()
+        cache_file = f"{self.cache_folder}/{md5}.cache"
+
+        # Check if cache exists and is less than 60 minutes old
+        if os.path.exists(cache_file):
+            cache_age = time.time() - os.path.getmtime(cache_file)
+            if cache_age < 3600:  # 60 minutes in seconds
+                with open(cache_file, "r", errors="replace") as f:
+                    return f.read()
+            else:
+                # Cache is too old, remove it
+                os.remove(cache_file)
+
+        # Make the request
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
+            with (
+                urllib.request.urlopen(req) as response,
+                open(cache_file, "w", errors="replace") as out_file,
+            ):
+                content = response.read().decode("utf-8", errors="replace")
+                out_file.write(content)
+                return content
+        except Exception as e:
+            print(f"ERROR: Failed to fetch {url}: {e}")
+            return ""
+
+    def download_from_reddit(self, subreddit=None):
+        """Download a random image from Reddit"""
+        if not self.check_internet():
+            return False
+
+        if subreddit:
+            if not subreddit.startswith("/r/"):
+                subreddit = f"/r/{subreddit}"
+            url = f"https://www.reddit.com{subreddit}.json?limit=100"
+        else:
+            # Select a random subreddit
+            subreddit = random.choice(self.subreddits)
+            url = f"https://www.reddit.com{subreddit}.json?limit=100"
+
+        self.log(f"Fetching subreddit API list {url}")
+        print(f"Using Reddit {subreddit}")
+
+        response = self.make_http_request(url)
+        if not response:
+            return False
+
+        # Extract image URLs
+        image_list = []
+        try:
+            data = json.loads(response)
+            posts = data.get("data", {}).get("children", [])
+
+            for post in posts:
+                post_data = post.get("data", {})
+                image_url = post_data.get("url")
+
+                if image_url and re.search(r"\.(png|jpg|jpeg|gif)$", image_url, re.I):
+                    image_list.append(image_url)
+
+        except json.JSONDecodeError:
+            # Fallback to regex if JSON parsing fails
+            urls = re.findall(r'"url":"(https?:[^"]+)"', response)
+            for url in urls:
+                if re.search(r"\.(png|jpg|jpeg|gif)$", url, re.I) and not re.search(
+                    r"(external-|award_image|/award)", url
+                ):
+                    image_list.append(url.replace("\/", "/"))
+
+        if not image_list:
+            print(f"ERROR: No images found on {subreddit}")
+            return False
+
+        # Download a random image
+        return self.download_image(random.choice(image_list))
+
+    def download_from_earthview(self):
+        """Download a random image from Google Earth View"""
+        if not self.check_internet():
+            return False
+
+        url = "https://raw.githubusercontent.com/limhenry/earthview/refs/heads/master/earthview.json"
+
+        self.log(f"Making request to {url}")
+        print("Using Earthview")
+
+        response = self.make_http_request(url)
+        if not response:
+            return False
+
+        # Extract image URLs
+        images = re.findall(
+            r"https://www\.gstatic\.com/prettyearth/assets/full/[0-9]+\.jpg", response
+        )
+        images = list(set(images))  # Remove duplicates
+
+        if not images:
+            print("ERROR: No Earthview images found")
+            return False
+
+        # Select one random image (unlike the bash script that downloads all)
+        return self.download_image(random.choice(images))
+
+    def download_from_bing(self):
+        """Download a random image from Bing daily wallpapers"""
+        if not self.check_internet():
+            return False
+
+        url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10&mkt=en-US"
+
+        self.log(f"Making request to {url}")
+        print("Using Bing")
+
+        response = self.make_http_request(url)
+        if not response:
+            return False
+
+        # Try to parse as JSON
+        try:
+            data = json.loads(response)
+            images = data.get("images", [])
+            image_list = []
+
+            for img in images:
+                img_url = img.get("url")
+                if img_url and re.search(r"\.(png|jpg|gif)$", img_url, re.I):
+                    image_list.append(f"https://www.bing.com{img_url}")
+
+        except json.JSONDecodeError:
+            # Fallback to regex if JSON parsing fails
+            urls = re.findall(r'"url":"(/[^"]+)"', response)
+            image_list = []
+
+            for url in urls:
+                if re.search(r"\.(png|jpg|gif)$", url, re.I):
+                    image_list.append(f"https://www.bing.com{url}")
+
+        if not image_list:
+            print("ERROR: No Bing images found")
+            return False
+
+        # Download a random image
+        return self.download_image(random.choice(image_list))
+
+    def use_previous_wallpaper(self):
+        """Use the previously set wallpaper"""
+        if not os.path.exists(self.last_image_file):
+            print("ERROR: No previous wallpaper found")
+            return False
+
+        with open(self.last_image_file, "r") as f:
+            previous_path = f.read().strip()
+
+        if not os.path.exists(previous_path):
+            print(f"ERROR: Previous wallpaper {previous_path} not found")
+            return False
+
+        print(f"Using latest wallpaper from {self.last_image_file}")
+        return self.set_wallpaper(previous_path)
+
+    def set_from_folder(self, folder_path):
+        """Set a random wallpaper from a folder"""
+        if not os.path.isdir(folder_path):
+            print(f"ERROR: Folder {folder_path} not found")
+            return False
+
+        # Find image files in the folder
+        image_files = []
+        for ext in ("*.jpg", "*.jpeg", "*.png", "*.gif"):
+            image_files.extend(list(Path(folder_path).glob(ext)))
+            image_files.extend(list(Path(folder_path).glob(ext.upper())))
+
+        if not image_files:
+            print(f"ERROR: No images found in {folder_path}")
+            return False
+
+        # Select a random file
+        random_file = str(random.choice(image_files))
+        return self.set_wallpaper(random_file)
+
+    def cleanup(self):
+        """Clean up duplicate images"""
+        print("Cleaning up...")
+
+        # Check if image folder is empty
+        image_files = list(Path(self.img_folder).glob("*"))
+        if not image_files:
+            print("Empty image folder..")
+            return
+
+        self.log("Checking for duplicate images...")
+
+        # Calculate MD5 hashes of all files
+        file_hashes = {}
+        for img_path in image_files:
+            try:
+                with open(img_path, "rb") as f:
+                    file_hash = hashlib.md5(f.read()).hexdigest()
+
+                if file_hash in file_hashes:
+                    # This is a duplicate, remove it
+                    self.log(f"Removing duplicate: {img_path}")
+                    os.remove(img_path)
+                else:
+                    file_hashes[file_hash] = img_path
+            except Exception as e:
+                print(f"Error processing {img_path}: {e}")
+
+    def clean_cache(self):
+        """Clean the cache folder"""
+        cache_files = list(Path(self.cache_folder).glob("*.cache"))
+        for cache_file in cache_files:
+            try:
+                os.remove(cache_file)
+            except Exception as e:
+                print(f"Error removing cache file {cache_file}: {e}")
+
+
+def main():
+    # Create the parser
+    parser = argparse.ArgumentParser(
+        description="Wallpaper management script",
+        epilog="Author: Michael Pratt <yo@michael-pratt.com>",
+    )
+
+    # Add arguments
+    parser.add_argument(
+        "--folder",
+        type=str,
+        help="A folder with image files to fetch a random wallpaper from",
+    )
+    parser.add_argument(
+        "--file", type=str, help="Path to an image file to be used as wallpaper"
+    )
+    parser.add_argument(
+        "--random", action="store_true", help="Pick a random wallpaper source"
+    )
+    parser.add_argument(
+        "--use-previous", action="store_true", help="Use the previously set wallpaper"
+    )
+    parser.add_argument(
+        "--use-random-subreddit",
+        action="store_true",
+        help="Fetch a random image from Reddit",
+    )
+    parser.add_argument(
+        "--use-subreddit", type=str, help="Fetch images from a specific subreddit"
+    )
+    parser.add_argument(
+        "--use-earthview",
+        action="store_true",
+        help="Fetch a random Google Earth View image",
+    )
+    parser.add_argument(
+        "--use-bing", action="store_true", help="Fetch a random Bing image"
+    )
+    parser.add_argument("--clean", action="store_true", help="Clean cached responses")
+    parser.add_argument("--verbose", action="store_true", help="Verbose output")
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # If no arguments provided, show help
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
+
+    # Create wallpaper manager
+    wm = WallpaperManager()
+    wm.verbose = args.verbose
+
+    # Process arguments
+    if args.clean:
+        wm.clean_cache()
+
+    if args.folder:
+        wm.set_from_folder(args.folder)
+
+    if args.file:
+        wm.set_wallpaper(args.file)
+
+    if args.use_previous:
+        wm.use_previous_wallpaper()
+
+    if args.random:
+        # Pick a random source
+        sources = ["REDDIT", "BING", "EARTHVIEW"]
+        choice = random.choice(sources)
+
+        if choice == "BING":
+            wm.download_from_bing()
+        elif choice == "EARTHVIEW":
+            wm.download_from_earthview()
+        else:
+            wm.download_from_reddit()
+    else:
+        # Check for specific sources
+        if args.use_bing:
+            wm.download_from_bing()
+
+        if args.use_earthview:
+            wm.download_from_earthview()
+
+        if args.use_random_subreddit:
+            wm.download_from_reddit()
+
+        if args.use_subreddit:
+            wm.download_from_reddit(args.use_subreddit)
+
+    # Always clean up at the end
+    wm.cleanup()
+
+
+if __name__ == "__main__":
+    main()
+
