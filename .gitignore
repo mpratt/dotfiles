@@ -7,4 +7,5 @@
 /nvim/plugin/packer_compiled.lua
 /tmux/plugins
 *.mp4
+.uuid
 tags
