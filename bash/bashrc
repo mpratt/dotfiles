@@ -23,13 +23,13 @@ else
 fi
 
 # Tweak Some Bash Stuff
-shopt -s cdspell        # Correct the typos in the cd command
-shopt -s dirspell       # Attempts spelling correction on directory names during word completion
-shopt -s histappend     # The history list is appended when the shell exits, rather than overwriting the file
-shopt -s extglob        # Allow extended globs! For example 'rm !(*.jpg|*.gif|*.png)'
-shopt -s nocaseglob     # Matches filenames in a case-insensitive fashion when performing filename expansion
-shopt -s checkwinsize   # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
-shopt -s autocd         # Switch automatically without using cd
+shopt -s cdspell      # Correct the typos in the cd command
+shopt -s dirspell     # Attempts spelling correction on directory names during word completion
+shopt -s histappend   # The history list is appended when the shell exits, rather than overwriting the file
+shopt -s extglob      # Allow extended globs! For example 'rm !(*.jpg|*.gif|*.png)'
+shopt -s nocaseglob   # Matches filenames in a case-insensitive fashion when performing filename expansion
+shopt -s checkwinsize # Checks the window size after each command and, if necessary, updates the values of LINES and COLUMNS.
+shopt -s autocd       # Switch automatically without using cd
 
 # Prompt
 function __exit_prompt_status {
@@ -63,7 +63,7 @@ for p in $(find ${HOME}/.bin/ -type d); do
 done
 
 # Allow root to use DISPLAY
-xhost + &> /dev/null
+xhost + &>/dev/null
 
 ####################################################################
 # Aliases
@@ -113,7 +113,7 @@ fi
 
 # Non root alias
 if [ "$(whoami)" != "root" ]; then
-   alias su="su -l"
+    alias su="su -l"
 fi
 
 ####################################################################
@@ -130,19 +130,19 @@ fi
 
 # Source custom bashrc for a specific host
 if [ -e "$HOME/.bashrc.${HOSTNAME}" ]; then
-   . $HOME/.bashrc.${HOSTNAME}
+    . $HOME/.bashrc.${HOSTNAME}
 fi
 
 # Source local stuff
 if [ -e "$HOME/.bashrc.local" ]; then
-   . $HOME/.bashrc.local
+    . $HOME/.bashrc.local
 fi
 
 if [ -e "${HOME}/.fzf.local" ]; then
     . ${HOME}/.fzf.local
 fi
 
-if [ -e "/usr/bin/fortune" ]; then
+if [ -e "/usr/bin/fortune" ] && [ -z "$CLAUDECODE" ]; then
     fortune
     echo ""
 fi
