@@ -23,6 +23,7 @@
     editor = nvim
     pager = less -XRMSI
     autocrlf = false
+	excludesFile = ~/.gitignore_global
 [apply]
     whitespace = fix
 [alias]
