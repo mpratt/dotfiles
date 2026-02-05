@@ -99,14 +99,21 @@ class WallpaperManager:
         elif "plasma" in self.desktop_session:
             # KDE Plasma desktop environment
             try:
-                subprocess.run(["plasma-apply-wallpaperimage", file_path])
+                subprocess.run(
+                    [
+                        "plasma-apply-wallpaperimage",
+                        "-f",
+                        "preserveAspectCrop",
+                        file_path,
+                    ]
+                )
             except Exception as e:
                 print(f"Error setting Plasma wallpaper: {e}")
                 return False
         else:
             # Default to feh for other environments
             try:
-                subprocess.run(["feh", "--bg-scale", file_path])
+                subprocess.run(["feh", "--bg-fill", file_path])
             except Exception as e:
                 print(f"Error setting wallpaper with feh: {e}")
                 return False
@@ -231,7 +238,7 @@ class WallpaperManager:
                 if re.search(r"\.(png|jpg|jpeg|gif)$", url, re.I) and not re.search(
                     r"(external-|award_image|/award)", url
                 ):
-                    image_list.append(url.replace("\/", "/"))
+                    image_list.append(url.replace("\\/", "/"))
 
         if not image_list:
             print(f"ERROR: No images found on {subreddit}")
@@ -267,46 +274,6 @@ class WallpaperManager:
         # Select one random image (unlike the bash script that downloads all)
         return self.download_image(random.choice(images))
 
-    def download_from_bing(self):
-        """Download a random image from Bing daily wallpapers"""
-        if not self.check_internet():
-            return False
-
-        url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10&mkt=en-US"
-
-        self.log(f"Making request to {url}")
-        print("Using Bing")
-
-        response = self.make_http_request(url)
-        if not response:
-            return False
-
-        # Try to parse as JSON
-        try:
-            data = json.loads(response)
-            images = data.get("images", [])
-            image_list = []
-
-            for img in images:
-                img_url = img.get("url")
-                if img_url and re.search(r"\.(png|jpg|gif)$", img_url, re.I):
-                    image_list.append(f"https://www.bing.com{img_url}")
-
-        except json.JSONDecodeError:
-            # Fallback to regex if JSON parsing fails
-            urls = re.findall(r'"url":"(/[^"]+)"', response)
-            image_list = []
-
-            for url in urls:
-                if re.search(r"\.(png|jpg|gif)$", url, re.I):
-                    image_list.append(f"https://www.bing.com{url}")
-
-        if not image_list:
-            print("ERROR: No Bing images found")
-            return False
-
-        # Download a random image
-        return self.download_image(random.choice(image_list))
 
     def use_previous_wallpaper(self):
         """Use the previously set wallpaper"""
@@ -364,9 +331,17 @@ class WallpaperManager:
                     file_hash = hashlib.md5(f.read()).hexdigest()
 
                 if file_hash in file_hashes:
-                    # This is a duplicate, remove it
-                    self.log(f"Removing duplicate: {img_path}")
-                    os.remove(img_path)
+                    # This is a duplicate, keep the newer file and remove the older one
+                    existing_file = file_hashes[file_hash]
+                    if os.path.getmtime(img_path) > os.path.getmtime(existing_file):
+                        # Current file is newer, remove the old one
+                        self.log(f"Removing duplicate: {existing_file}")
+                        os.remove(existing_file)
+                        file_hashes[file_hash] = img_path
+                    else:
+                        # Existing file is newer, remove current one
+                        self.log(f"Removing duplicate: {img_path}")
+                        os.remove(img_path)
                 else:
                     file_hashes[file_hash] = img_path
             except Exception as e:
@@ -417,9 +392,6 @@ def main():
         action="store_true",
         help="Fetch a random Google Earth View image",
     )
-    parser.add_argument(
-        "--use-bing", action="store_true", help="Fetch a random Bing image"
-    )
     parser.add_argument("--clean", action="store_true", help="Clean cached responses")
     parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
@@ -450,20 +422,15 @@ def main():
 
     if args.random:
         # Pick a random source
-        sources = ["REDDIT", "BING", "EARTHVIEW"]
+        sources = ["REDDIT", "EARTHVIEW"]
         choice = random.choice(sources)
 
-        if choice == "BING":
-            wm.download_from_bing()
-        elif choice == "EARTHVIEW":
+        if choice == "EARTHVIEW":
             wm.download_from_earthview()
         else:
             wm.download_from_reddit()
     else:
         # Check for specific sources
-        if args.use_bing:
-            wm.download_from_bing()
-
         if args.use_earthview:
             wm.download_from_earthview()
 
