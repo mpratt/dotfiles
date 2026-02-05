@@ -12,11 +12,34 @@ def load_config(config_file):
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
 
-    # Handle includes
-    if 'include' in config:
-        all_windows = []
-        window_name_counts = {}
+    all_windows = []
+    window_name_counts = {}
 
+    # First, load windows from the main config file
+    if 'windows' in config:
+        main_folder = config.get('root') or config.get('folder')
+        if main_folder and not os.path.isabs(main_folder):
+            main_folder = os.path.join(script_dir, main_folder)
+
+        for window in config['windows']:
+            window_name = list(window.keys())[0]
+
+            # Track window name usage
+            if window_name in window_name_counts:
+                window_name_counts[window_name] += 1
+                unique_name = f"{window_name}-{window_name_counts[window_name]}"
+            else:
+                window_name_counts[window_name] = 1
+                unique_name = window_name
+
+            # Create window with folder info
+            window_data = window[window_name].copy()
+            if main_folder:
+                window_data['_folder'] = main_folder
+            all_windows.append({unique_name: window_data})
+
+    # Then, handle includes
+    if 'include' in config:
         for include_file in config['include']:
             # Resolve include path relative to current config
             if not os.path.isabs(include_file):
@@ -49,6 +72,8 @@ def load_config(config_file):
                 window_data['_folder'] = included_folder  # Store folder for this window
                 all_windows.append({unique_name: window_data})
 
+    # Set the combined windows list
+    if all_windows:
         config['windows'] = all_windows
         config['_default_folder'] = script_dir
 
