@@ -61,7 +61,12 @@ if [ ${#yaml_files[@]} -eq 0 ]; then
 fi
 
 # Use fzf to select a yaml file
-selected_yaml=$(printf '%s\n' "${yaml_files[@]}" | fzf)
+# If an argument is passed, use it as the initial query
+if [ -n "$1" ]; then
+    selected_yaml=$(printf '%s\n' "${yaml_files[@]}" | fzf --query "$1")
+else
+    selected_yaml=$(printf '%s\n' "${yaml_files[@]}" | fzf)
+fi
 
 if [ -z "$selected_yaml" ]; then
     echo "No file selected"
