@@ -12,8 +12,8 @@ def load_config(config_file):
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
 
-    all_windows = []
-    window_name_counts = {}
+    # Use dict to merge windows with same name
+    windows_dict = {}
 
     # First, load windows from the main config file
     if 'windows' in config:
@@ -23,20 +23,26 @@ def load_config(config_file):
 
         for window in config['windows']:
             window_name = list(window.keys())[0]
-
-            # Track window name usage
-            if window_name in window_name_counts:
-                window_name_counts[window_name] += 1
-                unique_name = f"{window_name}-{window_name_counts[window_name]}"
-            else:
-                window_name_counts[window_name] = 1
-                unique_name = window_name
-
-            # Create window with folder info
             window_data = window[window_name].copy()
-            if main_folder:
-                window_data['_folder'] = main_folder
-            all_windows.append({unique_name: window_data})
+
+            folder = main_folder if main_folder else None
+
+            # Convert panes to objects with folder info
+            panes = window_data.get('panes', [])
+            panes_with_folder = [{'command': cmd, 'folder': folder} for cmd in panes]
+
+            # If window exists, merge panes; otherwise create new entry
+            if window_name in windows_dict:
+                # Merge panes from this window into existing window
+                existing_panes = windows_dict[window_name].get('panes', [])
+                windows_dict[window_name]['panes'] = existing_panes + panes_with_folder
+                # Mark as merged to use vertical splits
+                windows_dict[window_name]['_merged'] = True
+            else:
+                window_data['panes'] = panes_with_folder
+                if folder:
+                    window_data['_folder'] = folder
+                windows_dict[window_name] = window_data
 
     # Then, handle includes
     if 'include' in config:
@@ -55,22 +61,31 @@ def load_config(config_file):
             if included_folder and not os.path.isabs(included_folder):
                 included_folder = os.path.join(script_dir, included_folder)
 
-            # Process windows and make names unique
+            # Process windows and merge duplicates
             for window in included_config.get('windows', []):
                 window_name = list(window.keys())[0]
-
-                # Track window name usage and make unique if needed
-                if window_name in window_name_counts:
-                    window_name_counts[window_name] += 1
-                    unique_name = f"{window_name}-{window_name_counts[window_name]}"
-                else:
-                    window_name_counts[window_name] = 1
-                    unique_name = window_name
-
-                # Create new window with unique name and folder
                 window_data = window[window_name].copy()
-                window_data['_folder'] = included_folder  # Store folder for this window
-                all_windows.append({unique_name: window_data})
+
+                # Convert panes to objects with folder info
+                panes = window_data.get('panes', [])
+                panes_with_folder = [{'command': cmd, 'folder': included_folder} for cmd in panes]
+
+                # If window exists, merge panes; otherwise create new entry
+                if window_name in windows_dict:
+                    # Merge panes from this window into existing window
+                    existing_panes = windows_dict[window_name].get('panes', [])
+                    windows_dict[window_name]['panes'] = existing_panes + panes_with_folder
+                    # Mark as merged to use vertical splits
+                    windows_dict[window_name]['_merged'] = True
+                else:
+                    window_data['panes'] = panes_with_folder
+                    window_data['_folder'] = included_folder
+                    windows_dict[window_name] = window_data
+
+    # Convert dict back to list format and sort alphabetically
+    all_windows = [{name: data} for name, data in windows_dict.items()]
+    if all_windows:
+        all_windows.sort(key=lambda w: list(w.keys())[0].lower())
 
     # Set the combined windows list
     if all_windows:
@@ -110,6 +125,7 @@ def main():
         panes = window_data.get('panes', [])
         layout = window_data.get('layout', 'tiled')
         window_folder = window_data.get('_folder', default_folder)
+        is_merged = window_data.get('_merged', False)
 
         if i == 0:
             # Rename first window (already created with session)
@@ -122,20 +138,40 @@ def main():
         # Select the window
         subprocess.run(['tmux', 'select-window', '-t', f'{session_name}:{window_name}'])
 
-        for j, command in enumerate(panes):
+        for j, pane in enumerate(panes):
+            # Extract command and folder from pane object
+            if isinstance(pane, dict):
+                command = pane['command']
+                pane_folder = pane.get('folder') or window_folder
+            else:
+                # Fallback for non-dict panes (shouldn't happen with new code)
+                command = pane
+                pane_folder = window_folder
+
             if j == 0:
-                # Send command to first pane
+                # Send cd command first, then the actual command to first pane
+                subprocess.run(['tmux', 'send-keys', '-t', f'{session_name}:{window_name}.0',
+                              f'cd {pane_folder}', 'C-m'])
                 subprocess.run(['tmux', 'send-keys', '-t', f'{session_name}:{window_name}.0',
                               command, 'C-m'])
             else:
                 # Split window and send command
-                subprocess.run(['tmux', 'split-window', '-t', f'{session_name}:{window_name}',
-                              '-c', window_folder])
+                # Use vertical split (-h) for merged windows, horizontal otherwise
+                split_cmd = ['tmux', 'split-window', '-t', f'{session_name}:{window_name}']
+                if is_merged:
+                    split_cmd.append('-h')
+                split_cmd.extend(['-c', pane_folder])
+                subprocess.run(split_cmd)
+                subprocess.run(['tmux', 'send-keys', '-t', f'{session_name}:{window_name}.{j}',
+                              f'cd {pane_folder}', 'C-m'])
                 subprocess.run(['tmux', 'send-keys', '-t', f'{session_name}:{window_name}.{j}',
                               command, 'C-m'])
 
-        # Apply layout
-        subprocess.run(['tmux', 'select-layout', '-t', f'{session_name}:{window_name}', layout])
+        # Apply layout (use even-horizontal for merged windows to keep them side by side)
+        if is_merged:
+            subprocess.run(['tmux', 'select-layout', '-t', f'{session_name}:{window_name}', 'even-horizontal'])
+        else:
+            subprocess.run(['tmux', 'select-layout', '-t', f'{session_name}:{window_name}', layout])
 
     # Select the first window
     first_window_name = list(config['windows'][0].keys())[0]
