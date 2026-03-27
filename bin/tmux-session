@@ -99,7 +99,7 @@ def main():
     config = load_config(config_file)
 
     session_name = config['name']
-    default_folder = config.get('_default_folder') or config.get('root') or config.get('folder') or os.getcwd()
+    default_folder = config.get('root') or config.get('folder') or config.get('_default_folder') or os.getcwd()
 
     # Resolve relative folder path
     if not os.path.isabs(default_folder):
