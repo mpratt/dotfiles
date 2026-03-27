@@ -73,11 +73,27 @@ if [ -z "$selected_yaml" ]; then
     exit 0
 fi
 
-# Extract the directory containing the yaml file and the yaml filename
-yaml_dir=$(dirname "$selected_yaml")
+# Get the full path to the selected yaml
+yaml_path="${WD}/${selected_yaml}"
 yaml_file=$(basename "$selected_yaml")
 
-# cd to that directory and run tmux-session
-echo "Running tmux-session with: $yaml_file"
-cd "${WD}/${yaml_dir}"
-tmux-session "$yaml_file"
+# Extract root/folder from the yaml file to cd into it
+root_dir=$(python3 -c "
+import yaml, os, sys
+with open('$yaml_path') as f:
+    config = yaml.safe_load(f)
+root = config.get('root') or config.get('folder') or ''
+if root and not os.path.isabs(root):
+    root = os.path.join(os.path.dirname('$yaml_path'), root)
+print(root)
+")
+
+if [ -n "$root_dir" ] && [ -d "$root_dir" ]; then
+    echo "Running tmux-session with: $yaml_file (root: $root_dir)"
+    cd "$root_dir"
+else
+    echo "Running tmux-session with: $yaml_file"
+    cd "$(dirname "$yaml_path")"
+fi
+
+tmux-session "$yaml_path"
