@@ -12,6 +12,9 @@ local customGroup = augroup("mprattGroup", {})
 local cursorGroup = augroup("cursorLine", {})
 local trailingGroup = augroup("trailingChars", {})
 
+-- start vim with copilot disabled by default
+vim.cmd("silent! Copilot disable")
+
 -- Remove trailing whitespace on save
 autocmd({ "BufWritePre" }, {
     group = customGroup,
