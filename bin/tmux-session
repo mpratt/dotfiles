@@ -5,82 +5,77 @@ import subprocess
 import sys
 import os
 
-def load_config(config_file):
-    """Load a config file and resolve includes"""
-    script_dir = os.path.dirname(os.path.abspath(config_file))
+def merge_windows(config_file, windows_dict, seen):
+    """Merge a config file's windows into windows_dict, following includes.
+
+    Includes are processed recursively and deduped by resolved path, so a
+    shared include reached through several parents (e.g. agent-guiacereza.yml
+    pulled in by both api and guiacereza) is only pulled in once - the first
+    occurrence wins and later duplicates are ignored.
+    """
+    config_file = os.path.abspath(config_file)
+    script_dir = os.path.dirname(config_file)
 
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
 
-    # Use dict to merge windows with same name
+    # Resolve this file's own root/folder for its panes
+    folder = config.get('root') or config.get('folder')
+    if folder and not os.path.isabs(folder):
+        folder = os.path.join(script_dir, folder)
+
+    # A singleton config (e.g. a shared agents window) is never duplicated:
+    # its windows are added at most once and never get extra panes merged in.
+    is_singleton = bool(config.get('singleton'))
+
+    for window in config.get('windows', []):
+        window_name = list(window.keys())[0]
+        window_data = window[window_name].copy()
+
+        # Convert panes to objects with folder info
+        panes = window_data.get('panes', [])
+        panes_with_folder = [{'command': cmd, 'folder': folder} for cmd in panes]
+
+        # If window exists, merge panes; otherwise create new entry
+        if window_name in windows_dict:
+            # Never merge panes into (or out of) a singleton window - keep it
+            # a single pane no matter how many configs reference it.
+            if is_singleton or windows_dict[window_name].get('_singleton'):
+                continue
+            existing_panes = windows_dict[window_name].get('panes', [])
+            windows_dict[window_name]['panes'] = existing_panes + panes_with_folder
+            # Mark as merged to use vertical splits
+            windows_dict[window_name]['_merged'] = True
+        else:
+            window_data['panes'] = panes_with_folder
+            if folder:
+                window_data['_folder'] = folder
+            if is_singleton:
+                window_data['_singleton'] = True
+            windows_dict[window_name] = window_data
+
+    # Recurse into includes, deduping by resolved path
+    for include_file in config.get('include', []) or []:
+        if os.path.isabs(include_file):
+            include_path = os.path.abspath(include_file)
+        else:
+            include_path = os.path.abspath(os.path.join(script_dir, include_file))
+        if include_path in seen:
+            continue
+        seen.add(include_path)
+        merge_windows(include_path, windows_dict, seen)
+
+def load_config(config_file):
+    """Load a config file and resolve includes (recursively, deduped)"""
+    config_file = os.path.abspath(config_file)
+    script_dir = os.path.dirname(config_file)
+
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+
+    # Use dict to merge windows with same name across the include tree
     windows_dict = {}
-
-    # First, load windows from the main config file
-    if 'windows' in config:
-        main_folder = config.get('root') or config.get('folder')
-        if main_folder and not os.path.isabs(main_folder):
-            main_folder = os.path.join(script_dir, main_folder)
-
-        for window in config['windows']:
-            window_name = list(window.keys())[0]
-            window_data = window[window_name].copy()
-
-            folder = main_folder if main_folder else None
-
-            # Convert panes to objects with folder info
-            panes = window_data.get('panes', [])
-            panes_with_folder = [{'command': cmd, 'folder': folder} for cmd in panes]
-
-            # If window exists, merge panes; otherwise create new entry
-            if window_name in windows_dict:
-                # Merge panes from this window into existing window
-                existing_panes = windows_dict[window_name].get('panes', [])
-                windows_dict[window_name]['panes'] = existing_panes + panes_with_folder
-                # Mark as merged to use vertical splits
-                windows_dict[window_name]['_merged'] = True
-            else:
-                window_data['panes'] = panes_with_folder
-                if folder:
-                    window_data['_folder'] = folder
-                windows_dict[window_name] = window_data
-
-    # Then, handle includes
-    if 'include' in config:
-        for include_file in config['include']:
-            # Resolve include path relative to current config
-            if not os.path.isabs(include_file):
-                include_path = os.path.join(script_dir, include_file)
-            else:
-                include_path = include_file
-
-            with open(include_path, 'r') as f:
-                included_config = yaml.safe_load(f)
-
-            # Get root/folder from included config
-            included_folder = included_config.get('root') or included_config.get('folder')
-            if included_folder and not os.path.isabs(included_folder):
-                included_folder = os.path.join(script_dir, included_folder)
-
-            # Process windows and merge duplicates
-            for window in included_config.get('windows', []):
-                window_name = list(window.keys())[0]
-                window_data = window[window_name].copy()
-
-                # Convert panes to objects with folder info
-                panes = window_data.get('panes', [])
-                panes_with_folder = [{'command': cmd, 'folder': included_folder} for cmd in panes]
-
-                # If window exists, merge panes; otherwise create new entry
-                if window_name in windows_dict:
-                    # Merge panes from this window into existing window
-                    existing_panes = windows_dict[window_name].get('panes', [])
-                    windows_dict[window_name]['panes'] = existing_panes + panes_with_folder
-                    # Mark as merged to use vertical splits
-                    windows_dict[window_name]['_merged'] = True
-                else:
-                    window_data['panes'] = panes_with_folder
-                    window_data['_folder'] = included_folder
-                    windows_dict[window_name] = window_data
+    merge_windows(config_file, windows_dict, {config_file})
 
     # Convert dict back to list format and sort alphabetically
     all_windows = [{name: data} for name, data in windows_dict.items()]

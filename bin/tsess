@@ -40,12 +40,20 @@ if ! [ -e "${WD}" ]; then
 fi
 
 # Find all yaml/yml files in tmux-session folders (2 levels deep)
-# Structure: /home/projects/*/tmux-session/*.{yaml,yml}
+# Structure: /home/projects/*/(_)?tmux-session/*.{yaml,yml}
 cd "${WD}"
 
 # Build a list of yaml files with their relative paths
 yaml_files=()
 for project in */; do
+    if [ -d "${project}_tmux-sessions" ]; then
+        for yaml in "${project}_tmux-sessions"/*.yaml "${project}_tmux-sessions"/*.yml; do
+            if [ -f "$yaml" ]; then
+                yaml_files+=("$yaml")
+            fi
+        done
+    fi
+
     if [ -d "${project}tmux-sessions" ]; then
         for yaml in "${project}tmux-sessions"/*.yaml "${project}tmux-sessions"/*.yml; do
             if [ -f "$yaml" ]; then
